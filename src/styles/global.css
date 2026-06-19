@@ -1,0 +1,288 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-rule: var(--rule);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+
+  --font-display: "Cormorant Garamond", serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-family-display: var(--font-display);
+  --font-family-sans: var(--font-body);
+  --font-family-mono: var(--font-mono);
+
+  --ease-cinematic: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+:root {
+  --radius: 0.5rem;
+
+  /* Warm bone & terracotta — cinematic editorial 2026 */
+  --paper: oklch(0.97 0.012 75);
+  --ink: oklch(0.18 0.015 40);
+  --surface: oklch(0.94 0.015 70);
+  --rule: oklch(0.18 0.015 40 / 0.1);
+  --accent-warm: oklch(0.55 0.16 35);
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--paper);
+  --secondary: var(--surface);
+  --secondary-foreground: var(--ink);
+  --muted: var(--surface);
+  --muted-foreground: oklch(0.18 0.015 40 / 0.55);
+  --accent: var(--accent-warm);
+  --accent-foreground: var(--paper);
+  --destructive: oklch(0.55 0.22 27);
+  --destructive-foreground: var(--paper);
+  --border: var(--rule);
+  --input: var(--rule);
+  --ring: var(--accent-warm);
+}
+
+.dark {
+  --paper: oklch(0.13 0.012 40);
+  --ink: oklch(0.97 0.01 80);
+  --surface: oklch(0.18 0.014 40);
+  --rule: oklch(0.97 0.01 80 / 0.12);
+  --accent-warm: oklch(0.68 0.17 38);
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--surface);
+  --card-foreground: var(--ink);
+  --muted: var(--surface);
+  --muted-foreground: oklch(0.95 0.01 80 / 0.5);
+  --accent: var(--accent-warm);
+  --accent-foreground: var(--paper);
+  --border: var(--rule);
+  --input: var(--rule);
+  --ring: var(--accent-warm);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+  ::selection {
+    background-color: color-mix(in oklch, var(--accent-warm) 22%, transparent);
+    color: var(--accent-warm);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  @media (pointer: fine) {
+    html.has-custom-cursor,
+    html.has-custom-cursor * {
+      cursor: none !important;
+    }
+  }
+}
+
+@keyframes focus-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@utility animate-focus {
+  animation: focus-reveal 1.1s var(--ease-cinematic) both;
+}
+@utility marquee {
+  animation: marquee 38s linear infinite;
+}
+
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@utility pulse-soft {
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+@utility animate-grow-x {
+  animation: grow-x 1.2s var(--ease-cinematic) forwards;
+  transform-origin: left;
+}
+
+.drag-scroller {
+  cursor: grab;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.drag-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.drag-scroller.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+/* ── Custom grab cursor ── */
+.grab-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s var(--ease-cinematic);
+  will-change: transform;
+}
+
+.grab-cursor.is-visible {
+  opacity: 1;
+}
+
+.grab-cursor__ring,
+.grab-cursor__dot,
+.grab-cursor__label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  translate: -50% -50%;
+  transition:
+    width 0.35s var(--ease-cinematic),
+    height 0.35s var(--ease-cinematic),
+    opacity 0.25s var(--ease-cinematic),
+    border-color 0.25s var(--ease-cinematic),
+    background-color 0.25s var(--ease-cinematic),
+    transform 0.35s var(--ease-cinematic);
+}
+
+.grab-cursor__ring {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid color-mix(in oklch, var(--foreground) 35%, transparent);
+  border-radius: 9999px;
+}
+
+.grab-cursor__dot {
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 9999px;
+  background-color: var(--accent);
+}
+
+.grab-cursor__label {
+  margin-top: 1.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent);
+  opacity: 0;
+}
+
+.grab-cursor[data-state="hover"] .grab-cursor__ring {
+  width: 3rem;
+  height: 3rem;
+  border-color: var(--accent);
+}
+
+.grab-cursor[data-state="hover"] .grab-cursor__dot {
+  transform: scale(0.5);
+}
+
+.grab-cursor[data-state="focus"] .grab-cursor__ring {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-color: var(--accent);
+  background-color: color-mix(in oklch, var(--accent) 8%, transparent);
+}
+
+.grab-cursor[data-state="focus"] .grab-cursor__dot {
+  transform: scale(0.4);
+}
+
+.grab-cursor[data-state="focus"] .grab-cursor__label {
+  opacity: 1;
+}
+
+.grab-cursor[data-state="grab"] .grab-cursor__ring {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-color: var(--accent);
+  border-style: dashed;
+}
+
+.grab-cursor[data-state="grab"] .grab-cursor__label {
+  opacity: 1;
+}
+
+.grab-cursor[data-state="grabbing"] .grab-cursor__ring {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-color: var(--accent);
+  background-color: color-mix(in oklch, var(--accent) 12%, transparent);
+}
+
+.grab-cursor[data-state="grabbing"] .grab-cursor__dot {
+  transform: scale(1.35);
+}
+
+.grab-cursor[data-state="grabbing"] .grab-cursor__label {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grab-cursor {
+    display: none;
+  }
+}

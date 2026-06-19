@@ -1,0 +1,134 @@
+---
+import FocusIn from "@/components/FocusIn.astro";
+import {
+  codingLanguages,
+  codingStats,
+  codingStreaks,
+  codingTrophies,
+  heatmapOpacity,
+  heatmapValues,
+  leetcodeSolved,
+} from "@/data/portfolio";
+---
+
+<section class="bg-accent px-6 py-32 text-background">
+  <div class="mx-auto max-w-6xl">
+    <FocusIn class="mb-16 flex items-end justify-between">
+      <div>
+        <p class="mb-4 font-mono text-[10px] tracking-[0.2em] uppercase opacity-60">Coding Stats / 10</p>
+        <h2 class="font-display text-5xl leading-tight italic md:text-6xl">Metrik yang terukur.</h2>
+      </div>
+      <span class="hidden font-mono text-[10px] tracking-[0.2em] uppercase opacity-50 md:block">Update · 2026</span>
+    </FocusIn>
+
+    <div class="mb-20 grid grid-cols-2 gap-px border-y border-background/20 bg-background/20 md:grid-cols-4">
+      {
+        codingStats.map((s) => (
+          <FocusIn class="bg-accent p-8 md:p-10">
+            <p class="mb-3 font-mono text-[10px] tracking-[0.2em] uppercase opacity-60">{s.label}</p>
+            <p class="font-display text-5xl italic md:text-6xl">{s.value}</p>
+            <p class="mt-2 font-mono text-[10px] tracking-[0.2em] uppercase opacity-50">{s.sub}</p>
+          </FocusIn>
+        ))
+      }
+    </div>
+
+    <div class="grid gap-16 lg:grid-cols-2">
+      <div>
+        <div class="mb-6 flex items-center justify-between">
+          <p class="font-mono text-[10px] tracking-[0.2em] uppercase opacity-60">Kontribusi 52 Minggu</p>
+          <span class="font-mono text-[10px] tracking-[0.2em] uppercase opacity-40">GitHub</span>
+        </div>
+        <FocusIn class="rounded border border-background/20 p-5">
+          <div class="grid grid-cols-[repeat(52,minmax(0,1fr))] gap-[3px]">
+            {
+              heatmapValues.map((v) => (
+                <div
+                  class="aspect-square w-full rounded-full bg-background"
+                  style={`opacity: ${heatmapOpacity(v)}`}
+                />
+              ))
+            }
+          </div>
+          <div class="mt-4 flex items-center justify-between">
+            <span class="font-mono text-[9px] opacity-40">Jun 2025</span>
+            <div class="flex items-center gap-1.5">
+              <span class="font-mono text-[9px] opacity-40">Less</span>
+              {[0.1, 0.3, 0.55, 0.85].map((o) => (
+                <div class="size-2 rounded-full bg-background" style={`opacity: ${o}`} />
+              ))}
+              <span class="font-mono text-[9px] opacity-40">More</span>
+            </div>
+            <span class="font-mono text-[9px] opacity-40">Jun 2026</span>
+          </div>
+        </FocusIn>
+
+        <div class="mt-8 grid grid-cols-2 gap-6">
+          {
+            codingStreaks.map((st) => (
+              <FocusIn class="border-t border-background/20 pt-5">
+                <p class="mb-2 font-mono text-[10px] tracking-[0.2em] uppercase opacity-60">{st.label}</p>
+                <p class="font-display text-3xl italic">{st.value}</p>
+                <p class="mt-1 font-mono text-[10px] opacity-40">{st.desc}</p>
+              </FocusIn>
+            ))
+          }
+        </div>
+      </div>
+
+      <div>
+        <div class="mb-6 flex items-center justify-between">
+          <p class="font-mono text-[10px] tracking-[0.2em] uppercase opacity-60">Distribusi Bahasa</p>
+          <span class="font-mono text-[10px] tracking-[0.2em] uppercase opacity-40">GitHub</span>
+        </div>
+
+        <div class="space-y-5">
+          {
+            codingLanguages.map((lang) => (
+              <FocusIn>
+                <div class="mb-2 flex items-center justify-between">
+                  <span class="font-mono text-xs">{lang.name}</span>
+                  <span class="font-mono text-xs opacity-60">{lang.pct}%</span>
+                </div>
+                <div class="h-1 w-full bg-background/15">
+                  <div class="h-full bg-background transition-all duration-1000" style={`width: ${lang.pct}%`} />
+                </div>
+              </FocusIn>
+            ))
+          }
+        </div>
+
+        <FocusIn class="mt-12 border-t border-background/20 pt-10">
+          <div class="mb-6 flex items-center justify-between">
+            <p class="font-mono text-[10px] tracking-[0.2em] uppercase opacity-60">Problem Solved</p>
+            <span class="font-mono text-[10px] tracking-[0.2em] uppercase opacity-40">LeetCode</span>
+          </div>
+          <div class="grid grid-cols-3 gap-px bg-background/20">
+            {
+              leetcodeSolved.map((d) => (
+                <div class="bg-accent p-6 text-center">
+                  <p class:list={["font-display text-3xl italic", d.color]}>{d.value}</p>
+                  <p class="mt-2 font-mono text-[10px] tracking-[0.2em] uppercase opacity-60">{d.label}</p>
+                </div>
+              ))
+            }
+          </div>
+        </FocusIn>
+
+        <FocusIn class="mt-12 border-t border-background/20 pt-10" delay={80}>
+          <p class="mb-6 font-mono text-[10px] tracking-[0.2em] uppercase opacity-60">Pencapaian</p>
+          <div class="flex flex-wrap gap-4">
+            {
+              codingTrophies.map((t) => (
+                <span class="inline-flex items-center gap-2 rounded-full border border-background/25 bg-background/10 px-4 py-2 font-mono text-[10px] tracking-wider uppercase">
+                  <span class="size-1.5 rounded-full bg-background/70"></span>
+                  {t}
+                </span>
+              ))
+            }
+          </div>
+        </FocusIn>
+      </div>
+    </div>
+  </div>
+</section>

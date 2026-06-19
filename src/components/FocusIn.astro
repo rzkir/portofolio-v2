@@ -1,0 +1,47 @@
+---
+import FadeInText from "@astroanimate/core/FadeInText";
+
+type FocusTag =
+  | "div"
+  | "section"
+  | "article"
+  | "footer"
+  | "figure"
+  | "h2"
+  | "h3"
+  | "li";
+
+interface Props {
+  class?: string;
+  /** Delay in milliseconds */
+  delay?: number;
+  /** Duration in seconds */
+  duration?: number;
+  as?: FocusTag;
+  [key: string]: unknown;
+}
+
+const {
+  class: className,
+  delay = 0,
+  duration = 0.9,
+  as = "div",
+  ...rest
+} = Astro.props;
+---
+
+<FadeInText
+  enhance
+  once
+  as={as}
+  class={className}
+  delay={delay / 1000}
+  duration={duration}
+  blur="0px"
+  yOffset={28}
+  easing="cubic-bezier(0.32, 0.72, 0, 1)"
+  inViewMargin="-6%"
+  {...rest}
+>
+  <slot />
+</FadeInText>

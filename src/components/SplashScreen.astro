@@ -1,0 +1,65 @@
+<div
+  id="splash-screen"
+  aria-hidden="true"
+  class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-accent transition-[opacity,visibility] duration-[900ms]"
+  style="transition-timing-function: var(--ease-cinematic)"
+>
+  <div id="splash-content" class="flex flex-col items-center gap-6 transition-transform duration-[900ms]" style="transition-timing-function: var(--ease-cinematic)">
+    <span class="animate-focus font-display text-[8rem] leading-none text-background/90 italic md:text-[12rem]">RR</span>
+    <div id="splash-meta" class="flex flex-col items-center gap-2 transition-opacity duration-500">
+      <span class="font-mono text-[10px] tracking-[0.3em] text-background/70 uppercase">Rizki Ramadhan</span>
+      <span class="font-mono text-[10px] tracking-[0.3em] text-background/40 uppercase">Fullstack Developer</span>
+    </div>
+  </div>
+  <div id="splash-line-wrap" class="absolute bottom-10 left-1/2 -translate-x-1/2 transition-opacity duration-500">
+    <span class="block h-px w-24 animate-grow-x bg-background/30"></span>
+  </div>
+</div>
+
+<script>
+  function initSplash() {
+    const splash = document.getElementById("splash-screen");
+    const content = document.getElementById("splash-content");
+    const meta = document.getElementById("splash-meta");
+    const lineWrap = document.getElementById("splash-line-wrap");
+
+    if (!splash || splash.dataset.bound === "true") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      splash.remove();
+      return;
+    }
+    if (sessionStorage.getItem("splash-seen") === "1") {
+      splash.remove();
+      return;
+    }
+
+    splash.dataset.bound = "true";
+
+    const exitTimer = window.setTimeout(() => {
+      splash.style.opacity = "0";
+      splash.style.visibility = "hidden";
+      if (content) {
+        content.style.transform = "translateY(-12px) scale(0.96)";
+      }
+      if (meta) meta.style.opacity = "0";
+      if (lineWrap) lineWrap.style.opacity = "0";
+    }, 1800);
+
+    const doneTimer = window.setTimeout(() => {
+      sessionStorage.setItem("splash-seen", "1");
+      splash.remove();
+    }, 2800);
+
+    document.addEventListener(
+      "astro:before-preparation",
+      () => {
+        window.clearTimeout(exitTimer);
+        window.clearTimeout(doneTimer);
+      },
+      { once: true },
+    );
+  }
+
+  initSplash();
+  document.addEventListener("astro:page-load", initSplash);
+</script>

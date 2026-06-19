@@ -1,11 +1,661 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import "../styles/global.css";
+import { Image } from "astro:assets";
+import Layout from "@/layouts/Layout.astro";
+import CodingStats from "@/components/CodingStats.astro";
+import GuestNotes from "@/components/GuestNotes.astro";
+import FocusIn from "@/components/FocusIn.astro";
+import {
+  certifications,
+  experiences,
+  faq,
+  portrait,
+  process,
+  project1,
+  projects,
+  services,
+  stack,
+  testimonials,
+} from "@/data/portfolio";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const ogImage = new URL(project1.src, Astro.site).href;
 ---
 
-<Layout>
-	<Welcome />
+<Layout
+  title="R. Ramadhan — Freelance Fullstack Developer"
+  description="Crafting human-centric code in a machine world. Portfolio Rizki Ramadhan, freelance fullstack developer dari Bogor, Indonesia."
+  ogImage={ogImage}
+>
+  <!-- NAV -->
+  <nav
+    class="fixed top-0 z-50 w-full border-b border-border bg-background/80 px-6 py-4 backdrop-blur-md"
+  >
+    <div class="mx-auto flex max-w-6xl items-center justify-between">
+      <span class="font-mono text-xs tracking-tight">R. RAMADHAN / 2026</span>
+      <div
+        class="hidden gap-8 text-[11px] font-medium uppercase tracking-[0.18em] sm:flex"
+      >
+        {
+          [
+            { label: "Karya", href: "#karya" },
+            { label: "Layanan", href: "#layanan" },
+            { label: "Kredensial", href: "#kredensial" },
+            { label: "Catatan", href: "#catatan" },
+            { label: "Kontak", href: "#kontak" },
+          ].map((item) => (
+            <a
+              href={item.href}
+              data-cursor="focus"
+              data-cursor-label="Go"
+              class="transition-colors hover:text-accent"
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </nav>
+
+  <main class="pt-32">
+    <!-- HERO -->
+    <section class="mx-auto max-w-6xl px-6">
+      <div
+        class="mb-8 inline-flex animate-focus items-center gap-2 rounded-full border border-accent/20 bg-accent/5 px-3 py-1"
+      >
+        <span class="size-1.5 pulse-soft rounded-full bg-accent"></span>
+        <span
+          class="font-mono text-[10px] uppercase tracking-[0.2em] text-accent"
+          >Available for 2026 projects</span
+        >
+      </div>
+
+      <h1
+        class="mb-12 animate-focus text-balance font-display text-6xl italic leading-[0.9] [animation-delay:100ms] md:text-8xl"
+      >
+        Crafting human-centric code in a machine world.
+      </h1>
+
+      <div
+        class="grid animate-focus grid-cols-1 items-end gap-12 [animation-delay:200ms] md:grid-cols-12"
+      >
+        <div class="md:col-span-5">
+          <p
+            class="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+          >
+            Index / 00 — Pengantar
+          </p>
+          <p class="text-pretty text-lg leading-relaxed">
+            Halo, saya Rizki Ramadhan — freelance fullstack developer dari
+            Indonesia dengan lebih dari dua tahun pengalaman membangun website
+            dan aplikasi dari konsep hingga deployment.
+          </p>
+        </div>
+        <div class="flex justify-end md:col-span-7">
+          <a
+            href="#kontak"
+            data-cursor="focus"
+            data-cursor-label="Email"
+            class="rounded-full bg-foreground px-8 py-4 text-sm font-medium text-background transition-colors hover:bg-accent"
+          >
+            Mulai proyek →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <FocusIn class="mt-32 overflow-hidden border-y border-border py-6">
+      <div class="flex whitespace-nowrap marquee">
+        {
+          [0, 1].map(() => (
+            <div class="flex shrink-0 items-center gap-12 px-6">
+              {stack.map((s) => (
+                <>
+                  <span class="font-display text-3xl italic opacity-40">
+                    {s}
+                  </span>
+                  <span class="size-1.5 rounded-full bg-border" />
+                </>
+              ))}
+            </div>
+          ))
+        }
+      </div>
+    </FocusIn>
+
+    <!-- ABOUT -->
+    <section
+      class="mx-auto grid max-w-6xl items-start gap-16 px-6 py-32 md:grid-cols-12"
+    >
+      <FocusIn class="md:col-span-5" delay={0}>
+        <figure
+          data-cursor="grab"
+          class="overflow-hidden rounded-2xl bg-surface"
+        >
+          <Image
+            src={portrait}
+            alt="R. Ramadhan — Studio, 2026"
+            class="aspect-[4/5] w-full object-cover grayscale"
+          />
+        </figure>
+        <figcaption
+          class="mt-3 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+        >
+          Fig. 01 — Studio, 2026 · BOGOR · ID
+        </figcaption>
+      </FocusIn>
+
+      <FocusIn class="md:col-span-7" delay={120}>
+        <p
+          class="mb-8 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+        >
+          Tentang / 01
+        </p>
+        <h2 class="mb-8 font-display text-4xl italic leading-tight">
+          Memadukan presisi teknik dengan narasi visual — tiap baris kode adalah
+          keputusan desain.
+        </h2>
+        <p
+          class="mb-12 text-pretty text-base leading-relaxed text-muted-foreground"
+        >
+          Saya mengerjakan keseluruhan siklus produk: dari riset singkat, desain
+          antarmuka, hingga deployment di production. Background saya kuat di
+          frontend modern (React, Next.js, TanStack) dengan backend pragmatis
+          menggunakan Node.js, Postgres, dan Supabase.
+        </p>
+
+        <dl
+          class="grid grid-cols-2 gap-y-10 gap-x-8 border-t border-border pt-12"
+        >
+          <div>
+            <dt
+              class="mb-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+            >
+              Pengalaman
+            </dt>
+            <dd class="font-display text-3xl italic">2+ thn</dd>
+          </div>
+          <div>
+            <dt
+              class="mb-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+            >
+              Proyek selesai
+            </dt>
+            <dd class="font-display text-3xl italic">20+</dd>
+          </div>
+          <div>
+            <dt
+              class="mb-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+            >
+              Sertifikasi
+            </dt>
+            <dd class="font-display text-3xl italic">
+              {certifications.length}
+            </dd>
+          </div>
+          <div>
+            <dt
+              class="mb-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+            >
+              Status
+            </dt>
+            <dd class="font-display text-3xl italic text-accent">Open</dd>
+          </div>
+        </dl>
+      </FocusIn>
+    </section>
+
+    <!-- KARYA -->
+    <section id="karya" class="bg-foreground px-6 py-32 text-background">
+      <div class="mx-auto max-w-6xl">
+        <FocusIn class="mb-20 flex items-end justify-between">
+          <div>
+            <p
+              class="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] opacity-50"
+            >
+              Karya Pilihan / 02
+            </p>
+            <h2 class="font-display text-5xl italic">Featured Works</h2>
+          </div>
+          <span
+            class="hidden font-mono text-[10px] uppercase tracking-[0.2em] opacity-50 md:block"
+            >Scroll untuk menjelajah</span
+          >
+        </FocusIn>
+
+        <div class="space-y-32">
+          {
+            projects.map((p, i) => (
+              <FocusIn
+                as="article"
+                delay={i * 100}
+                class={`group grid grid-cols-1 items-center gap-12 md:grid-cols-12 ${i % 2 === 1 ? "md:[&>figure]:order-2" : ""}`}
+              >
+                <figure
+                  data-cursor="grab"
+                  class="overflow-hidden rounded-lg bg-background/5 md:col-span-7"
+                >
+                  <Image
+                    src={p.image}
+                    alt={p.title}
+                    class="aspect-video w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                  />
+                </figure>
+                <div
+                  class={`md:col-span-5 ${i % 2 === 1 ? "md:text-right" : ""}`}
+                >
+                  <p class="mb-4 font-mono text-xs text-accent">
+                    {p.no} · {p.tag}
+                  </p>
+                  <h3 class="mb-4 font-display text-3xl italic">{p.title}</h3>
+                  <p class="max-w-sm text-sm leading-relaxed text-background/60">
+                    {p.desc}
+                  </p>
+                  <p class="mt-6 font-mono text-[10px] uppercase tracking-[0.2em] opacity-40">
+                    {p.year}
+                  </p>
+                </div>
+              </FocusIn>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- LAYANAN -->
+    <section id="layanan" class="mx-auto max-w-6xl px-6 py-32">
+      <FocusIn class="mb-16 flex items-end justify-between">
+        <div>
+          <p
+            class="mb-4 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
+          >
+            Layanan / 03
+          </p>
+          <h2 class="font-display text-5xl italic">
+            Apa yang bisa saya kerjakan
+          </h2>
+        </div>
+      </FocusIn>
+      <ul class="grid grid-cols-1 gap-px bg-border sm:grid-cols-2">
+        {
+          services.map((s, i) => (
+            <FocusIn
+              as="li"
+              delay={i * 80}
+              data-cursor="focus"
+              data-cursor-label="Detail"
+              class="group bg-background p-10 transition-colors hover:bg-accent/5"
+            >
+              <p class="mb-6 font-mono text-[10px] tracking-[0.2em] text-accent uppercase">
+                {s.n}
+              </p>
+              <h3 class="mb-3 font-display text-3xl italic">{s.t}</h3>
+              <p class="text-sm leading-relaxed text-muted-foreground">{s.d}</p>
+            </FocusIn>
+          ))
+        }
+      </ul>
+    </section>
+
+    <!-- PROSES -->
+    <section
+      id="proses"
+      class="border-y border-border bg-surface/40 px-6 py-32"
+    >
+      <div class="mx-auto max-w-6xl">
+        <FocusIn>
+          <p
+            class="mb-4 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
+          >
+            Proses / 04
+          </p>
+          <h2 class="mb-16 max-w-2xl font-display text-5xl italic">
+            Empat langkah, tanpa drama.
+          </h2>
+        </FocusIn>
+        <ol class="grid grid-cols-1 gap-12 md:grid-cols-4">
+          {
+            process.map((p, i) => (
+              <FocusIn
+                as="li"
+                delay={i * 90}
+                class="border-t border-foreground/20 pt-6"
+              >
+                <span class="mb-6 block font-mono text-[10px] tracking-[0.2em] text-accent uppercase">
+                  {p.n}
+                </span>
+                <h3 class="mb-3 font-display text-2xl italic">{p.t}</h3>
+                <p class="text-sm leading-relaxed text-muted-foreground">
+                  {p.d}
+                </p>
+              </FocusIn>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <!-- TESTIMONI -->
+    <section class="mx-auto max-w-6xl px-6 py-32">
+      <FocusIn>
+        <p
+          class="mb-4 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
+        >
+          Suara Klien / 05
+        </p>
+        <h2 class="mb-16 max-w-3xl font-display text-5xl italic">
+          Apa kata mereka yang pernah berkolaborasi.
+        </h2>
+      </FocusIn>
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+        {
+          testimonials.map((t, i) => (
+            <FocusIn
+              as="figure"
+              delay={i * 100}
+              data-cursor="focus"
+              data-cursor-label="Read"
+              class="flex flex-col justify-between gap-8 border border-border bg-background p-8 transition-colors hover:border-accent/40"
+            >
+              <blockquote class="font-display text-2xl leading-snug italic">
+                "{t.quote}"
+              </blockquote>
+              <figcaption>
+                <p class="text-sm font-medium">{t.author}</p>
+                <p class="text-xs text-muted-foreground">{t.role}</p>
+              </figcaption>
+            </FocusIn>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- PENGALAMAN -->
+    <section id="pengalaman" class="mx-auto max-w-4xl px-6 py-32">
+      <FocusIn class="mb-12 flex items-end justify-between">
+        <p
+          class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+        >
+          Pengalaman / 06
+        </p>
+        <span
+          class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+          >{experiences.length} Posisi</span
+        >
+      </FocusIn>
+      <FocusIn
+        as="h2"
+        delay={80}
+        class="mb-16 max-w-2xl font-display text-3xl italic leading-tight"
+      >
+        Jejak karier yang terukur — dari magang hingga klien independen.
+      </FocusIn>
+
+      <ul class="divide-y divide-border">
+        {
+          experiences.map((e, i) => (
+            <FocusIn
+              as="li"
+              delay={i * 90}
+              class="grid grid-cols-1 gap-4 py-8 md:grid-cols-12"
+            >
+              <div class="md:col-span-8">
+                <h3 class="font-display text-2xl italic">{e.org}</h3>
+                <p class="mt-1 text-sm text-muted-foreground">{e.role}</p>
+                <p class="mt-3 max-w-prose text-sm leading-relaxed text-muted-foreground">
+                  {e.desc}
+                </p>
+              </div>
+              <div class="md:col-span-4 md:text-right">
+                <span class="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                  {e.range}
+                </span>
+              </div>
+            </FocusIn>
+          ))
+        }
+      </ul>
+    </section>
+
+    <!-- KREDENSIAL -->
+    <section
+      id="kredensial"
+      class="border-t border-border bg-surface/40 px-6 py-32"
+    >
+      <div class="mx-auto max-w-6xl">
+        <FocusIn class="mb-12 flex items-end justify-between">
+          <p
+            class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+          >
+            Kredensial / 07
+          </p>
+          <span
+            class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+            >{certifications.length} Entri</span
+          >
+        </FocusIn>
+        <FocusIn
+          as="h2"
+          delay={80}
+          class="mb-16 max-w-2xl font-display text-3xl italic leading-tight"
+        >
+          Pendidikan berkelanjutan — dari fundamental sampai spesialisasi.
+        </FocusIn>
+
+        <ul
+          class="grid grid-cols-1 gap-px bg-border sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {
+            certifications.map((c, i) => (
+              <FocusIn
+                as="li"
+                delay={(i % 6) * 60}
+                data-cursor="focus"
+                data-cursor-label="Verify"
+                class="bg-background p-6 transition-colors hover:bg-accent/5"
+              >
+                <p class="mb-4 font-mono text-[10px] tracking-[0.2em] text-accent">
+                  {c.code}
+                </p>
+                <h3 class="mb-2 font-display text-lg italic leading-snug">
+                  {c.title}
+                </h3>
+                <p class="text-xs text-muted-foreground">
+                  {c.issuer} · {c.year}
+                </p>
+              </FocusIn>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mx-auto max-w-4xl px-6 py-32">
+      <FocusIn>
+        <p
+          class="mb-4 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
+        >
+          FAQ / 08
+        </p>
+        <h2 class="mb-16 font-display text-5xl italic">Pertanyaan umum.</h2>
+      </FocusIn>
+      <ul class="divide-y divide-border border-y border-border">
+        {
+          faq.map((f, i) => (
+            <FocusIn
+              as="li"
+              delay={i * 70}
+              data-cursor="focus"
+              data-cursor-label="Read"
+              class="grid grid-cols-1 gap-4 py-8 md:grid-cols-12"
+            >
+              <h3 class="font-display text-xl italic md:col-span-5">{f.q}</h3>
+              <p class="text-sm leading-relaxed text-muted-foreground md:col-span-7">
+                {f.a}
+              </p>
+            </FocusIn>
+          ))
+        }
+      </ul>
+    </section>
+
+    <CodingStats />
+    <GuestNotes />
+  </main>
+
+  <!-- KONTAK -->
+  <footer
+    id="kontak"
+    class="rounded-t-[3rem] bg-accent px-6 py-32 text-background"
+  >
+    <div class="mx-auto max-w-6xl">
+      <div class="grid gap-20 md:grid-cols-12">
+        <FocusIn class="md:col-span-7">
+          <p
+            class="mb-12 font-mono text-[10px] tracking-[0.2em] opacity-70 uppercase"
+          >
+            Kontak / 09
+          </p>
+          <h2
+            class="mb-12 font-display text-5xl leading-none italic md:text-7xl"
+          >
+            Mari berkolaborasi di tahun 2026.
+          </h2>
+          <a
+            href="mailto:hello@rizkiramadhan.biz.id"
+            data-cursor="focus"
+            data-cursor-label="Send"
+            class="inline-flex items-center gap-3 border-b border-background/40 pb-2 text-lg font-medium transition-colors hover:border-background"
+          >
+            hello@rizkiramadhan.biz.id →
+          </a>
+
+          <form
+            id="contact-form"
+            class="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2"
+          >
+            <label class="flex flex-col gap-2">
+              <span
+                class="font-mono text-[10px] tracking-[0.2em] opacity-70 uppercase"
+                >Nama</span
+              >
+              <input
+                type="text"
+                name="name"
+                required
+                placeholder="Nama lengkap"
+                class="border-b border-background/30 bg-transparent py-3 text-background placeholder:text-background/40 outline-none transition-colors focus:border-background"
+              />
+            </label>
+            <label class="flex flex-col gap-2">
+              <span
+                class="font-mono text-[10px] tracking-[0.2em] opacity-70 uppercase"
+                >Email</span
+              >
+              <input
+                type="email"
+                name="email"
+                required
+                placeholder="kamu@email.com"
+                class="border-b border-background/30 bg-transparent py-3 text-background placeholder:text-background/40 outline-none transition-colors focus:border-background"
+              />
+            </label>
+            <label class="flex flex-col gap-2 sm:col-span-2">
+              <span
+                class="font-mono text-[10px] tracking-[0.2em] opacity-70 uppercase"
+                >Pesan</span
+              >
+              <textarea
+                name="message"
+                rows={4}
+                required
+                placeholder="Ceritakan proyek kamu — timeline, scope, dan tujuan."
+                class="resize-none border-b border-background/30 bg-transparent py-3 text-background placeholder:text-background/40 outline-none transition-colors focus:border-background"
+              ></textarea>
+            </label>
+            <button
+              type="submit"
+              data-cursor="focus"
+              data-cursor-label="Send"
+              class="mt-4 inline-flex items-center justify-center gap-3 rounded-full bg-background px-8 py-4 text-sm font-medium text-accent transition-transform hover:scale-[1.02] sm:col-span-2 sm:justify-self-start"
+            >
+              Kirim pesan →
+            </button>
+          </form>
+        </FocusIn>
+
+        <FocusIn
+          class="flex flex-col justify-end gap-12 md:col-span-5"
+          delay={120}
+        >
+          <div class="grid grid-cols-2 gap-8">
+            <div>
+              <p
+                class="mb-4 font-mono text-[10px] tracking-[0.2em] opacity-60 uppercase"
+              >
+                Sosial
+              </p>
+              <ul class="space-y-2 text-sm">
+                {
+                  ["LinkedIn", "GitHub", "Instagram", "Read.cv"].map((s) => (
+                    <li>
+                      <a
+                        href="#"
+                        data-cursor="focus"
+                        data-cursor-label="Open"
+                        class="transition-opacity hover:opacity-70"
+                      >
+                        {s}
+                      </a>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+            <div>
+              <p
+                class="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60"
+              >
+                Lokasi
+              </p>
+              <p class="text-sm">Bogor, ID</p>
+              <p class="text-xs opacity-70">UTC +7</p>
+              <p
+                class="mt-4 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60"
+              >
+                Status
+              </p>
+              <p class="text-sm">Open for work</p>
+            </div>
+          </div>
+        </FocusIn>
+      </div>
+
+      <div
+        class="mt-32 flex flex-col items-center justify-between gap-4 border-t border-background/10 pt-8 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60 md:flex-row"
+      >
+        <p>© 2026 Rizki Ramadhan — All rights reserved</p>
+        <p>Set in Cormorant Garamond & Inter · Crafted with intention</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function initContactForm() {
+      const form = document.getElementById("contact-form");
+      if (!form || form.dataset.bound === "true") return;
+      form.dataset.bound = "true";
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        (form as HTMLFormElement).reset();
+        window.alert("Pesan terkirim (demo)");
+      });
+    }
+
+    initContactForm();
+    document.addEventListener("astro:page-load", initContactForm);
+  </script>
 </Layout>

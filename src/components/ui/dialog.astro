@@ -1,0 +1,67 @@
+---
+import { cn } from "@/lib/utiles";
+
+interface Props {
+  id: string;
+  class?: string;
+}
+
+const { id, class: className } = Astro.props;
+---
+
+<slot name="trigger" />
+
+<dialog
+  id={id}
+  data-dialog
+  class={cn(
+    "fixed inset-0 z-50 m-auto max-h-[90vh] w-[calc(100%-2rem)] border border-border bg-background p-0 shadow-lg backdrop:bg-foreground/40 open:animate-in open:fade-in-0 sm:rounded-sm",
+    className,
+  )}
+>
+  <button
+    type="button"
+    data-dialog-close
+    class="absolute top-4 right-4 z-10 flex size-8 items-center justify-center rounded-sm font-mono text-sm text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
+    aria-label="Tutup dialog"
+  >
+    ✕
+  </button>
+  <slot />
+</dialog>
+
+<script>
+  function initDialogs() {
+    document.querySelectorAll<HTMLElement>("[data-dialog-open]").forEach((trigger) => {
+      if (trigger.dataset.dialogBound) return;
+      trigger.dataset.dialogBound = "true";
+
+      trigger.addEventListener("click", () => {
+        const id = trigger.getAttribute("data-dialog-open");
+        const dialog = document.getElementById(id ?? "");
+        if (dialog instanceof HTMLDialogElement) {
+          dialog.showModal();
+        }
+      });
+    });
+
+    document.querySelectorAll("dialog[data-dialog]").forEach((el) => {
+      if (!(el instanceof HTMLDialogElement)) return;
+      if (el.dataset.dialogInit) return;
+      el.dataset.dialogInit = "true";
+
+      el.addEventListener("click", (event) => {
+        if (event.target === el) {
+          el.close();
+        }
+      });
+
+      el.querySelectorAll("[data-dialog-close]").forEach((btn) => {
+        btn.addEventListener("click", () => el.close());
+      });
+    });
+  }
+
+  initDialogs();
+  document.addEventListener("astro:page-load", initDialogs);
+</script>

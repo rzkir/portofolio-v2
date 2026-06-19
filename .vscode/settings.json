@@ -1,0 +1,15 @@
+{
+  "css.validate": false,
+  "scss.validate": false,
+  "less.validate": false,
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "tailwindCSS.experimental.configFile": "src/styles/global.css",
+  "tailwindCSS.includeLanguages": {
+    "astro": "html"
+  },
+  "editor.quickSuggestions": {
+    "strings": "on"
+  }
+}

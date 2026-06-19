@@ -1,0 +1,12 @@
+<div id="grab-cursor" class="grab-cursor" aria-hidden="true">
+  <span class="grab-cursor__ring"></span>
+  <span class="grab-cursor__dot"></span>
+  <span class="grab-cursor__label">Grab</span>
+</div>
+
+<script>
+  import { initGrabCursor } from "@/lib/grab-cursor";
+
+  initGrabCursor();
+  document.addEventListener("astro:page-load", initGrabCursor);
+</script>

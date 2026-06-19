@@ -1,23 +1,46 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+}
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+import GrabCursor from "@/components/GrabCursor.astro";
+import SplashScreen from "@/components/SplashScreen.astro";
+
+const {
+  title = "Rizki Ramadhan — Fullstack Developer Portfolio 2026",
+  description = "Freelance fullstack developer dengan 2+ tahun pengalaman membangun aplikasi web dan mobile. Karya, sertifikasi, dan kontak.",
+  ogImage,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content="Rizki Ramadhan — Fullstack Developer" />
+    <meta
+      property="og:description"
+      content="Editorial 2026 portfolio. Lihat karya pilihan, kredensial teknis, dan ajak kolaborasi."
+    />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600;1,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <SplashScreen />
+    <GrabCursor />
+    <slot />
+  </body>
+</html>
