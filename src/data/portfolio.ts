@@ -16,6 +16,7 @@ export type Project = {
   year: string;
   desc: string;
   image: ImageMetadata;
+  previewUrl: string;
   span: string;
   offset: string;
 };
@@ -28,6 +29,7 @@ export const projects: Project[] = [
     year: "2025",
     desc: "Dashboard observasi cuaca real-time dengan visualisasi shader dan layout cinematic.",
     image: project1,
+    previewUrl: "https://github.com/rizkiramadhan",
     span: "md:col-span-7",
     offset: "",
   },
@@ -38,6 +40,7 @@ export const projects: Project[] = [
     year: "2024",
     desc: "Typography-first archival engine untuk arsip sastra Nusantara.",
     image: project2,
+    previewUrl: "https://github.com/rizkiramadhan",
     span: "md:col-span-5",
     offset: "md:mt-40",
   },
@@ -48,6 +51,7 @@ export const projects: Project[] = [
     year: "2024",
     desc: "Platform e-commerce UMKM dengan checkout sub-detik dan editorial product pages.",
     image: project3,
+    previewUrl: "https://github.com/rizkiramadhan",
     span: "md:col-span-8 md:col-start-3",
     offset: "md:-mt-12",
   },
@@ -58,6 +62,7 @@ export const projects: Project[] = [
     year: "2024",
     desc: "Sistem manajemen inventori dan point-of-sale untuk UMKM dengan laporan otomatis dan multi-cabang.",
     image: project4,
+    previewUrl: "https://github.com/rizkiramadhan",
     span: "md:col-span-5",
     offset: "md:mt-32",
   },
@@ -68,6 +73,7 @@ export const projects: Project[] = [
     year: "2024",
     desc: "Platform visualisasi data untuk tim marketing dengan dashboard real-time dan ekspor laporan.",
     image: project5,
+    previewUrl: "https://github.com/rizkiramadhan",
     span: "md:col-span-7",
     offset: "",
   },
@@ -78,6 +84,7 @@ export const projects: Project[] = [
     year: "2023",
     desc: "Progressive web app logistik pengiriman dengan tracking real-time dan notifikasi otomatis.",
     image: project6,
+    previewUrl: "https://github.com/rizkiramadhan",
     span: "md:col-span-6 md:col-start-4",
     offset: "md:-mt-16",
   },
