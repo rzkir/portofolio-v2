@@ -7,11 +7,11 @@ import Footer from "@/layouts/Footer.astro";
 import CodingStats from "@/components/CodingStats.astro";
 import CvDialog from "@/components/CvDialog.astro";
 import GuestNotes from "@/components/GuestNotes.astro";
+import InfiniteMarquee from "@astroanimate/core/InfiniteMarquee";
 import FocusIn from "@/components/FocusIn.astro";
 import WorksScroll from "@/components/WorksScroll.astro";
 import {
   certifications,
-  experiences,
   faq,
   portrait,
   process,
@@ -20,8 +20,13 @@ import {
   stack,
   testimonials,
 } from "@/data/portfolio";
+import {
+  formatExperienceIndex,
+  getExperiences,
+} from "@/service/experience.service";
 
 const ogImage = new URL(project1.src, Astro.site).href;
+const experienceItems = getExperiences();
 ---
 
 <Layout
@@ -195,7 +200,7 @@ const ogImage = new URL(project1.src, Astro.site).href;
     <WorksScroll />
 
     <!-- LAYANAN -->
-    <section id="layanan" class="mx-auto max-w-6xl px-6 py-32">
+    <section id="layanan" class="mx-auto container px-4 py-20 md:px-6">
       <FocusIn class="mb-16 flex items-end justify-between">
         <div>
           <p
@@ -232,16 +237,18 @@ const ogImage = new URL(project1.src, Astro.site).href;
     <!-- PROSES -->
     <section
       id="proses"
-      class="border-y border-border bg-surface/40 px-6 py-32"
+      class="border-y border-border bg-surface/40 px-4 py-20 md:px-6"
     >
-      <div class="mx-auto max-w-6xl">
+      <div class="mx-auto container px-4 md:px-6">
         <FocusIn>
           <p
-            class="mb-4 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
+            class="mb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase"
           >
             Proses / 04
           </p>
-          <h2 class="mb-16 max-w-2xl font-display text-5xl italic">
+          <h2
+            class="mb-16 font-display text-5xl italic leading-tight md:max-w-2xl"
+          >
             Empat langkah, tanpa drama.
           </h2>
         </FocusIn>
@@ -253,7 +260,7 @@ const ogImage = new URL(project1.src, Astro.site).href;
                 delay={i * 90}
                 class="border-t border-foreground/20 pt-6"
               >
-                <span class="mb-6 block font-mono text-[10px] tracking-[0.2em] text-accent uppercase">
+                <span class="mb-6 block font-mono text-xs tracking-widest text-accent uppercase">
                   {p.n}
                 </span>
                 <h3 class="mb-3 font-display text-2xl italic">{p.t}</h3>
@@ -268,42 +275,65 @@ const ogImage = new URL(project1.src, Astro.site).href;
     </section>
 
     <!-- TESTIMONI -->
-    <section class="mx-auto max-w-6xl px-6 py-32">
-      <FocusIn>
-        <p
-          class="mb-4 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
-        >
-          Suara Klien / 05
-        </p>
-        <h2 class="mb-16 max-w-3xl font-display text-5xl italic">
-          Apa kata mereka yang pernah berkolaborasi.
-        </h2>
-      </FocusIn>
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-        {
-          testimonials.map((t, i) => (
-            <FocusIn
-              as="figure"
-              delay={i * 100}
-              data-cursor="focus"
-              data-cursor-label="Read"
-              class="flex flex-col justify-between gap-8 border border-border bg-background p-8 transition-colors hover:border-accent/40"
-            >
-              <blockquote class="font-display text-2xl leading-snug italic">
-                "{t.quote}"
-              </blockquote>
-              <figcaption>
-                <p class="text-sm font-medium">{t.author}</p>
-                <p class="text-xs text-muted-foreground">{t.role}</p>
-              </figcaption>
-            </FocusIn>
-          ))
-        }
+    <section
+      class="relative overflow-hidden border-y border-border bg-surface/40 py-20"
+      aria-label="Testimoni klien"
+    >
+      <div
+        class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,color-mix(in_oklch,var(--accent)_8%,transparent),transparent)]"
+        aria-hidden="true"
+      >
       </div>
+
+      <div class="relative mx-auto container px-4 md:px-6">
+        <FocusIn>
+          <p
+            class="mb-4 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
+          >
+            Suara Klien / 05
+          </p>
+          <h2 class="mb-16 max-w-3xl font-display text-5xl italic">
+            Apa kata mereka yang pernah berkolaborasi.
+          </h2>
+        </FocusIn>
+      </div>
+
+      <FocusIn class="relative mt-2">
+        <InfiniteMarquee
+          direction="left"
+          speed="52s"
+          pauseOnHover={true}
+          gap="1.5rem"
+          fade={true}
+        >
+          {
+            testimonials.map((t, i) => (
+              <figure
+                data-cursor="focus"
+                data-cursor-label="Read"
+                class:list={[
+                  "flex w-[min(88vw,22rem)] shrink-0 flex-col justify-between gap-8 border p-8 shadow-[0_1px_0_0_color-mix(in_oklch,var(--foreground)_4%,transparent)] transition-colors md:w-96",
+                  i % 2 === 0
+                    ? "border-border/80 bg-background"
+                    : "border-accent/15 bg-accent/4",
+                ]}
+              >
+                <blockquote class="font-display text-2xl leading-snug italic whitespace-normal">
+                  "{t.quote}"
+                </blockquote>
+                <figcaption class="border-t border-border/60 pt-6">
+                  <p class="text-sm font-medium">{t.author}</p>
+                  <p class="text-xs text-muted-foreground">{t.role}</p>
+                </figcaption>
+              </figure>
+            ))
+          }
+        </InfiniteMarquee>
+      </FocusIn>
     </section>
 
     <!-- PENGALAMAN -->
-    <section id="pengalaman" class="mx-auto max-w-4xl px-6 py-32">
+    <section id="pengalaman" class="mx-auto container px-4 py-20 md:px-6">
       <FocusIn class="mb-12 flex items-end justify-between">
         <p
           class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
@@ -312,7 +342,7 @@ const ogImage = new URL(project1.src, Astro.site).href;
         </p>
         <span
           class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
-          >{experiences.length} Posisi</span
+          >{experienceItems.length} Posisi</span
         >
       </FocusIn>
       <FocusIn
@@ -323,46 +353,86 @@ const ogImage = new URL(project1.src, Astro.site).href;
         Jejak karier yang terukur — dari magang hingga klien independen.
       </FocusIn>
 
-      <ul class="divide-y divide-border">
-        {
-          experiences.map((e, i) => (
-            <FocusIn
-              as="li"
-              delay={i * 90}
-              class="grid grid-cols-1 gap-4 py-8 md:grid-cols-12"
-            >
-              <div class="md:col-span-8">
-                <h3 class="font-display text-2xl italic">{e.org}</h3>
-                <p class="mt-1 text-sm text-muted-foreground">{e.role}</p>
-                <p class="mt-3 max-w-prose text-sm leading-relaxed text-muted-foreground">
-                  {e.desc}
-                </p>
-              </div>
-              <div class="md:col-span-4 md:text-right">
-                <span class="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-                  {e.range}
-                </span>
-              </div>
-            </FocusIn>
-          ))
-        }
-      </ul>
+      <div
+        class="experience-timeline relative"
+        style="--timeline-track: 2rem; --timeline-gap: 0.75rem;"
+      >
+        <div
+          class="experience-timeline__spine pointer-events-none absolute top-0 bottom-0 w-px"
+          aria-hidden="true"
+        >
+        </div>
+
+        <ul class="relative border-t border-border">
+          {
+            experienceItems.map((e, i) => (
+              <FocusIn
+                as="li"
+                delay={60}
+                duration={0.85}
+                class="experience-timeline__item grid grid-cols-[var(--timeline-track)_minmax(0,1fr)] items-start gap-x-(--timeline-gap) border-b border-border py-8 md:grid-cols-[var(--timeline-track)_minmax(0,1fr)_9.5rem]"
+              >
+                <div class="experience-timeline__track relative self-start">
+                  <span class="experience-timeline__index block w-full text-center font-mono text-[10px] uppercase tracking-[0.2em] leading-none text-accent tabular-nums">
+                    {formatExperienceIndex(i)}
+                  </span>
+                </div>
+
+                <div class="experience-timeline__body min-w-0">
+                  <div class="experience-timeline__lead relative flex items-center">
+                    <span
+                      class="experience-timeline__node block size-2.5 shrink-0 rounded-full border border-accent bg-background ring-4 ring-background"
+                      aria-hidden="true"
+                    />
+                    <span
+                      class="experience-timeline__connector pointer-events-none"
+                      aria-hidden="true"
+                    />
+                    <h3 class="relative z-1 font-display text-2xl italic leading-none">
+                      {e.org}
+                    </h3>
+                  </div>
+                  <p class="mt-2 text-sm text-muted-foreground">{e.role}</p>
+                  <p class="mt-3 max-w-prose text-sm leading-relaxed text-muted-foreground">
+                    {e.desc}
+                  </p>
+                </div>
+
+                <div class="experience-timeline__meta col-start-2 mt-3 md:col-start-3 md:mt-0 md:flex md:min-h-6 md:items-center md:justify-end">
+                  <span class="inline-flex border border-border/80 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                    {e.range}
+                  </span>
+                </div>
+              </FocusIn>
+            ))
+          }
+        </ul>
+      </div>
     </section>
+
+    <script>
+      import { bindExperienceTimeline } from "@/service/experience.service";
+
+      bindExperienceTimeline();
+      document.addEventListener("astro:page-load", () =>
+        bindExperienceTimeline(),
+      );
+    </script>
 
     <!-- KREDENSIAL -->
     <section
       id="kredensial"
-      class="border-t border-border bg-surface/40 px-6 py-32"
+      class="border-t border-border bg-surface/40 px-4 py-20 md:px-6"
     >
-      <div class="mx-auto max-w-6xl">
+      <div class="mx-auto container px-4 md:px-6">
         <FocusIn class="mb-12 flex items-end justify-between">
           <p
-            class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+            class="font-mono text-xs tracking-widest text-muted-foreground uppercase"
           >
             Kredensial / 07
           </p>
           <span
-            class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+            class="font-mono text-xs tracking-widest text-muted-foreground uppercase"
             >{certifications.length} Entri</span
           >
         </FocusIn>
@@ -403,10 +473,10 @@ const ogImage = new URL(project1.src, Astro.site).href;
     </section>
 
     <!-- FAQ -->
-    <section class="mx-auto max-w-4xl px-6 py-32">
+    <section class="mx-auto container px-4 py-20 md:px-6">
       <FocusIn>
         <p
-          class="mb-4 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
+          class="mb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase"
         >
           FAQ / 08
         </p>
@@ -435,6 +505,5 @@ const ogImage = new URL(project1.src, Astro.site).href;
     <CodingStats />
     <GuestNotes />
   </main>
-
   <Footer />
 </Layout>

@@ -58,6 +58,31 @@ export function formatWorksCounter(index: number, count: number): string {
   return `${String(index + 1).padStart(2, "0")} / ${String(count).padStart(2, "0")}`;
 }
 
+function setWorksAnimateState(el: HTMLElement, visible: boolean): void {
+  el.dataset.ready = "true";
+
+  if (el.hasAttribute("data-astro-fade-in-text")) {
+    el.dataset.state = visible ? "animate" : "hidden";
+    return;
+  }
+
+  if (el.hasAttribute("data-astro-scale-in")) {
+    el.dataset.state = visible ? "visible" : "hidden";
+  }
+}
+
+function syncWorksSlideAnimations(
+  slides: NodeListOf<HTMLElement>,
+  activeIndex: number,
+): void {
+  slides.forEach((slide, i) => {
+    const visible = i === activeIndex;
+    slide.querySelectorAll<HTMLElement>(
+      "[data-astro-fade-in-text][data-enhance='true'], [data-astro-scale-in][data-enhance='true']",
+    ).forEach((el) => setWorksAnimateState(el, visible));
+  });
+}
+
 export function createWorksScrollController(section: HTMLElement): () => void {
   const track = section.querySelector<HTMLElement>("[data-works-track]");
   const bar = section.querySelector<HTMLElement>("[data-works-bar]");
@@ -74,6 +99,7 @@ export function createWorksScrollController(section: HTMLElement): () => void {
   let slideHeight = 0;
   let scrollRange = 0;
   let currentVisualIndex = 0;
+  let activeSlideIndex = -1;
   let rafId = 0;
   let lastTime = 0;
   let resizeObserver: ResizeObserver | undefined;
@@ -125,6 +151,11 @@ export function createWorksScrollController(section: HTMLElement): () => void {
       count - 1,
       Math.max(0, Math.round(currentVisualIndex)),
     );
+
+    if (index !== activeSlideIndex) {
+      activeSlideIndex = index;
+      syncWorksSlideAnimations(slides, index);
+    }
 
     if (bar) {
       bar.style.width = `${((currentVisualIndex + 1) / count) * 100}%`;

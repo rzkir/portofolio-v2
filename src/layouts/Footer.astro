@@ -7,18 +7,18 @@ const socialLinks = ["LinkedIn", "GitHub", "Instagram", "Read.cv"];
 <footer
   id="kontak"
   data-header-theme="inverse"
-  class="rounded-t-[3rem] bg-accent px-6 py-32 text-background"
+  class="rounded-t-[3rem] bg-accent px-4 py-20 text-background md:px-6"
 >
-  <div class="mx-auto max-w-6xl">
+  <div class="mx-auto container px-4 md:px-6">
     <div class="grid gap-20 md:grid-cols-12">
       <FocusIn class="md:col-span-7">
         <p
-          class="mb-12 font-mono text-[10px] tracking-[0.2em] opacity-70 uppercase"
+          class="mb-12 font-mono text-xs tracking-widest text-background/50 uppercase"
         >
           Kontak / 09
         </p>
         <h2
-          class="mb-12 font-display text-5xl leading-none italic md:text-7xl"
+          class="mb-12 font-display text-5xl leading-none text-background italic md:text-7xl"
         >
           Mari berkolaborasi di tahun 2026.
         </h2>
@@ -26,63 +26,10 @@ const socialLinks = ["LinkedIn", "GitHub", "Instagram", "Read.cv"];
           href="mailto:hello@rizkiramadhan.biz.id"
           data-cursor="focus"
           data-cursor-label="Send"
-          class="inline-flex items-center gap-3 border-b border-background/40 pb-2 text-lg font-medium transition-colors hover:border-background"
+          class="inline-flex items-center gap-3 border-b border-background/40 pb-2 text-lg font-medium text-background transition-colors hover:border-background"
         >
           hello@rizkiramadhan.biz.id →
         </a>
-
-        <form
-          id="contact-form"
-          class="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2"
-        >
-          <label class="flex flex-col gap-2">
-            <span
-              class="font-mono text-[10px] tracking-[0.2em] opacity-70 uppercase"
-              >Nama</span
-            >
-            <input
-              type="text"
-              name="name"
-              required
-              placeholder="Nama lengkap"
-              class="border-b border-background/30 bg-transparent py-3 text-background placeholder:text-background/40 outline-none transition-colors focus:border-background"
-            />
-          </label>
-          <label class="flex flex-col gap-2">
-            <span
-              class="font-mono text-[10px] tracking-[0.2em] opacity-70 uppercase"
-              >Email</span
-            >
-            <input
-              type="email"
-              name="email"
-              required
-              placeholder="kamu@email.com"
-              class="border-b border-background/30 bg-transparent py-3 text-background placeholder:text-background/40 outline-none transition-colors focus:border-background"
-            />
-          </label>
-          <label class="flex flex-col gap-2 sm:col-span-2">
-            <span
-              class="font-mono text-[10px] tracking-[0.2em] opacity-70 uppercase"
-              >Pesan</span
-            >
-            <textarea
-              name="message"
-              rows={4}
-              required
-              placeholder="Ceritakan proyek kamu — timeline, scope, dan tujuan."
-              class="resize-none border-b border-background/30 bg-transparent py-3 text-background placeholder:text-background/40 outline-none transition-colors focus:border-background"
-            ></textarea>
-          </label>
-          <button
-            type="submit"
-            data-cursor="focus"
-            data-cursor-label="Send"
-            class="mt-4 inline-flex items-center justify-center gap-3 rounded-full bg-background px-8 py-4 text-sm font-medium text-accent transition-transform hover:scale-[1.02] sm:col-span-2 sm:justify-self-start"
-          >
-            Kirim pesan →
-          </button>
-        </form>
       </FocusIn>
 
       <FocusIn
@@ -92,11 +39,11 @@ const socialLinks = ["LinkedIn", "GitHub", "Instagram", "Read.cv"];
         <div class="grid grid-cols-2 gap-8">
           <div>
             <p
-              class="mb-4 font-mono text-[10px] tracking-[0.2em] opacity-60 uppercase"
+              class="mb-4 font-mono text-xs tracking-widest text-background/50 uppercase"
             >
               Sosial
             </p>
-            <ul class="space-y-2 text-sm">
+            <ul class="space-y-2 text-sm text-background/90">
               {
                 socialLinks.map((s) => (
                   <li>
@@ -104,7 +51,7 @@ const socialLinks = ["LinkedIn", "GitHub", "Instagram", "Read.cv"];
                       href="#"
                       data-cursor="focus"
                       data-cursor-label="Open"
-                      class="transition-opacity hover:opacity-70"
+                      class="transition-opacity hover:text-background"
                     >
                       {s}
                     </a>
@@ -115,45 +62,28 @@ const socialLinks = ["LinkedIn", "GitHub", "Instagram", "Read.cv"];
           </div>
           <div>
             <p
-              class="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60"
+              class="mb-4 font-mono text-xs tracking-widest text-background/50 uppercase"
             >
               Lokasi
             </p>
-            <p class="text-sm">Bogor, ID</p>
-            <p class="text-xs opacity-70">UTC +7</p>
+            <p class="text-sm text-background/90">Bogor, ID</p>
+            <p class="text-xs text-background/60">UTC +7</p>
             <p
-              class="mt-4 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60"
+              class="mt-4 font-mono text-xs tracking-widest text-background/50 uppercase"
             >
               Status
             </p>
-            <p class="text-sm">Open for work</p>
+            <p class="text-sm text-background/90">Open for work</p>
           </div>
         </div>
       </FocusIn>
     </div>
 
     <div
-      class="mt-32 flex flex-col items-center justify-between gap-4 border-t border-background/10 pt-8 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60 md:flex-row"
+      class="mt-32 flex flex-col items-center justify-between gap-4 border-t border-background/10 pt-8 font-mono text-xs tracking-widest text-background/50 uppercase md:flex-row"
     >
       <p>© 2026 Rizki Ramadhan — All rights reserved</p>
       <p>Set in Cormorant Garamond & Inter · Crafted with intention</p>
     </div>
   </div>
 </footer>
-
-<script>
-  function initContactForm() {
-    const form = document.getElementById("contact-form");
-    if (!form || form.dataset.bound === "true") return;
-    form.dataset.bound = "true";
-
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      (form as HTMLFormElement).reset();
-      window.alert("Pesan terkirim (demo)");
-    });
-  }
-
-  initContactForm();
-  document.addEventListener("astro:page-load", initContactForm);
-</script>
