@@ -19,7 +19,8 @@ const leetcodeTone: Record<string, string> = {
 
 const countUpClass =
   "font-display text-5xl italic font-normal text-background md:text-6xl";
-const countUpSmClass = "font-display text-3xl italic font-normal text-background";
+const countUpSmClass =
+  "font-display text-3xl italic font-normal text-background";
 
 function parseStatValue(raw: string) {
   const match = raw.match(/^(\D*)(\d+)(\D*)$/);
@@ -110,7 +111,7 @@ function parseStatValue(raw: string) {
         </FocusIn>
 
         <FocusIn class="rounded border border-background/20 p-5" delay={80}>
-          <div class="grid grid-cols-[repeat(52,minmax(0,1fr))] gap-[3px]">
+          <div class="grid grid-cols-52 gap-[3px]">
             {
               heatmapValues.map((v, i) => (
                 <div
@@ -274,10 +275,7 @@ function parseStatValue(raw: string) {
           </div>
         </FocusIn>
 
-        <FocusIn
-          class="mt-12 border-t border-background/20 pt-10"
-          delay={120}
-        >
+        <FocusIn class="mt-12 border-t border-background/20 pt-10" delay={120}>
           <p
             class="mb-6 font-mono text-xs tracking-widest text-background/50 uppercase"
           >
@@ -301,48 +299,3 @@ function parseStatValue(raw: string) {
     </div>
   </div>
 </section>
-
-<style>
-  .coding-stats__bar-fill {
-    width: 0;
-    transition: width 1.1s var(--ease-cinematic);
-  }
-
-  .coding-stats
-    [data-astro-fade-in-text][data-state="animate"]
-    .coding-stats__bar-fill {
-    width: var(--pct);
-  }
-
-  .coding-stats__heatmap-cell {
-    opacity: 0;
-    transform: scale(0.45);
-  }
-
-  .coding-stats
-    [data-astro-fade-in-text][data-state="animate"]
-    .coding-stats__heatmap-cell {
-    animation: coding-stats-dot-in 0.38s var(--ease-cinematic) forwards;
-    animation-delay: calc(var(--i) * 3ms);
-  }
-
-  @keyframes coding-stats-dot-in {
-    to {
-      opacity: var(--cell-opacity);
-      transform: scale(1);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .coding-stats__bar-fill {
-      width: var(--pct) !important;
-      transition: none !important;
-    }
-
-    .coding-stats__heatmap-cell {
-      opacity: var(--cell-opacity) !important;
-      transform: none !important;
-      animation: none !important;
-    }
-  }
-</style>

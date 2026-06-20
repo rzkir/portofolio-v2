@@ -1,6 +1,13 @@
-<div id="grab-cursor" class="grab-cursor" aria-hidden="true">
+---
+import CursorIcon from "@/components/svg/cursor.astro";
+---
+
+<div id="grab-cursor" popover="manual" class="grab-cursor" aria-hidden="true">
   <span class="grab-cursor__ring"></span>
   <span class="grab-cursor__dot"></span>
+  <span class="grab-cursor__pointer">
+    <CursorIcon />
+  </span>
   <span class="grab-cursor__label">Grab</span>
 </div>
 

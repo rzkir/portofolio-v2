@@ -1,0 +1,17 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<img
+  src="/cursor-hand.png"
+  alt=""
+  width="28"
+  height="28"
+  decoding="async"
+  draggable="false"
+  class:list={["grab-cursor__hand-img", className]}
+/>
