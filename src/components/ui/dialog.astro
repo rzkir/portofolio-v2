@@ -30,7 +30,28 @@ const { id, class: className } = Astro.props;
   <slot />
 </dialog>
 
+<style>
+  html.dialog-open,
+  html.dialog-open body {
+    overflow: hidden;
+  }
+</style>
+
 <script>
+  let openDialogCount = 0;
+
+  function lockScroll() {
+    openDialogCount += 1;
+    document.documentElement.classList.add("dialog-open");
+  }
+
+  function unlockScroll() {
+    openDialogCount = Math.max(0, openDialogCount - 1);
+    if (openDialogCount === 0) {
+      document.documentElement.classList.remove("dialog-open");
+    }
+  }
+
   function initDialogs() {
     document.querySelectorAll<HTMLElement>("[data-dialog-open]").forEach((trigger) => {
       if (trigger.dataset.dialogBound) return;
@@ -39,8 +60,9 @@ const { id, class: className } = Astro.props;
       trigger.addEventListener("click", () => {
         const id = trigger.getAttribute("data-dialog-open");
         const dialog = document.getElementById(id ?? "");
-        if (dialog instanceof HTMLDialogElement) {
+        if (dialog instanceof HTMLDialogElement && !dialog.open) {
           dialog.showModal();
+          lockScroll();
         }
       });
     });
@@ -49,6 +71,10 @@ const { id, class: className } = Astro.props;
       if (!(el instanceof HTMLDialogElement)) return;
       if (el.dataset.dialogInit) return;
       el.dataset.dialogInit = "true";
+
+      el.addEventListener("close", () => {
+        unlockScroll();
+      });
 
       el.addEventListener("click", (event) => {
         if (event.target === el) {

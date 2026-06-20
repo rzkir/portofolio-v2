@@ -1,65 +1,156 @@
+---
+import FadeInText from "@astroanimate/core/FadeInText";
+
+const cinematic = "cubic-bezier(0.32, 0.72, 0, 1)";
+---
+
 <div
   id="splash-screen"
   aria-hidden="true"
-  class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-accent transition-[opacity,visibility] duration-[900ms]"
-  style="transition-timing-function: var(--ease-cinematic)"
+  class="splash-screen fixed inset-0 z-100 flex flex-col items-center justify-center bg-accent"
 >
-  <div id="splash-content" class="flex flex-col items-center gap-6 transition-transform duration-[900ms]" style="transition-timing-function: var(--ease-cinematic)">
-    <span class="animate-focus font-display text-[8rem] leading-none text-background/90 italic md:text-[12rem]">RR</span>
-    <div id="splash-meta" class="flex flex-col items-center gap-2 transition-opacity duration-500">
-      <span class="font-mono text-[10px] tracking-[0.3em] text-background/70 uppercase">Rizki Ramadhan</span>
-      <span class="font-mono text-[10px] tracking-[0.3em] text-background/40 uppercase">Fullstack Developer</span>
-    </div>
+  <div
+    id="splash-content"
+    class="flex flex-col items-center gap-6 transition-[transform,opacity] duration-700"
+    style="transition-timing-function: var(--ease-cinematic)"
+  >
+    <FadeInText
+      as="span"
+      enhance={false}
+      duration={1.1}
+      delay={0}
+      blur="0px"
+      yOffset={24}
+      easing={cinematic}
+      class="font-display text-[8rem] leading-none text-background/90 italic md:text-[12rem]"
+    >
+      RR
+    </FadeInText>
+
+    <FadeInText
+      enhance={false}
+      duration={0.7}
+      delay={0.35}
+      blur="0px"
+      yOffset={14}
+      easing={cinematic}
+      class="flex flex-col items-center gap-2"
+    >
+      <span
+        class="font-mono text-[10px] tracking-[0.3em] text-background/70 uppercase"
+        >Rizki Ramadhan</span
+      >
+      <span
+        class="font-mono text-[10px] tracking-[0.3em] text-background/40 uppercase"
+        >Fullstack Developer</span
+      >
+    </FadeInText>
   </div>
-  <div id="splash-line-wrap" class="absolute bottom-10 left-1/2 -translate-x-1/2 transition-opacity duration-500">
-    <span class="block h-px w-24 animate-grow-x bg-background/30"></span>
-  </div>
+
+  <FadeInText
+    id="splash-line-wrap"
+    enhance={false}
+    duration={0.9}
+    delay={0.6}
+    blur="0px"
+    yOffset={8}
+    easing={cinematic}
+    class="absolute bottom-10 left-1/2 -translate-x-1/2"
+  >
+    <span class="block h-px w-24 bg-background/30"></span>
+  </FadeInText>
 </div>
 
+<style>
+  .splash-screen {
+    transition: transform 800ms var(--ease-cinematic);
+  }
+
+  .splash-screen.is-exiting {
+    transform: translateY(-100%);
+    pointer-events: none;
+  }
+
+  .splash-screen.is-exiting #splash-content {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.97);
+  }
+</style>
+
 <script>
-  function initSplash() {
-    const splash = document.getElementById("splash-screen");
-    const content = document.getElementById("splash-content");
-    const meta = document.getElementById("splash-meta");
-    const lineWrap = document.getElementById("splash-line-wrap");
+  const HOLD_MS = 2600;
+  const EXIT_MS = 800;
 
-    if (!splash || splash.dataset.bound === "true") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      splash.remove();
-      return;
-    }
-    if (sessionStorage.getItem("splash-seen") === "1") {
-      splash.remove();
-      return;
-    }
+  let running = false;
 
-    splash.dataset.bound = "true";
+  function unlockPage() {
+    document.documentElement.classList.remove("splash-pending");
+  }
 
-    const exitTimer = window.setTimeout(() => {
-      splash.style.opacity = "0";
-      splash.style.visibility = "hidden";
-      if (content) {
-        content.style.transform = "translateY(-12px) scale(0.96)";
-      }
-      if (meta) meta.style.opacity = "0";
-      if (lineWrap) lineWrap.style.opacity = "0";
-    }, 1800);
-
-    const doneTimer = window.setTimeout(() => {
+  function finishSplash(splash: HTMLElement) {
+    try {
       sessionStorage.setItem("splash-seen", "1");
+    } catch (_) {}
+    unlockPage();
+    document.documentElement.classList.add("splash-seen");
+    splash.remove();
+    running = false;
+  }
+
+  function initSplash() {
+    if (running) return;
+
+    const splash = document.getElementById("splash-screen");
+    if (!splash) return;
+
+    if (document.documentElement.classList.contains("splash-seen")) {
       splash.remove();
-    }, 2800);
+      return;
+    }
+
+    if (!document.documentElement.classList.contains("splash-pending")) {
+      return;
+    }
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      finishSplash(splash);
+      return;
+    }
+
+    running = true;
+
+    let exitTimer = 0;
+    let doneTimer = 0;
+
+    const startSequence = () => {
+      exitTimer = window.setTimeout(() => {
+        unlockPage();
+        splash.classList.add("is-exiting");
+      }, HOLD_MS);
+
+      doneTimer = window.setTimeout(() => {
+        finishSplash(splash);
+      }, HOLD_MS + EXIT_MS);
+    };
+
+    requestAnimationFrame(startSequence);
 
     document.addEventListener(
       "astro:before-preparation",
       () => {
         window.clearTimeout(exitTimer);
         window.clearTimeout(doneTimer);
+        running = false;
       },
       { once: true },
     );
   }
 
-  initSplash();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initSplash, { once: true });
+  } else {
+    initSplash();
+  }
+
   document.addEventListener("astro:page-load", initSplash);
 </script>

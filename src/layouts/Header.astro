@@ -1,0 +1,107 @@
+---
+const navItems = [
+  { label: "Karya", href: "#karya" },
+  { label: "Layanan", href: "#layanan" },
+  { label: "Kredensial", href: "#kredensial" },
+  { label: "Catatan", href: "#catatan" },
+  { label: "Kontak", href: "#kontak" },
+];
+---
+
+<header
+  id="site-header"
+  class="site-header fixed top-0 z-50 w-full border-b border-border bg-background/80 px-6 py-4 backdrop-blur-md transition-[background-color,border-color,backdrop-filter] duration-500"
+>
+  <nav class="mx-auto container flex items-center justify-between px-4 md:px-6">
+    <span class="site-header__brand font-mono text-xs tracking-tight transition-colors duration-500"
+      >R. RAMADHAN / 2026</span
+    >
+    <div
+      class="hidden gap-8 text-[11px] font-medium uppercase tracking-[0.18em] sm:flex"
+    >
+      {
+        navItems.map((item) => (
+          <a
+            href={item.href}
+            data-cursor="focus"
+            data-cursor-label="Go"
+            class="site-header__link transition-colors duration-500 hover:text-accent"
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </div>
+  </nav>
+</header>
+
+<style>
+  .site-header.is-inverse {
+    border-color: transparent;
+    background-color: transparent;
+    backdrop-filter: none;
+  }
+
+  .site-header.is-inverse .site-header__brand,
+  .site-header.is-inverse .site-header__link {
+    color: var(--color-background);
+  }
+
+  .site-header.is-inverse .site-header__link:hover {
+    color: var(--color-accent);
+  }
+</style>
+
+<script>
+  function initSiteHeader() {
+    const header = document.getElementById("site-header");
+    if (!header || header.dataset.bound === "true") return;
+
+    header.dataset.bound = "true";
+
+    const inverseSections = () =>
+      document.querySelectorAll<HTMLElement>("[data-header-theme='inverse']");
+
+    let ticking = false;
+
+    const update = () => {
+      ticking = false;
+
+      const probeY = window.scrollY + header.offsetHeight * 0.5;
+      let isInverse = false;
+
+      inverseSections().forEach((section) => {
+        const top = section.offsetTop;
+        const bottom = top + section.offsetHeight;
+        if (probeY >= top && probeY < bottom) {
+          isInverse = true;
+        }
+      });
+
+      header.classList.toggle("is-inverse", isInverse);
+    };
+
+    const requestUpdate = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    };
+
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate, { passive: true });
+    requestUpdate();
+
+    document.addEventListener(
+      "astro:before-preparation",
+      () => {
+        window.removeEventListener("scroll", requestUpdate);
+        window.removeEventListener("resize", requestUpdate);
+        header.dataset.bound = "false";
+      },
+      { once: true },
+    );
+  }
+
+  initSiteHeader();
+  document.addEventListener("astro:page-load", initSiteHeader);
+</script>

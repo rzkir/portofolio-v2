@@ -20,6 +20,40 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      try {
+        if (sessionStorage.getItem("splash-seen") === "1") {
+          document.documentElement.classList.add("splash-seen");
+        } else {
+          document.documentElement.classList.add("splash-pending");
+        }
+      } catch (_) {
+        document.documentElement.classList.add("splash-pending");
+      }
+    </script>
+    <style is:inline>
+      html.splash-pending,
+      html.splash-pending body {
+        overflow: hidden;
+      }
+      html.splash-seen #splash-screen {
+        display: none;
+      }
+      #splash-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: oklch(0.52 0.045 48);
+        will-change: transform;
+      }
+      html.splash-pending .animate-focus {
+        animation-play-state: paused !important;
+      }
+    </style>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />

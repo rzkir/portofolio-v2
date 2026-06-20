@@ -4,15 +4,16 @@ import { certifications, cvExperiences, cvSkills } from "@/data/portfolio";
 ---
 
 <Dialog id="cv-dialog" class="max-w-3xl overflow-y-auto">
-  <button
-    slot="trigger"
-    type="button"
-    data-dialog-open="cv-dialog"
-    class="group inline-flex items-center gap-3 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-transform hover:-translate-y-0.5"
-  >
-    Lihat CV
-    <span class="transition-transform group-hover:translate-x-1">→</span>
-  </button>
+  <slot name="trigger" slot="trigger">
+    <button
+      type="button"
+      data-dialog-open="cv-dialog"
+      class="group inline-flex items-center gap-3 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-transform hover:-translate-y-0.5"
+    >
+      Lihat CV
+      <span class="transition-transform group-hover:translate-x-1">→</span>
+    </button>
+  </slot>
 
   <h2 id="cv-dialog-title" class="sr-only">
     Curriculum Vitae — Rizki Ramadhan

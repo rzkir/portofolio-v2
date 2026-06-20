@@ -34,12 +34,12 @@
 :root {
   --radius: 0.5rem;
 
-  /* Warm bone & terracotta — cinematic editorial 2026 */
-  --paper: oklch(0.97 0.012 75);
-  --ink: oklch(0.18 0.015 40);
-  --surface: oklch(0.94 0.015 70);
-  --rule: oklch(0.18 0.015 40 / 0.1);
-  --accent-warm: oklch(0.55 0.16 35);
+  /* Quiet editorial — soft contrast, muted tones */
+  --paper: oklch(0.958 0.007 88);
+  --ink: oklch(0.42 0.01 270);
+  --surface: oklch(0.938 0.008 88);
+  --rule: oklch(0.42 0.01 270 / 0.055);
+  --accent-warm: oklch(0.52 0.045 48);
 
   --background: var(--paper);
   --foreground: var(--ink);
@@ -52,10 +52,10 @@
   --secondary: var(--surface);
   --secondary-foreground: var(--ink);
   --muted: var(--surface);
-  --muted-foreground: oklch(0.18 0.015 40 / 0.55);
+  --muted-foreground: oklch(0.42 0.01 270 / 0.42);
   --accent: var(--accent-warm);
   --accent-foreground: var(--paper);
-  --destructive: oklch(0.55 0.22 27);
+  --destructive: oklch(0.52 0.1 25);
   --destructive-foreground: var(--paper);
   --border: var(--rule);
   --input: var(--rule);
@@ -63,18 +63,18 @@
 }
 
 .dark {
-  --paper: oklch(0.13 0.012 40);
-  --ink: oklch(0.97 0.01 80);
-  --surface: oklch(0.18 0.014 40);
-  --rule: oklch(0.97 0.01 80 / 0.12);
-  --accent-warm: oklch(0.68 0.17 38);
+  --paper: oklch(0.24 0.007 270);
+  --ink: oklch(0.86 0.006 92);
+  --surface: oklch(0.28 0.007 270);
+  --rule: oklch(0.86 0.006 92 / 0.07);
+  --accent-warm: oklch(0.65 0.04 52);
 
   --background: var(--paper);
   --foreground: var(--ink);
   --card: var(--surface);
   --card-foreground: var(--ink);
   --muted: var(--surface);
-  --muted-foreground: oklch(0.95 0.01 80 / 0.5);
+  --muted-foreground: oklch(0.86 0.006 92 / 0.42);
   --accent: var(--accent-warm);
   --accent-foreground: var(--paper);
   --border: var(--rule);
@@ -97,7 +97,7 @@
     font-feature-settings: "ss01", "cv11";
   }
   ::selection {
-    background-color: color-mix(in oklch, var(--accent-warm) 22%, transparent);
+    background-color: color-mix(in oklch, var(--accent-warm) 14%, transparent);
     color: var(--accent-warm);
   }
 
