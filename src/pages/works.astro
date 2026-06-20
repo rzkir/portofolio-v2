@@ -1,0 +1,95 @@
+---
+import "../styles/global.css";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/layouts/Header.astro";
+import Footer from "@/layouts/Footer.astro";
+import FocusIn from "@/components/FocusIn.astro";
+import WorksGrid from "@/components/WorksGrid.astro";
+import { project1 } from "@/data/portfolio";
+
+const ogImage = new URL(project1.src, Astro.site).href;
+---
+
+<Layout
+  title="Karya — R. Ramadhan"
+  description="Arsip proyek pilihan Rizki Ramadhan: web app, dashboard, e-commerce, dan PWA — dari konsep hingga production."
+  ogImage={ogImage}
+>
+  <Header />
+
+  <main class="pt-32">
+    <section class="mx-auto container px-4 pb-12 md:px-6">
+      <FocusIn>
+        <a
+          href="/"
+          data-cursor="focus"
+          data-cursor-label="Back"
+          class="mb-12 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-accent"
+        >
+          ← Beranda
+        </a>
+      </FocusIn>
+
+      <FocusIn delay={60}>
+        <p
+          class="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+        >
+          Arsip Karya / Works
+        </p>
+        <div
+          class="flex flex-col gap-6 border-b border-border pb-10 md:flex-row md:items-end md:justify-between"
+        >
+          <h1
+            class="max-w-2xl text-balance font-display text-4xl italic leading-[0.95] md:text-6xl"
+          >
+            Arsip karya.
+          </h1>
+          <p
+            class="max-w-xs text-sm leading-relaxed text-muted-foreground"
+          >
+            Beralih antara tampilan grid atau daftar — pilihanmu tersimpan otomatis.
+          </p>
+        </div>
+      </FocusIn>
+    </section>
+
+    <section
+      class="mx-auto container px-4 pb-20 md:px-6"
+      aria-label="Daftar karya"
+    >
+      <WorksGrid />
+    </section>
+
+    <section
+      class="border-t border-border bg-surface/40 px-4 py-20 md:px-6"
+      aria-label="Ajakan kolaborasi"
+    >
+      <div class="mx-auto container px-4 md:px-6">
+        <FocusIn class="grid items-end gap-12 md:grid-cols-12">
+          <div class="md:col-span-7">
+            <p
+              class="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+            >
+              Kolaborasi / Next
+            </p>
+            <h2 class="font-display text-4xl italic leading-tight md:text-5xl">
+              Punya proyek serupa? Mari diskusikan scope dan timeline-nya.
+            </h2>
+          </div>
+          <div class="flex flex-wrap gap-3 md:col-span-5 md:justify-end">
+            <a
+              href="/#kontak"
+              data-cursor="focus"
+              data-cursor-label="Email"
+              class="rounded-full bg-foreground px-8 py-4 text-sm font-medium text-background transition-colors hover:bg-accent"
+            >
+              Mulai proyek →
+            </a>
+          </div>
+        </FocusIn>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

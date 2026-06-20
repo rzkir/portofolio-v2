@@ -208,11 +208,7 @@
   left: calc(-1 * (var(--timeline-gap) + var(--timeline-track) / 2));
   width: calc(var(--timeline-gap) + var(--timeline-track) / 2);
   height: 1px;
-  background: color-mix(
-    in oklch,
-    var(--accent) 40%,
-    var(--foreground) 10%
-  );
+  background: color-mix(in oklch, var(--accent) 40%, var(--foreground) 10%);
   transform: translateY(-50%) scaleX(0);
   transform-origin: left center;
 }
@@ -226,7 +222,8 @@
     transform 0.8s var(--ease-cinematic);
 }
 
-.experience-timeline__item[data-state="animate"] .experience-timeline__connector {
+.experience-timeline__item[data-state="animate"]
+  .experience-timeline__connector {
   animation: experience-line-grow 0.65s var(--ease-cinematic) forwards;
   animation-delay: 0.06s;
 }
@@ -318,7 +315,11 @@
   --cursor-ring-active: color-mix(in oklch, var(--background) 92%, transparent);
   --cursor-ink: var(--background);
   --cursor-fill-active: color-mix(in oklch, var(--background) 14%, transparent);
-  --cursor-fill-grabbing: color-mix(in oklch, var(--background) 18%, transparent);
+  --cursor-fill-grabbing: color-mix(
+    in oklch,
+    var(--background) 18%,
+    transparent
+  );
 }
 
 .grab-cursor.is-visible {
@@ -349,8 +350,8 @@
 }
 
 .grab-cursor__pointer {
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 2rem;
+  height: 2rem;
   opacity: 0;
   transform: scale(0.94);
   transform-origin: 36% 18%;
@@ -428,7 +429,8 @@
   transform: scale(0.94);
 }
 
-.grab-cursor[data-state="focus"]:not([data-focus-link="true"]) .grab-cursor__label {
+.grab-cursor[data-state="focus"]:not([data-focus-link="true"])
+  .grab-cursor__label {
   opacity: 1;
   translate: 0.75rem 1.25rem;
 }

@@ -1,0 +1,108 @@
+---
+import FocusIn from "@/components/FocusIn.astro";
+import Card from "@/components/ui/card.astro";
+import { getWorks } from "@/service/works.service";
+
+const works = getWorks();
+---
+
+<div data-works-archive data-view="list" class="works-archive">
+  <div class="works-archive__toolbar mb-8 flex flex-wrap items-center justify-between gap-4">
+    <p
+      class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+    >
+      {works.length} entri
+    </p>
+
+    <div
+      role="group"
+      aria-label="Tampilan arsip"
+      class="flex gap-1 rounded-full border border-border p-1"
+    >
+      <button
+        type="button"
+        data-works-view-btn="grid"
+        aria-pressed="false"
+        data-cursor="focus"
+        data-cursor-label="Grid"
+        class="works-archive__toggle rounded-full px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
+      >
+        Grid
+      </button>
+      <button
+        type="button"
+        data-works-view-btn="list"
+        aria-pressed="true"
+        data-cursor="focus"
+        data-cursor-label="List"
+        class="works-archive__toggle rounded-full px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
+      >
+        Daftar
+      </button>
+    </div>
+  </div>
+
+  <ul class="works-archive__list">
+    {
+      works.map((work, i) => (
+        <FocusIn as="li" delay={(i % 8) * 40} class="works-archive__item">
+          <Card
+            no={work.no}
+            title={work.title}
+            tag={work.tag}
+            year={work.year}
+            image={work.image}
+            href={work.previewUrl}
+          />
+        </FocusIn>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .works-archive__toggle.is-active {
+    background-color: var(--foreground);
+    color: var(--background);
+  }
+
+  .works-archive[data-view="list"] .works-archive__list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .works-archive[data-view="list"] .works-archive__item {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .works-archive[data-view="list"] .works-archive__item:last-child {
+    border-bottom: none;
+  }
+
+  .works-archive[data-view="grid"] .works-archive__list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .works-archive[data-view="grid"] .works-archive__list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .works-archive[data-view="grid"] .works-archive__list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
+
+<script>
+  import { bindWorksView } from "@/service/works-view.service";
+
+  bindWorksView();
+  document.addEventListener("astro:page-load", () => bindWorksView());
+</script>
