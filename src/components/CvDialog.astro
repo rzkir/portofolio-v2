@@ -1,9 +1,19 @@
 ---
 import Dialog from "@/components/ui/dialog.astro";
-import { certifications, cvExperiences, cvSkills } from "@/data/portfolio";
+import { cvExperiences } from "@/data/portfolio";
+import { getCredentials } from "@/service/archivments.service";
+import { getSkills } from "@/service/skills.service";
+
+const [skills, credentials] = await Promise.all([
+  getSkills(),
+  getCredentials(),
+]);
+
+const featuredCredentials = credentials.slice(0, 8);
+const remainingCredentials = credentials.length - featuredCredentials.length;
 ---
 
-<Dialog id="cv-dialog" class="max-w-3xl overflow-y-auto">
+<Dialog id="cv-dialog" class="max-w-5xl overflow-y-auto">
   <slot name="trigger" slot="trigger">
     <button
       type="button"
@@ -82,8 +92,19 @@ import { certifications, cvExperiences, cvSkills } from "@/data/portfolio";
       </h3>
       <div class="col-span-12 flex flex-wrap gap-2 sm:col-span-9">
         {
-          cvSkills.map((s) => (
-            <span class="rounded-full border border-border px-3 py-1 text-xs">{s}</span>
+          skills.map((s) => (
+            <span class="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs">
+              <img
+                src={s.imageUrl}
+                alt=""
+                width={16}
+                height={16}
+                loading="lazy"
+                decoding="async"
+                class="size-4 object-contain"
+              />
+              {s.title}
+            </span>
           ))
         }
       </div>
@@ -95,7 +116,7 @@ import { certifications, cvExperiences, cvSkills } from "@/data/portfolio";
       </h3>
       <ul class="col-span-12 space-y-2 text-sm sm:col-span-9">
         {
-          certifications.slice(0, 8).map((c) => (
+          featuredCredentials.map((c) => (
             <li class="flex items-baseline justify-between gap-4 border-b border-border/60 pb-2">
               <span class="leading-snug">{c.title}</span>
               <span class="shrink-0 font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
@@ -104,9 +125,13 @@ import { certifications, cvExperiences, cvSkills } from "@/data/portfolio";
             </li>
           ))
         }
-        <li class="pt-1 font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
-          + {certifications.length - 8} sertifikasi lainnya
-        </li>
+        {
+          remainingCredentials > 0 && (
+            <li class="pt-1 font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
+              + {remainingCredentials} sertifikasi lainnya
+            </li>
+          )
+        }
       </ul>
     </section>
 
