@@ -1,5 +1,4 @@
 ---
-import "../styles/global.css";
 import { Image } from "astro:assets";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/layouts/Header.astro";
@@ -10,6 +9,7 @@ import GuestNotes from "@/components/GuestNotes.astro";
 import InfiniteMarquee from "@astroanimate/core/InfiniteMarquee";
 import FocusIn from "@/components/FocusIn.astro";
 import WorksScroll from "@/components/WorksScroll.astro";
+import ArchivmentsLayout from "@/components/ArchivmentsLayout.astro";
 import {
   certifications,
   faq,
@@ -36,7 +36,7 @@ const experienceItems = getExperiences();
 >
   <Header />
 
-  <main class="pt-32">
+  <main class="pt-28">
     <!-- HERO -->
     <section class="mx-auto container px-4 md:px-6">
       <div
@@ -213,6 +213,7 @@ const experienceItems = getExperiences();
           </h2>
         </div>
       </FocusIn>
+
       <ul class="grid grid-cols-1 gap-px bg-border sm:grid-cols-2">
         {
           services.map((s, i) => (
@@ -419,58 +420,7 @@ const experienceItems = getExperiences();
       );
     </script>
 
-    <!-- KREDENSIAL -->
-    <section
-      id="kredensial"
-      class="border-t border-border bg-surface/40 px-4 py-20 md:px-6"
-    >
-      <div class="mx-auto container px-4 md:px-6">
-        <FocusIn class="mb-12 flex items-end justify-between">
-          <p
-            class="font-mono text-xs tracking-widest text-muted-foreground uppercase"
-          >
-            Kredensial / 07
-          </p>
-          <span
-            class="font-mono text-xs tracking-widest text-muted-foreground uppercase"
-            >{certifications.length} Entri</span
-          >
-        </FocusIn>
-        <FocusIn
-          as="h2"
-          delay={80}
-          class="mb-16 max-w-2xl font-display text-3xl italic leading-tight"
-        >
-          Pendidikan berkelanjutan — dari fundamental sampai spesialisasi.
-        </FocusIn>
-
-        <ul
-          class="grid grid-cols-1 gap-px bg-border sm:grid-cols-2 lg:grid-cols-3"
-        >
-          {
-            certifications.map((c, i) => (
-              <FocusIn
-                as="li"
-                delay={(i % 6) * 60}
-                data-cursor="focus"
-                data-cursor-label="Verify"
-                class="bg-background p-6 transition-colors hover:bg-accent/5"
-              >
-                <p class="mb-4 font-mono text-[10px] tracking-[0.2em] text-accent">
-                  {c.code}
-                </p>
-                <h3 class="mb-2 font-display text-lg italic leading-snug">
-                  {c.title}
-                </h3>
-                <p class="text-xs text-muted-foreground">
-                  {c.issuer} · {c.year}
-                </p>
-              </FocusIn>
-            ))
-          }
-        </ul>
-      </div>
-    </section>
+    <ArchivmentsLayout />
 
     <!-- FAQ -->
     <section class="mx-auto container px-4 py-20 md:px-6">

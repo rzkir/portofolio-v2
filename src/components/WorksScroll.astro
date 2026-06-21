@@ -4,9 +4,10 @@ import ScaleIn from "@astroanimate/core/ScaleIn";
 import { Image } from "astro:assets";
 import FocusIn from "@/components/FocusIn.astro";
 import PreviewIcon from "@/components/svg/priview.astro";
-import { getWorks, getWorksScrollVh } from "@/service/works.service";
+import { getFeaturedWorks } from "@/service/works-archive.service";
+import { getWorksScrollVh } from "@/service/works.service";
 
-const works = getWorks();
+const works = await getFeaturedWorks();
 const scrollVh = getWorksScrollVh(works.length);
 const cinematic = "cubic-bezier(0.32, 0.72, 0, 1)";
 const inViewMargin = "-12%";
@@ -19,7 +20,7 @@ const inViewMargin = "-12%";
   class="works-scroll relative isolate bg-accent text-background"
   aria-label="Karya pilihan"
 >
-  <div class="container px-4">
+  <div class="container px-4 md:px-16">
     <div
       class="works-scroll__grid pointer-events-none absolute inset-0 z-0 overflow-hidden"
       aria-hidden="true"
@@ -31,7 +32,7 @@ const inViewMargin = "-12%";
     </div>
 
     <div
-      class="works-scroll__intro relative z-10 border-b border-background/10 px-4 pt-20 pb-12 md:pt-24"
+      class="works-scroll__intro relative z-10 border-b border-background/10 pt-20 pb-12 md:pt-24"
     >
       <FocusIn>
         <div class="flex items-end justify-between">
@@ -82,7 +83,7 @@ const inViewMargin = "-12%";
                 <article
                   data-works-slide
                   data-index={i}
-                  class={`group grid h-full min-h-0 shrink-0 grid-cols-1 items-center gap-12 px-4 md:grid-cols-12 md:px-6 ${i % 2 === 1 ? "md:*:data-works-media:order-2" : ""}`}
+                  class={`group grid h-full min-h-0 shrink-0 grid-cols-1 items-center gap-12 md:grid-cols-12 ${i % 2 === 1 ? "md:*:data-works-media:order-2" : ""}`}
                 >
                   <ScaleIn
                     data-works-media
@@ -96,11 +97,23 @@ const inViewMargin = "-12%";
                     class="container overflow-hidden rounded-lg bg-background/10 md:col-span-7"
                   >
                     <figure data-cursor="grab">
-                      <Image
-                        src={work.image}
-                        alt={work.title}
-                        class="aspect-video w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-                      />
+                      {
+                        typeof work.image === "string" ? (
+                          <img
+                            src={work.image}
+                            alt={work.title}
+                            loading="lazy"
+                            decoding="async"
+                            class="aspect-video w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                          />
+                        ) : (
+                          <Image
+                            src={work.image}
+                            alt={work.title}
+                            class="aspect-video w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                          />
+                        )
+                      }
                     </figure>
                   </ScaleIn>
                   <div
@@ -260,7 +273,6 @@ const inViewMargin = "-12%";
 
     .works-scroll__track [data-works-slide] {
       height: auto !important;
-      padding-bottom: 5rem;
     }
 
     [data-works-bar] {

@@ -6,5 +6,10 @@
     "directory": "./dist",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
+  },
+  "vars": {
+    "BASE_URL": "https://demo.rizkiramadhan.biz.id",
+    "API_URL": "https://api.rizkiramadhan.biz.id",
+    "API_SECRET": "ae4e99b127f9fc36c86b06277d7923c07aec65b35d7d5a143a2e706aaae3395d"
   }
 }

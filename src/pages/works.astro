@@ -1,13 +1,14 @@
 ---
-import "../styles/global.css";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/layouts/Header.astro";
 import Footer from "@/layouts/Footer.astro";
 import FocusIn from "@/components/FocusIn.astro";
 import WorksGrid from "@/components/WorksGrid.astro";
 import { project1 } from "@/data/portfolio";
+import { getWorksArchive } from "@/service/works-archive.service";
 
 const ogImage = new URL(project1.src, Astro.site).href;
+const works = await getWorksArchive();
 ---
 
 <Layout
@@ -17,19 +18,8 @@ const ogImage = new URL(project1.src, Astro.site).href;
 >
   <Header />
 
-  <main class="pt-32">
+  <main class="pt-28">
     <section class="mx-auto container px-4 pb-12 md:px-6">
-      <FocusIn>
-        <a
-          href="/"
-          data-cursor="focus"
-          data-cursor-label="Back"
-          class="mb-12 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-accent"
-        >
-          ← Beranda
-        </a>
-      </FocusIn>
-
       <FocusIn delay={60}>
         <p
           class="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
@@ -44,10 +34,9 @@ const ogImage = new URL(project1.src, Astro.site).href;
           >
             Arsip karya.
           </h1>
-          <p
-            class="max-w-xs text-sm leading-relaxed text-muted-foreground"
-          >
-            Beralih antara tampilan grid atau daftar — pilihanmu tersimpan otomatis.
+          <p class="max-w-xs text-sm leading-relaxed text-muted-foreground">
+            Beralih antara tampilan grid atau daftar — pilihanmu tersimpan
+            otomatis.
           </p>
         </div>
       </FocusIn>
@@ -57,7 +46,7 @@ const ogImage = new URL(project1.src, Astro.site).href;
       class="mx-auto container px-4 pb-20 md:px-6"
       aria-label="Daftar karya"
     >
-      <WorksGrid />
+      <WorksGrid works={works} />
     </section>
 
     <section

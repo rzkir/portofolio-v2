@@ -4,7 +4,7 @@ import project3 from "@/assets/project-3.jpg";
 import project4 from "@/assets/project-4.jpg";
 import project5 from "@/assets/project-5.jpg";
 import project6 from "@/assets/project-6.jpg";
-import portrait from "@/assets/portrait.jpg";
+import portrait from "@/assets/rizki-ramadhan.webp";
 import type { ImageMetadata } from "astro";
 
 export { project1, portrait };

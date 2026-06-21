@@ -1,0 +1,68 @@
+---
+import FocusIn from "@/components/FocusIn.astro";
+import { getCredentials } from "@/service/archivments.service";
+
+const credentials = await getCredentials();
+---
+
+<section
+  id="kredensial"
+  class="border-t border-border bg-surface/40 px-4 py-20 md:px-6"
+>
+  <div class="mx-auto container px-4 md:px-6">
+    <FocusIn class="mb-12 flex items-end justify-between">
+      <p
+        class="font-mono text-xs tracking-widest text-muted-foreground uppercase"
+      >
+        Kredensial / 07
+      </p>
+      <span
+        class="font-mono text-xs tracking-widest text-muted-foreground uppercase"
+      >
+        {credentials.length} Entri
+      </span>
+    </FocusIn>
+    <FocusIn
+      as="h2"
+      delay={80}
+      class="mb-16 max-w-2xl font-display text-3xl italic leading-tight"
+    >
+      Pendidikan berkelanjutan — dari fundamental sampai spesialisasi.
+    </FocusIn>
+
+    <ul
+      class="grid grid-cols-1 gap-px bg-border sm:grid-cols-2 lg:grid-cols-3"
+    >
+      {
+        credentials.map((c, i) => (
+          <FocusIn
+            as="li"
+            delay={(i % 6) * 60}
+            data-cursor="focus"
+            data-cursor-label="Verify"
+            class="group bg-background p-6 transition-colors hover:bg-accent/5"
+          >
+            <figure class="mb-4 overflow-hidden rounded-md bg-surface">
+              <img
+                src={c.imageUrl}
+                alt={c.title}
+                loading="lazy"
+                decoding="async"
+                class="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+              />
+            </figure>
+            <p class="mb-4 font-mono text-[10px] tracking-[0.2em] text-accent">
+              {c.code}
+            </p>
+            <h3 class="mb-2 font-display text-lg italic leading-snug">
+              {c.title}
+            </h3>
+            <p class="text-xs text-muted-foreground">
+              {c.issuer} · {c.year}
+            </p>
+          </FocusIn>
+        ))
+      }
+    </ul>
+  </div>
+</section>

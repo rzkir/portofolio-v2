@@ -158,6 +158,32 @@
   transform-origin: left;
 }
 
+/* ── Splash screen ── */
+html.splash-pending,
+html.splash-pending body {
+  overflow: hidden;
+}
+
+html.splash-seen #splash-screen {
+  display: none;
+}
+
+#splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--accent-warm);
+  will-change: transform;
+}
+
+html.splash-pending .animate-focus {
+  animation-play-state: paused !important;
+}
+
 @keyframes experience-line-grow {
   from {
     transform: translateY(-50%) scaleX(0);

@@ -1,9 +1,13 @@
 ---
 import FocusIn from "@/components/FocusIn.astro";
 import Card from "@/components/ui/card.astro";
-import { getWorks } from "@/service/works.service";
+import type { ArchiveWork } from "@/service/works-archive.service";
 
-const works = getWorks();
+interface Props {
+  works: ArchiveWork[];
+}
+
+const { works } = Astro.props;
 ---
 
 <div data-works-archive data-view="list" class="works-archive">
