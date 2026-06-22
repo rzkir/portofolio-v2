@@ -1,12 +1,13 @@
 ---
 import Dialog from "@/components/ui/dialog.astro";
-import { cvExperiences } from "@/data/portfolio";
 import { getCredentials } from "@/service/archivments.service";
+import { getCareers } from "@/service/career.service";
 import { getSkills } from "@/service/skills.service";
 
-const [skills, credentials] = await Promise.all([
+const [skills, credentials, careers] = await Promise.all([
   getSkills(),
   getCredentials(),
+  getCareers(),
 ]);
 
 const featuredCredentials = credentials.slice(0, 8);
@@ -70,16 +71,16 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
       </h3>
       <div class="col-span-12 space-y-6 sm:col-span-9">
         {
-          cvExperiences.map((e) => (
+          careers.map((career) => (
             <div class="flex flex-col gap-1 border-l border-border pl-4">
               <div class="flex flex-wrap items-baseline justify-between gap-2">
-                <p class="text-base font-medium">{e.role}</p>
+                <p class="text-base font-medium">{career.role}</p>
                 <span class="font-mono text-[10px] tracking-widest text-accent uppercase">
-                  {e.range}
+                  {career.range}
                 </span>
               </div>
-              <p class="text-xs tracking-widest text-muted-foreground uppercase">{e.org}</p>
-              <p class="mt-1 text-sm leading-relaxed text-foreground/75">{e.desc}</p>
+              <p class="text-xs tracking-widest text-muted-foreground uppercase">{career.org}</p>
+              <p class="mt-1 text-sm leading-relaxed whitespace-pre-line text-foreground/75">{career.desc}</p>
             </div>
           ))
         }
