@@ -13,11 +13,8 @@ import ArchivmentsLayout from "@/components/ArchivmentsLayout.astro";
 import CareerLayout from "@/components/CareerLayout.astro";
 import {
   certifications,
-  faq,
   portrait,
-  process,
   project1,
-  services,
   stack,
   testimonials,
 } from "@/data/portfolio";
@@ -195,82 +192,6 @@ const ogImage = new URL(project1.src, Astro.site).href;
 
     <WorksScroll />
 
-    <!-- LAYANAN -->
-    <section id="layanan" class="mx-auto container px-4 py-20 md:px-6">
-      <FocusIn class="mb-16 flex items-end justify-between">
-        <div>
-          <p
-            class="mb-4 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
-          >
-            Layanan / 03
-          </p>
-          <h2 class="font-display text-5xl italic">
-            Apa yang bisa saya kerjakan
-          </h2>
-        </div>
-      </FocusIn>
-
-      <ul class="grid grid-cols-1 gap-px bg-border sm:grid-cols-2">
-        {
-          services.map((s, i) => (
-            <FocusIn
-              as="li"
-              delay={i * 80}
-              data-cursor="focus"
-              data-cursor-label="Detail"
-              class="group bg-background p-10 transition-colors hover:bg-accent/5"
-            >
-              <p class="mb-6 font-mono text-[10px] tracking-[0.2em] text-accent uppercase">
-                {s.n}
-              </p>
-              <h3 class="mb-3 font-display text-3xl italic">{s.t}</h3>
-              <p class="text-sm leading-relaxed text-muted-foreground">{s.d}</p>
-            </FocusIn>
-          ))
-        }
-      </ul>
-    </section>
-
-    <!-- PROSES -->
-    <section
-      id="proses"
-      class="border-y border-border bg-surface/40 px-4 py-20 md:px-6"
-    >
-      <div class="mx-auto container px-4 md:px-6">
-        <FocusIn>
-          <p
-            class="mb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase"
-          >
-            Proses / 04
-          </p>
-          <h2
-            class="mb-16 font-display text-5xl italic leading-tight md:max-w-2xl"
-          >
-            Empat langkah, tanpa drama.
-          </h2>
-        </FocusIn>
-        <ol class="grid grid-cols-1 gap-12 md:grid-cols-4">
-          {
-            process.map((p, i) => (
-              <FocusIn
-                as="li"
-                delay={i * 90}
-                class="border-t border-foreground/20 pt-6"
-              >
-                <span class="mb-6 block font-mono text-xs tracking-widest text-accent uppercase">
-                  {p.n}
-                </span>
-                <h3 class="mb-3 font-display text-2xl italic">{p.t}</h3>
-                <p class="text-sm leading-relaxed text-muted-foreground">
-                  {p.d}
-                </p>
-              </FocusIn>
-            ))
-          }
-        </ol>
-      </div>
-    </section>
-
     <!-- TESTIMONI -->
     <section
       class="relative overflow-hidden border-y border-border bg-surface/40 py-20"
@@ -332,36 +253,6 @@ const ogImage = new URL(project1.src, Astro.site).href;
     <CareerLayout />
 
     <ArchivmentsLayout />
-
-    <!-- FAQ -->
-    <section class="mx-auto container px-4 py-20 md:px-6">
-      <FocusIn>
-        <p
-          class="mb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase"
-        >
-          FAQ / 08
-        </p>
-        <h2 class="mb-16 font-display text-5xl italic">Pertanyaan umum.</h2>
-      </FocusIn>
-      <ul class="divide-y divide-border border-y border-border">
-        {
-          faq.map((f, i) => (
-            <FocusIn
-              as="li"
-              delay={i * 70}
-              data-cursor="focus"
-              data-cursor-label="Read"
-              class="grid grid-cols-1 gap-4 py-8 md:grid-cols-12"
-            >
-              <h3 class="font-display text-xl italic md:col-span-5">{f.q}</h3>
-              <p class="text-sm leading-relaxed text-muted-foreground md:col-span-7">
-                {f.a}
-              </p>
-            </FocusIn>
-          ))
-        }
-      </ul>
-    </section>
 
     <CodingStats />
     <GuestNotes />

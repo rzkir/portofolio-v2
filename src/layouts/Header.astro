@@ -3,7 +3,7 @@ import { cn } from "@/lib/utiles";
 
 const navItems = [
   { index: "01", label: "Karya", href: "/works" },
-  { index: "02", label: "Layanan", href: "/#layanan" },
+  { index: "02", label: "Layanan", href: "/layanan" },
   { index: "03", label: "Kredensial", href: "/#kredensial" },
   { index: "04", label: "Catatan", href: "/#catatan" },
 ];
@@ -25,9 +25,10 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
   class="group/site-header pointer-events-none fixed inset-x-0 top-0 z-50"
 >
   <div class={shellClass}>
-    <div
-      class="container grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-6 gap-y-4 md:grid-cols-[minmax(0,1.1fr)_auto_minmax(0,auto)] py-4 px-4 md:px-16 md:py-5"
-    >
+    <div class="mx-auto container px-4 md:px-6">
+      <div
+        class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-6 gap-y-4 py-4 md:grid-cols-[minmax(0,1.1fr)_auto_minmax(0,auto)] md:py-5"
+      >
       <a
         href="/"
         data-cursor="focus"
@@ -38,14 +39,20 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
         )}
       >
         <span
-          class="font-display text-[clamp(1.35rem,2vw,1.75rem)] leading-none italic transition-colors duration-350 ease-cinematic group-hover/brand:text-accent"
+          class={cn(
+            "font-display text-[clamp(1.35rem,2vw,1.75rem)] leading-none italic transition-colors duration-350 ease-cinematic",
+            "group-hover/brand:text-accent",
+            "group-[.is-inverse]/site-header:group-hover/brand:text-foreground",
+          )}
         >
           R. Ramadhan
         </span>
         <span
           class={cn(
             "font-mono text-[0.5625rem] tracking-[0.22em] uppercase text-muted-foreground transition-colors duration-350 ease-cinematic",
+            "group-hover/brand:text-accent/70",
             inverseMuted,
+            "group-[.is-inverse]/site-header:group-hover/brand:text-foreground/65",
           )}
         >
           Fullstack · Bogor · 2026
@@ -134,6 +141,7 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
           </span>
         </button>
       </div>
+      </div>
     </div>
 
     <nav
@@ -147,7 +155,8 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
         "group-[.is-inverse.is-menu-open]/site-header:border-background/12 group-[.is-inverse.is-menu-open]/site-header:bg-accent/96",
       )}
     >
-      <ul class="container m-0 list-none px-6 pt-2 pb-5 md:px-8">
+      <div class="mx-auto container px-4 md:px-6">
+        <ul class="m-0 list-none pt-2 pb-5">
         {
           navItems.map((item) => (
             <li>
@@ -178,7 +187,8 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
             Mari berkolaborasi →
           </a>
         </li>
-      </ul>
+        </ul>
+      </div>
     </nav>
   </div>
 </header>

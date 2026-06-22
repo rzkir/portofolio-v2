@@ -1,11 +1,15 @@
 ---
 import Dialog from "@/components/ui/dialog.astro";
+import FocusIn from "@/components/FocusIn.astro";
 import { getCredentials } from "@/service/archivments.service";
 import { getCareers } from "@/service/career.service";
-import { getSkills } from "@/service/skills.service";
+import {
+  getGroupedSkills,
+  SKILL_CATEGORY_LABELS,
+} from "@/service/skills.service";
 
-const [skills, credentials, careers] = await Promise.all([
-  getSkills(),
+const [skillGroups, credentials, careers] = await Promise.all([
+  getGroupedSkills(),
   getCredentials(),
   getCareers(),
 ]);
@@ -33,10 +37,20 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
     Ringkasan CV: profil, pengalaman, keahlian, sertifikasi, dan kontak.
   </p>
 
-  <article class="px-8 py-10 sm:px-12 sm:py-14" aria-labelledby="cv-dialog-title" aria-describedby="cv-dialog-desc">
-    <header class="flex items-end justify-between border-b border-border pb-6">
+  <article
+    class="px-8 py-10 sm:px-12 sm:py-14"
+    aria-labelledby="cv-dialog-title"
+    aria-describedby="cv-dialog-desc"
+  >
+    <FocusIn
+      class="flex items-end justify-between border-b border-border pb-6"
+      delay={0}
+      duration={0.85}
+    >
       <div>
-        <p class="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
+        <p
+          class="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase"
+        >
           Curriculum Vitae
         </p>
         <h2 class="mt-3 font-display text-4xl leading-none italic sm:text-5xl">
@@ -46,121 +60,195 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
           Fullstack Developer · Bogor, Indonesia
         </p>
       </div>
-      <div class="hidden text-right font-mono text-[10px] tracking-widest text-muted-foreground uppercase sm:block">
+      <div
+        class="hidden text-right font-mono text-[10px] tracking-widest text-muted-foreground uppercase sm:block"
+      >
         Updated <br />
         <span class="text-accent">Jun 2026</span>
       </div>
-    </header>
+    </FocusIn>
 
-    <section class="mt-8 grid grid-cols-12 gap-6 border-b border-border pb-8">
-      <h3 class="col-span-12 font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase sm:col-span-3">
+    <FocusIn
+      as="section"
+      class="mt-8 grid grid-cols-12 gap-6 border-b border-border pb-8"
+      delay={60}
+      duration={0.85}
+    >
+      <h3
+        class="col-span-12 font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase sm:col-span-3"
+      >
         01 — Profil
       </h3>
-      <p class="col-span-12 text-sm leading-relaxed text-foreground/80 sm:col-span-9">
+      <p
+        class="col-span-12 text-sm leading-relaxed text-foreground/80 sm:col-span-9"
+      >
         Freelance fullstack developer dengan 2+ tahun pengalaman membangun
         aplikasi web dan mobile dari konsep hingga production. Fokus pada
-        performa, responsivitas, dan pengalaman pengguna yang halus.
-        Terbiasa debugging, optimasi aplikasi, dan menerjemahkan
-        kebutuhan klien menjadi solusi digital yang efisien.
+        performa, responsivitas, dan pengalaman pengguna yang halus. Terbiasa
+        debugging, optimasi aplikasi, dan menerjemahkan kebutuhan klien menjadi
+        solusi digital yang efisien.
       </p>
-    </section>
+    </FocusIn>
 
     <section class="mt-8 grid grid-cols-12 gap-6 border-b border-border pb-8">
-      <h3 class="col-span-12 font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase sm:col-span-3">
+      <FocusIn
+        as="h3"
+        class="col-span-12 font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase sm:col-span-3"
+        delay={100}
+        duration={0.85}
+      >
         02 — Pengalaman
-      </h3>
+      </FocusIn>
       <div class="col-span-12 space-y-6 sm:col-span-9">
         {
-          careers.map((career) => (
-            <div class="flex flex-col gap-1 border-l border-border pl-4">
+          careers.map((career, i) => (
+            <FocusIn
+              delay={140 + i * 55}
+              duration={0.85}
+              class="flex flex-col gap-1 border-l border-border pl-4"
+            >
               <div class="flex flex-wrap items-baseline justify-between gap-2">
                 <p class="text-base font-medium">{career.role}</p>
                 <span class="font-mono text-[10px] tracking-widest text-accent uppercase">
                   {career.range}
                 </span>
               </div>
-              <p class="text-xs tracking-widest text-muted-foreground uppercase">{career.org}</p>
-              <p class="mt-1 text-sm leading-relaxed whitespace-pre-line text-foreground/75">{career.desc}</p>
-            </div>
+              <p class="text-xs tracking-widest text-muted-foreground uppercase">
+                {career.org}
+              </p>
+              <p class="mt-1 text-sm leading-relaxed whitespace-pre-line text-foreground/75">
+                {career.desc}
+              </p>
+            </FocusIn>
           ))
         }
       </div>
     </section>
 
     <section class="mt-8 grid grid-cols-12 gap-6 border-b border-border pb-8">
-      <h3 class="col-span-12 font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase sm:col-span-3">
+      <FocusIn
+        as="h3"
+        class="col-span-12 font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase sm:col-span-3"
+        delay={120}
+        duration={0.85}
+      >
         03 — Keahlian
-      </h3>
-      <div class="col-span-12 flex flex-wrap gap-2 sm:col-span-9">
+      </FocusIn>
+      <div class="col-span-12 space-y-5 sm:col-span-9">
         {
-          skills.map((s) => (
-            <span class="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs">
-              <img
-                src={s.imageUrl}
-                alt=""
-                width={16}
-                height={16}
-                loading="lazy"
-                decoding="async"
-                class="size-4 object-contain"
-              />
-              {s.title}
-            </span>
-          ))
+          SKILL_CATEGORY_LABELS.map((group, i) =>
+            skillGroups[group.key].length > 0 ? (
+              <FocusIn delay={160 + i * 50} duration={0.85}>
+                <p class="mb-2 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
+                  {group.label}
+                </p>
+                <div class="flex flex-wrap gap-2">
+                  {skillGroups[group.key].map((s) => (
+                    <span class="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs">
+                      <img
+                        src={s.imageUrl}
+                        alt=""
+                        width={16}
+                        height={16}
+                        loading="lazy"
+                        decoding="async"
+                        class="size-4 object-contain"
+                      />
+                      {s.title}
+                    </span>
+                  ))}
+                </div>
+              </FocusIn>
+            ) : null,
+          )
         }
       </div>
     </section>
 
     <section class="mt-8 grid grid-cols-12 gap-6 border-b border-border pb-8">
-      <h3 class="col-span-12 font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase sm:col-span-3">
+      <FocusIn
+        as="h3"
+        class="col-span-12 font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase sm:col-span-3"
+        delay={120}
+        duration={0.85}
+      >
         04 — Sertifikasi
-      </h3>
+      </FocusIn>
       <ul class="col-span-12 space-y-2 text-sm sm:col-span-9">
         {
-          featuredCredentials.map((c) => (
-            <li class="flex items-baseline justify-between gap-4 border-b border-border/60 pb-2">
+          featuredCredentials.map((c, i) => (
+            <FocusIn
+              as="li"
+              delay={160 + i * 35}
+              duration={0.8}
+              class="flex items-baseline justify-between gap-4 border-b border-border/60 pb-2"
+            >
               <span class="leading-snug">{c.title}</span>
               <span class="shrink-0 font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
                 {c.issuer} · {c.year}
               </span>
-            </li>
+            </FocusIn>
           ))
         }
         {
           remainingCredentials > 0 && (
-            <li class="pt-1 font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
+            <FocusIn
+              as="li"
+              delay={160 + featuredCredentials.length * 35}
+              duration={0.8}
+              class="pt-1 font-mono text-[10px] tracking-widest text-muted-foreground uppercase"
+            >
               + {remainingCredentials} sertifikasi lainnya
-            </li>
+            </FocusIn>
           )
         }
       </ul>
     </section>
 
-    <section class="mt-8 grid grid-cols-12 gap-6">
-      <h3 class="col-span-12 font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase sm:col-span-3">
+    <FocusIn
+      as="section"
+      class="mt-8 grid grid-cols-12 gap-6"
+      delay={140}
+      duration={0.85}
+    >
+      <h3
+        class="col-span-12 font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase sm:col-span-3"
+      >
         05 — Kontak
       </h3>
       <dl class="col-span-12 grid grid-cols-2 gap-4 text-sm sm:col-span-9">
         <div>
-          <dt class="text-[10px] tracking-widest text-muted-foreground uppercase">Email</dt>
+          <dt class="text-[10px] tracking-widest text-muted-foreground uppercase">
+            Email
+          </dt>
           <dd class="mt-1">hello@rizkiramadhan.biz.id</dd>
         </div>
         <div>
-          <dt class="text-[10px] tracking-widest text-muted-foreground uppercase">Website</dt>
+          <dt class="text-[10px] tracking-widest text-muted-foreground uppercase">
+            Website
+          </dt>
           <dd class="mt-1">rizkiramadhan.biz.id</dd>
         </div>
         <div>
-          <dt class="text-[10px] tracking-widest text-muted-foreground uppercase">Lokasi</dt>
+          <dt class="text-[10px] tracking-widest text-muted-foreground uppercase">
+            Lokasi
+          </dt>
           <dd class="mt-1">Bogor, ID (UTC+7)</dd>
         </div>
         <div>
-          <dt class="text-[10px] tracking-widest text-muted-foreground uppercase">Status</dt>
+          <dt class="text-[10px] tracking-widest text-muted-foreground uppercase">
+            Status
+          </dt>
           <dd class="mt-1 text-accent">Open for work</dd>
         </div>
       </dl>
-    </section>
+    </FocusIn>
 
-    <div class="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6">
+    <FocusIn
+      class="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6"
+      delay={200}
+      duration={0.85}
+    >
       <p class="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
         Versi lengkap tersedia sebagai PDF
       </p>
@@ -172,6 +260,13 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
       >
         Download PDF →
       </a>
-    </div>
+    </FocusIn>
   </article>
 </Dialog>
+
+<script>
+  import { bindCvDialogAnimations } from "@/lib/cv-dialog-animations";
+
+  bindCvDialogAnimations();
+  document.addEventListener("astro:page-load", () => bindCvDialogAnimations());
+</script>
