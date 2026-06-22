@@ -12,6 +12,7 @@ export type ArchiveWork = {
   title: string;
   tag: string;
   year: string;
+  slug: string;
   image: ImageMetadata | string;
   previewUrl: string;
 };
@@ -55,6 +56,7 @@ export async function getWorksArchive(): Promise<ArchiveWork[]> {
     title: item.title,
     tag: item.categoryDetail?.name ?? item.category,
     year: formatArchiveYear(item.createdAt),
+    slug: item.slug,
     image: detail?.thumbnail ?? project1.src,
     previewUrl: item.previewLink,
   }));
@@ -70,6 +72,7 @@ export async function getFeaturedWorks(limit = 6): Promise<FeaturedWork[]> {
     title: item.title,
     tag: item.categoryDetail?.name ?? item.category,
     year: formatArchiveYear(item.createdAt),
+    slug: item.slug,
     image: detail?.thumbnail ?? project1.src,
     previewUrl: item.previewLink,
     desc: detail?.description ?? "",

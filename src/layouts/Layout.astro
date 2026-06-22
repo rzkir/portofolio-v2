@@ -37,11 +37,8 @@ const {
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta property="og:title" content="Rizki Ramadhan — Fullstack Developer" />
-    <meta
-      property="og:description"
-      content="Editorial 2026 portfolio. Lihat karya pilihan, kredensial teknis, dan ajak kolaborasi."
-    />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
     {ogImage && <meta property="og:image" content={ogImage} />}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

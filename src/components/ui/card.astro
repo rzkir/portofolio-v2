@@ -11,23 +11,32 @@ export interface CardProps {
   year: string;
   image: ImageMetadata | string;
   href: string;
+  external?: boolean;
 }
 
 interface Props extends CardProps {
   class?: string;
 }
 
-const { no, title, tag, year, image, href, class: className } = Astro.props;
+const {
+  no,
+  title,
+  tag,
+  year,
+  image,
+  href,
+  external = false,
+  class: className,
+} = Astro.props;
 const isRemoteImage = typeof image === "string";
 ---
 
 <a
   href={href}
-  target="_blank"
-  rel="noopener noreferrer"
+  {...external ? { target: "_blank", rel: "noopener noreferrer" } : {}}
   data-cursor="focus"
-  data-cursor-label="Open"
-  aria-label={`Preview ${title}`}
+  data-cursor-label={external ? "Open" : "View"}
+  aria-label={`${external ? "Preview" : "Lihat"} ${title}`}
   class={cn("ui-card group", className)}
 >
   <figure class="ui-card__thumb">

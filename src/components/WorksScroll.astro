@@ -190,15 +190,13 @@ const inViewMargin = "-12%";
                       class={`mt-8 ${i % 2 === 1 ? "md:flex md:justify-end" : ""}`}
                     >
                       <a
-                        href={work.previewUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href={`/works/${work.slug}`}
                         data-cursor="focus"
-                        data-cursor-label="Open"
-                        aria-label={`Preview ${work.title}`}
+                        data-cursor-label="View"
+                        aria-label={`Lihat ${work.title}`}
                         class="group/cta inline-flex items-center gap-2 border-b border-background/40 pb-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-background transition-colors hover:border-background"
                       >
-                        Preview
+                        Detail
                         <PreviewIcon
                           size={14}
                           class="transition-transform group-hover/cta:translate-x-0.5 group-hover/cta:-translate-y-0.5"

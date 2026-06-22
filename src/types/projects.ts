@@ -1,6 +1,8 @@
 export interface ProjectCategoryDetail {
   _id: string;
   name: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ProjectsContentProps {
@@ -9,6 +11,7 @@ export interface ProjectsContentProps {
   slug: string;
   previewLink: string;
   category: string;
+  categoryId?: string;
   categoryDetail: ProjectCategoryDetail;
   createdAt: string;
   updatedAt: string;
