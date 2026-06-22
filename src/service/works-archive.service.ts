@@ -3,6 +3,7 @@ import { project1 } from "@/data/portfolio";
 import {
   fetchProjectBySlug,
   fetchProjectsContents,
+  fetchProjectsPage,
 } from "@/utils/FetchProjects";
 import type { ProjectsContentProps } from "@/types/projects";
 
@@ -61,7 +62,8 @@ export async function getWorksArchive(): Promise<ArchiveWork[]> {
 
 /** Karya pilihan untuk section scroll — di-fetch saat SSR/build. */
 export async function getFeaturedWorks(limit = 6): Promise<FeaturedWork[]> {
-  const items = (await fetchProjectsContents()).slice(0, limit);
+  const { data } = await fetchProjectsPage({ page: 1 });
+  const items = data.slice(0, limit);
 
   return mapProjectsToArchive(items, (item, index, detail) => ({
     no: formatArchiveIndex(index),

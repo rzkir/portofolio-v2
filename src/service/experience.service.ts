@@ -1,7 +1,3 @@
-import { experiences } from "@/data/portfolio";
-
-export type Experience = (typeof experiences)[number];
-
 export const EXPERIENCE_TIMELINE_CONFIG = {
   timelineSelector: ".experience-timeline",
   spineSelector: ".experience-timeline__spine",
@@ -11,11 +7,6 @@ export const EXPERIENCE_TIMELINE_CONFIG = {
   scrollTriggerRatio: 0.58,
   minSpineProgress: 0.08,
 } as const;
-
-/** Semua entri pengalaman untuk section timeline. */
-export function getExperiences(): Experience[] {
-  return experiences;
-}
 
 export function formatExperienceIndex(index: number): string {
   return String(index + 1).padStart(2, "0");

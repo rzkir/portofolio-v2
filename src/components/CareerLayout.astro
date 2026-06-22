@@ -1,0 +1,92 @@
+---
+import FocusIn from "@/components/FocusIn.astro";
+import { getCareers } from "@/service/career.service";
+import { formatExperienceIndex } from "@/service/experience.service";
+
+const careers = await getCareers();
+---
+
+<section id="pengalaman" class="mx-auto container px-4 py-20 md:px-6">
+  <FocusIn class="mb-12 flex items-end justify-between">
+    <p
+      class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+    >
+      Pengalaman / 06
+    </p>
+    <span
+      class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+    >
+      {careers.length} Posisi
+    </span>
+  </FocusIn>
+  <FocusIn
+    as="h2"
+    delay={80}
+    class="mb-16 max-w-2xl font-display text-3xl italic leading-tight"
+  >
+    Jejak karier yang terukur — dari magang hingga klien independen.
+  </FocusIn>
+
+  <div
+    class="experience-timeline relative"
+    style="--timeline-track: 2rem; --timeline-gap: 0.75rem;"
+  >
+    <div
+      class="experience-timeline__spine pointer-events-none absolute top-0 bottom-0 w-px"
+      aria-hidden="true"
+    >
+    </div>
+
+    <ul class="relative border-t border-border">
+      {
+        careers.map((career, i) => (
+          <FocusIn
+            as="li"
+            delay={60}
+            duration={0.85}
+            class="experience-timeline__item grid grid-cols-[var(--timeline-track)_minmax(0,1fr)] items-start gap-x-(--timeline-gap) border-b border-border py-8 md:grid-cols-[var(--timeline-track)_minmax(0,1fr)_9.5rem]"
+          >
+            <div class="experience-timeline__track relative self-start">
+              <span class="experience-timeline__index block w-full text-center font-mono text-[10px] uppercase tracking-[0.2em] leading-none text-accent tabular-nums">
+                {formatExperienceIndex(i)}
+              </span>
+            </div>
+
+            <div class="experience-timeline__body min-w-0">
+              <div class="experience-timeline__lead relative flex items-center">
+                <span
+                  class="experience-timeline__node block size-2.5 shrink-0 rounded-full border border-accent bg-background ring-4 ring-background"
+                  aria-hidden="true"
+                />
+                <span
+                  class="experience-timeline__connector pointer-events-none"
+                  aria-hidden="true"
+                />
+                <h3 class="relative z-1 font-display text-2xl italic leading-none">
+                  {career.role}
+                </h3>
+              </div>
+              <p class="mt-2 text-sm text-muted-foreground">{career.org}</p>
+              <p class="mt-3 max-w-prose text-sm leading-relaxed whitespace-pre-line text-muted-foreground">
+                {career.desc}
+              </p>
+            </div>
+
+            <div class="experience-timeline__meta col-start-2 mt-3 md:col-start-3 md:mt-0 md:flex md:min-h-6 md:items-center md:justify-end">
+              <span class="inline-flex border border-border/80 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                {career.range}
+              </span>
+            </div>
+          </FocusIn>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<script>
+  import { bindExperienceTimeline } from "@/service/experience.service";
+
+  bindExperienceTimeline();
+  document.addEventListener("astro:page-load", () => bindExperienceTimeline());
+</script>

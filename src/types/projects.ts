@@ -14,6 +14,18 @@ export interface ProjectsContentProps {
   updatedAt: string;
 }
 
+export interface ProjectsPaginationMeta {
+  page: number;
+  pageItem: number;
+  totalPages: number;
+  nextPage: boolean;
+  prevPage: boolean;
+}
+
+export interface ProjectsPaginatedResponse extends ProjectsPaginationMeta {
+  data: ProjectsContentProps[];
+}
+
 export interface ProjectFramework {
   title: string;
   imageUrl: string;
