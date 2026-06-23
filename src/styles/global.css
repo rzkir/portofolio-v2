@@ -278,26 +278,6 @@ html.splash-pending .animate-focus {
   transition-delay: 0.18s;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .experience-timeline__spine {
-    transform: scaleY(1) !important;
-    transition: none !important;
-  }
-
-  .experience-timeline__connector {
-    transform: translateY(-50%) scaleX(1) !important;
-    animation: none !important;
-  }
-
-  .experience-timeline__node,
-  .experience-timeline__body,
-  .experience-timeline__meta {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
-  }
-}
-
 .drag-scroller {
   cursor: grab;
   overflow-x: auto;
@@ -493,12 +473,6 @@ html.splash-pending .animate-focus {
   opacity: 0;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .grab-cursor {
-    display: none;
-  }
-}
-
 /* ── Coding stats ── */
 .coding-stats__bar-fill {
   width: 0;
@@ -527,19 +501,6 @@ html.splash-pending .animate-focus {
   to {
     opacity: 1;
     transform: scale(1);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .coding-stats__bar-fill {
-    width: var(--pct) !important;
-    transition: none !important;
-  }
-
-  .coding-stats__heatmap-cell {
-    opacity: 1 !important;
-    transform: none !important;
-    animation: none !important;
   }
 }
 

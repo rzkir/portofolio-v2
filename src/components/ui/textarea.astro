@@ -1,0 +1,45 @@
+---
+import { cn } from "@/lib/utiles";
+
+export interface TextareaProps {
+  label: string;
+  id: string;
+  name: string;
+  placeholder?: string;
+  maxlength?: number;
+  rows?: number;
+  required?: boolean;
+  class?: string;
+  textareaClass?: string;
+}
+
+const {
+  label,
+  id,
+  name,
+  placeholder,
+  maxlength,
+  rows = 4,
+  required = false,
+  class: className,
+  textareaClass,
+} = Astro.props;
+
+const fieldClass =
+  "w-full resize-none border-b border-border bg-transparent py-2 outline-none transition-colors focus:border-accent";
+---
+
+<label class={cn("block", className)}>
+  <span class="mb-2 flex items-center justify-between font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
+    <span>{label}</span>
+    <slot name="label-extra" />
+  </span>
+  <textarea
+    id={id}
+    name={name}
+    placeholder={placeholder}
+    maxlength={maxlength}
+    rows={rows}
+    required={required}
+    class={cn(fieldClass, textareaClass)}></textarea>
+</label>

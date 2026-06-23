@@ -1,0 +1,132 @@
+/**
+ * Re-enable @astroanimate/core animations when the OS prefers reduced motion.
+ * JS guards are handled by the matchMedia patch in Layout.astro.
+ * Loaded last so these overrides win over component-scoped styles.
+ */
+
+@keyframes force-fade-in-text {
+  from {
+    opacity: 0;
+    filter: blur(var(--fit-blur, 6px));
+    transform: translateY(var(--fit-y-offset, 20px));
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes force-marquee-scroll-left {
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes force-marquee-scroll-right {
+  from {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes force-marquee-scroll-up {
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes force-marquee-scroll-down {
+  from {
+    transform: translateY(calc(-100% - var(--gap)));
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* FadeInText */
+  [data-astro-fade-in-text][data-enhance="false"]:not([data-ready]) {
+    animation: force-fade-in-text var(--fit-duration, 0.6s)
+      var(--fit-easing, cubic-bezier(0.4, 0, 0.2, 1)) var(--fit-delay, 0s) both !important;
+    opacity: unset !important;
+    filter: unset !important;
+    transform: unset !important;
+  }
+
+  [data-astro-fade-in-text][data-enhance="true"]:not([data-ready]) {
+    opacity: 0 !important;
+    filter: blur(var(--fit-blur, 6px)) !important;
+    transform: translateY(var(--fit-y-offset, 20px)) !important;
+    animation: force-fade-in-text var(--fit-duration, 0.6s)
+      var(--fit-easing, cubic-bezier(0.4, 0, 0.2, 1)) 2s both !important;
+  }
+
+  [data-astro-fade-in-text][data-ready="true"][data-state="hidden"] {
+    opacity: 0 !important;
+    filter: blur(var(--fit-blur, 6px)) !important;
+    transform: translateY(var(--fit-y-offset, 20px)) !important;
+    transition: none !important;
+  }
+
+  [data-astro-fade-in-text][data-ready="true"][data-state="animate"] {
+    opacity: 1 !important;
+    filter: blur(0) !important;
+    transform: translateY(0) !important;
+    transition:
+      opacity var(--fit-duration, 0.6s) var(--fit-easing, cubic-bezier(0.4, 0, 0.2, 1))
+        var(--fit-delay, 0s),
+      filter var(--fit-duration, 0.6s) var(--fit-easing, cubic-bezier(0.4, 0, 0.2, 1))
+        var(--fit-delay, 0s),
+      transform var(--fit-duration, 0.6s) var(--fit-easing, cubic-bezier(0.4, 0, 0.2, 1))
+        var(--fit-delay, 0s) !important;
+  }
+
+  /* ScaleIn */
+  [data-astro-scale-in][data-ready="true"][data-state="hidden"] {
+    opacity: 0 !important;
+    transform: scale(var(--initial-scale, 0.9)) !important;
+    transition: none !important;
+  }
+
+  [data-astro-scale-in][data-ready="true"][data-state="visible"] {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+    transition:
+      opacity var(--duration, 600ms) var(--easing, cubic-bezier(0.34, 1.56, 0.64, 1))
+        var(--delay, 0ms),
+      transform var(--duration, 600ms) var(--easing, cubic-bezier(0.34, 1.56, 0.64, 1))
+        var(--delay, 0ms) !important;
+  }
+
+  /* InfiniteMarquee */
+  .marquee-left .marquee-content {
+    animation: force-marquee-scroll-left var(--speed, 30s) linear infinite !important;
+    transform: unset !important;
+  }
+
+  .marquee-right .marquee-content {
+    animation: force-marquee-scroll-right var(--speed, 30s) linear infinite !important;
+    transform: unset !important;
+  }
+
+  .marquee-up .marquee-content {
+    animation: force-marquee-scroll-up var(--speed, 30s) linear infinite !important;
+    transform: unset !important;
+  }
+
+  .marquee-down .marquee-content {
+    animation: force-marquee-scroll-down var(--speed, 30s) linear infinite !important;
+    transform: unset !important;
+  }
+
+  .count-up {
+    transition: color 0.2s ease !important;
+  }
+}

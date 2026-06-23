@@ -1,0 +1,45 @@
+---
+import { cn } from "@/lib/utiles";
+
+export interface InputProps {
+  label: string;
+  id: string;
+  name: string;
+  type?: string;
+  placeholder?: string;
+  maxlength?: number;
+  required?: boolean;
+  class?: string;
+  inputClass?: string;
+}
+
+const {
+  label,
+  id,
+  name,
+  type = "text",
+  placeholder,
+  maxlength,
+  required = false,
+  class: className,
+  inputClass,
+} = Astro.props;
+
+const fieldClass =
+  "w-full border-b border-border bg-transparent py-2 outline-none transition-colors focus:border-accent";
+---
+
+<label class={cn("block", className)}>
+  <span class="mb-2 block font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
+    {label}
+  </span>
+  <input
+    id={id}
+    type={type}
+    name={name}
+    placeholder={placeholder}
+    maxlength={maxlength}
+    required={required}
+    class={cn(fieldClass, inputClass)}
+  />
+</label>

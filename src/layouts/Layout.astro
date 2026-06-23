@@ -7,6 +7,7 @@ interface Props {
 
 import GrabCursor from "@/components/GrabCursor.astro";
 import SplashScreen from "@/components/SplashScreen.astro";
+import { FORCE_MOTION_INLINE_SCRIPT } from "@/lib/force-motion";
 import "@/styles/global.css";
 
 const {
@@ -21,6 +22,7 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline set:html={FORCE_MOTION_INLINE_SCRIPT} />
     <script is:inline>
       try {
         if (sessionStorage.getItem("splash-seen") === "1") {
@@ -51,5 +53,6 @@ const {
     <SplashScreen />
     <GrabCursor />
     <slot />
+    <link rel="stylesheet" href="/force-motion.css" />
   </body>
 </html>

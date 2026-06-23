@@ -1,0 +1,49 @@
+---
+import { cn } from "@/lib/utiles";
+
+export interface SelectOption {
+  value: string;
+  label: string;
+  selected?: boolean;
+}
+
+export interface SelectProps {
+  label: string;
+  id: string;
+  name: string;
+  options: SelectOption[];
+  required?: boolean;
+  class?: string;
+  selectClass?: string;
+}
+
+interface Props extends SelectProps {}
+
+const {
+  label,
+  id,
+  name,
+  options,
+  required = false,
+  class: className,
+  selectClass,
+} = Astro.props;
+
+const fieldClass =
+  "w-full cursor-pointer border-b border-border bg-transparent py-2 outline-none transition-colors focus:border-accent";
+---
+
+<label class={cn("block", className)}>
+  <span class="mb-2 block font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
+    {label}
+  </span>
+  <select id={id} name={name} required={required} class={cn(fieldClass, selectClass)}>
+    {
+      options.map((option: SelectOption) => (
+        <option value={option.value} selected={option.selected}>
+          {option.label}
+        </option>
+      ))
+    }
+  </select>
+</label>
