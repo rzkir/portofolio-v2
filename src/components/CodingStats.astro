@@ -1,26 +1,17 @@
 ---
 import CountUp from "@astroanimate/core/CountUp";
 import FocusIn from "@/components/FocusIn.astro";
-import {
-  codingLanguages,
-  codingStats,
-  codingStreaks,
-  codingTrophies,
-  heatmapOpacity,
-  heatmapValues,
-  leetcodeSolved,
-} from "@/data/portfolio";
+import CommitsRepoDialog from "@/components/dialog/dialog.commit.astro";
+import { getCodingStatsView } from "@/service/github-stats.service";
 
-const leetcodeTone: Record<string, string> = {
-  Easy: "text-emerald-200",
-  Medium: "text-amber-200",
-  Hard: "text-red-300",
-};
+const stats = await getCodingStatsView();
 
 const countUpClass =
   "font-display text-5xl italic font-normal text-background md:text-6xl";
 const countUpSmClass =
   "font-display text-3xl italic font-normal text-background";
+const countUpXsClass =
+  "font-display text-2xl italic font-normal text-background md:text-3xl";
 
 function parseStatValue(raw: string) {
   const match = raw.match(/^(\D*)(\d+)(\D*)$/);
@@ -39,7 +30,7 @@ function parseStatValue(raw: string) {
   data-header-theme="inverse"
 >
   <div class="mx-auto container px-4 md:px-6">
-    <FocusIn class="mb-16 flex items-end justify-between">
+    <FocusIn class="mb-16 flex items-end justify-between gap-6">
       <div>
         <p
           class="mb-4 font-mono text-xs tracking-widest text-background/50 uppercase"
@@ -53,16 +44,79 @@ function parseStatValue(raw: string) {
         </h2>
       </div>
       <span
-        class="hidden font-mono text-xs tracking-widest text-background/50 uppercase md:block"
-        >Update · 2026</span
+        class="hidden shrink-0 font-mono text-xs tracking-widest text-background/50 uppercase md:block"
+        >{stats.updatedLabel}</span
       >
     </FocusIn>
 
+    <FocusIn
+      class="mb-12 flex flex-col gap-6 border border-background/20 p-6 md:flex-row md:items-center md:p-8"
+      delay={40}
+    >
+      <div class="flex items-center gap-4">
+        <img
+          src={stats.profile.avatarUrl}
+          alt={stats.profile.name}
+          width={72}
+          height={72}
+          class="size-[4.5rem] rounded-full border border-background/25 object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+        <div>
+          <p class="font-display text-2xl italic">{stats.profile.name}</p>
+          <a
+            href={stats.profile.profileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-mono text-xs tracking-widest text-background/70 uppercase transition-colors hover:text-background"
+          >
+            @{stats.profile.username} →
+          </a>
+        </div>
+      </div>
+      <div
+        class="grid flex-1 gap-4 border-t border-background/15 pt-6 md:border-t-0 md:border-l md:pt-0 md:pl-8"
+      >
+        <p class="font-mono text-xs leading-relaxed text-background/75">
+          <span class="text-background/50">Workspace ·</span>
+          {stats.profile.lastProject} ({stats.profile.lastBranch}) · {
+            stats.profile.lastLanguage
+          } · {stats.profile.lastEditor} · {stats.profile.timezone}
+        </p>
+        <p class="font-mono text-xs leading-relaxed text-background/60">
+          {stats.commitsMetaMessage}
+          {
+            stats.privateRepoCount > 0 && (
+              <span> · {stats.privateRepoCount} repo private</span>
+            )
+          }
+        </p>
+      </div>
+      <a
+        href={stats.profile.wakatimeProfileUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hidden shrink-0 md:block"
+        aria-label="Profil WakaTime"
+      >
+        <img
+          src={stats.profile.wakatimePhoto}
+          alt=""
+          width={48}
+          height={48}
+          class="size-12 rounded-full border border-background/25 object-cover opacity-80 transition-opacity hover:opacity-100"
+          loading="lazy"
+          decoding="async"
+        />
+      </a>
+    </FocusIn>
+
     <div
-      class="mb-20 grid grid-cols-2 gap-px border-y border-background/20 bg-background/20 md:grid-cols-4"
+      class="mb-6 grid grid-cols-2 gap-px border-y border-background/20 bg-background/20 md:grid-cols-4"
     >
       {
-        codingStats.map((s, i) => {
+        stats.summaryStats.map((s, i) => {
           const parsed = parseStatValue(s.value);
 
           return (
@@ -96,206 +150,384 @@ function parseStatValue(raw: string) {
       }
     </div>
 
-    <div class="grid gap-16 lg:grid-cols-2">
-      <div>
-        <FocusIn class="mb-6 flex items-center justify-between" delay={40}>
-          <p
-            class="font-mono text-xs tracking-widest text-background/50 uppercase"
-          >
-            Kontribusi 52 Minggu
-          </p>
-          <span
-            class="font-mono text-xs tracking-widest text-background/50 uppercase"
-            >GitHub</span
-          >
-        </FocusIn>
+    <div
+      class="mb-20 grid grid-cols-2 gap-px border-b border-background/20 bg-background/20 md:grid-cols-4"
+    >
+      {
+        stats.secondaryStats.map((s, i) => {
+          const parsed = parseStatValue(s.value);
 
-        <FocusIn class="rounded border border-background/20 p-5" delay={80}>
-          <div class="grid grid-cols-52 gap-[3px]">
-            {
-              heatmapValues.map((v, i) => (
-                <div
-                  class="coding-stats__heatmap-cell aspect-square w-full rounded-full bg-background"
-                  style={`--i: ${i}; --cell-opacity: ${heatmapOpacity(v)}`}
+          return (
+            <FocusIn class="bg-accent p-6 md:p-8" delay={360 + i * 70}>
+              <p class="mb-2 font-mono text-[10px] tracking-widest text-background/50 uppercase">
+                {s.label}
+              </p>
+              {parsed ? (
+                <CountUp
+                  enhance
+                  value={parsed.value}
+                  prefix={parsed.prefix}
+                  suffix={parsed.suffix}
+                  duration={1400}
+                  mainClassName={countUpSmClass}
+                  fontSize="inherit"
+                  fontFamily="inherit"
+                  textColor="inherit"
                 />
-              ))
-            }
-          </div>
-          <div class="mt-4 flex items-center justify-between">
-            <span class="font-mono text-xs tracking-widest text-background/50"
-              >Jun 2025</span
-            >
-            <div class="flex items-center gap-1.5">
-              <span class="font-mono text-xs tracking-widest text-background/50"
-                >Less</span
-              >
-              {
-                [0.1, 0.3, 0.55, 0.85].map((o) => (
-                  <div
-                    class="size-2 rounded-full bg-background"
-                    style={`opacity: ${o}`}
-                  />
-                ))
-              }
-              <span class="font-mono text-xs tracking-widest text-background/50"
-                >More</span
-              >
-            </div>
-            <span class="font-mono text-xs tracking-widest text-background/50"
-              >Jun 2026</span
-            >
-          </div>
-        </FocusIn>
+              ) : (
+                <p class="font-display text-2xl italic text-background md:text-3xl">
+                  {s.value}
+                </p>
+              )}
+              <p class="mt-2 font-mono text-[10px] tracking-widest text-background/50 uppercase">
+                {s.sub}
+              </p>
+            </FocusIn>
+          );
+        })
+      }
+    </div>
 
-        <div class="mt-8 grid grid-cols-2 gap-6">
-          {
-            codingStreaks.map((st, i) => {
-              const parsed = parseStatValue(st.value);
-
-              return (
-                <FocusIn
-                  class="border-t border-background/20 pt-5"
-                  delay={120 + i * 100}
-                >
-                  <p class="mb-2 font-mono text-xs tracking-widest text-background/50 uppercase">
-                    {st.label}
-                  </p>
-                  {parsed ? (
-                    <CountUp
-                      enhance
-                      value={parsed.value}
-                      prefix={parsed.prefix}
-                      suffix={parsed.suffix}
-                      duration={1400}
-                      mainClassName={countUpSmClass}
-                      fontSize="inherit"
-                      fontFamily="inherit"
-                      textColor="inherit"
-                    />
-                  ) : (
-                    <p class="font-display text-3xl italic text-background">
-                      {st.value}
-                    </p>
-                  )}
-                  <p class="mt-1 font-mono text-xs tracking-widest text-background/60">
-                    {st.desc}
-                  </p>
-                </FocusIn>
-              );
-            })
-          }
-        </div>
-      </div>
-
-      <div>
-        <FocusIn class="mb-6 flex items-center justify-between" delay={40}>
-          <p
-            class="font-mono text-xs tracking-widest text-background/50 uppercase"
-          >
-            Distribusi Bahasa
-          </p>
-          <span
-            class="font-mono text-xs tracking-widest text-background/50 uppercase"
-            >GitHub</span
-          >
-        </FocusIn>
-
-        <div class="space-y-5">
-          {
-            codingLanguages.map((lang, i) => (
-              <FocusIn delay={80 + i * 70}>
-                <div class="mb-2 flex items-center justify-between">
-                  <span class="font-mono text-xs text-background/90">
-                    {lang.name}
-                  </span>
-                  <span class="font-mono text-xs tracking-widest text-background/50">
-                    {lang.pct}%
-                  </span>
-                </div>
-                <div class="h-1 w-full bg-background/15">
-                  <div
-                    class="coding-stats__bar-fill h-full bg-background"
-                    style={`--pct: ${lang.pct}%`}
-                  />
-                </div>
-              </FocusIn>
-            ))
-          }
-        </div>
-
-        <FocusIn class="mt-12 border-t border-background/20 pt-10" delay={100}>
-          <div class="mb-6 flex items-center justify-between">
+    <div class="grid items-start gap-16 lg:grid-cols-2">
+      <div class="space-y-12">
+        <div>
+          <FocusIn class="mb-6 flex items-center justify-between" delay={40}>
             <p
               class="font-mono text-xs tracking-widest text-background/50 uppercase"
             >
-              Problem Solved
+              Kontribusi {stats.heatmapWeekCount} Minggu
             </p>
             <span
               class="font-mono text-xs tracking-widest text-background/50 uppercase"
-              >LeetCode</span
+              >GitHub</span
             >
-          </div>
-          <div class="grid grid-cols-3 gap-px bg-background/20">
+          </FocusIn>
+
+          <FocusIn class="rounded border border-background/20 p-5" delay={80}>
+            <div
+              class="coding-stats__heatmap grid gap-[3px]"
+              style={`grid-template-columns: repeat(${stats.heatmapWeekCount}, minmax(0, 1fr))`}
+            >
+              {
+                stats.heatmapCells.map((cell, i) => (
+                  <div
+                    class="coding-stats__heatmap-cell aspect-square w-full rounded-full"
+                    style={`--i: ${i}; background-color: ${cell.color}`}
+                    title={
+                      cell.date
+                        ? `${cell.date}: ${cell.count} contributions`
+                        : undefined
+                    }
+                  />
+                ))
+              }
+            </div>
+            <div class="mt-4 flex items-center justify-between gap-3">
+              <span class="font-mono text-xs tracking-widest text-background/50"
+                >{stats.heatmapStartLabel}</span
+              >
+              <div class="flex items-center gap-1.5">
+                <span
+                  class="font-mono text-xs tracking-widest text-background/50"
+                  >Less</span
+                >
+                <div class="size-2 rounded-full bg-[#ebedf0]"></div>
+                {
+                  stats.heatmapColors.map((color) => (
+                    <div
+                      class="size-2 rounded-full"
+                      style={`background-color: ${color}`}
+                    />
+                  ))
+                }
+                <span
+                  class="font-mono text-xs tracking-widest text-background/50"
+                  >More</span
+                >
+              </div>
+              <span class="font-mono text-xs tracking-widest text-background/50"
+                >{stats.heatmapEndLabel}</span
+              >
+            </div>
             {
-              leetcodeSolved.map((d, i) => {
-                const parsed = parseStatValue(d.value);
+              stats.yearContributions.length > 0 && (
+                <div class="mt-5 flex flex-wrap gap-3 border-t border-background/15 pt-5">
+                  {stats.yearContributions.map((year) => (
+                    <span class="inline-flex items-center gap-2 rounded-full border border-background/20 px-3 py-1 font-mono text-[10px] tracking-widest text-background/75 uppercase">
+                      {year.year} · {year.total.toLocaleString("en-US")}
+                    </span>
+                  ))}
+                </div>
+              )
+            }
+            {
+              stats.heatmapNote && (
+                <p class="mt-4 font-mono text-[10px] leading-relaxed text-background/45">
+                  {stats.heatmapNote}
+                </p>
+              )
+            }
+          </FocusIn>
+
+          <div class="mt-8 grid grid-cols-2 gap-6">
+            {
+              stats.streaks.map((st, i) => {
+                const parsed = parseStatValue(st.value);
 
                 return (
                   <FocusIn
-                    class="bg-accent p-6 text-center"
-                    delay={140 + i * 80}
+                    class="border-t border-background/20 pt-5"
+                    delay={120 + i * 100}
                   >
+                    <p class="mb-2 font-mono text-xs tracking-widest text-background/50 uppercase">
+                      {st.label}
+                    </p>
                     {parsed ? (
                       <CountUp
                         enhance
                         value={parsed.value}
-                        duration={1200}
-                        mainClassName={`${countUpSmClass} ${leetcodeTone[d.label] ?? "text-background"}`}
+                        prefix={parsed.prefix}
+                        suffix={parsed.suffix}
+                        duration={1400}
+                        mainClassName={countUpSmClass}
                         fontSize="inherit"
                         fontFamily="inherit"
                         textColor="inherit"
                       />
                     ) : (
-                      <p
-                        class:list={[
-                          "font-display text-3xl italic",
-                          leetcodeTone[d.label] ?? "text-background",
-                        ]}
-                      >
-                        {d.value}
+                      <p class="font-display text-3xl italic text-background">
+                        {st.value}
                       </p>
                     )}
-                    <p class="mt-2 font-mono text-xs tracking-widest text-background/50 uppercase">
-                      {d.label}
+                    <p class="mt-1 font-mono text-xs tracking-widest text-background/60">
+                      {st.desc}
                     </p>
                   </FocusIn>
                 );
               })
             }
           </div>
-        </FocusIn>
+        </div>
 
-        <FocusIn class="mt-12 border-t border-background/20 pt-10" delay={120}>
-          <p
-            class="mb-6 font-mono text-xs tracking-widest text-background/50 uppercase"
+        <FocusIn delay={160}>
+          <div class="mb-6 flex items-center justify-between">
+            <p
+              class="font-mono text-xs tracking-widest text-background/50 uppercase"
+            >
+              Repo Terbaru
+            </p>
+            <span
+              class="font-mono text-xs tracking-widest text-background/50 uppercase"
+              >{stats.recentRepos.length} repo</span
+            >
+          </div>
+          <ul
+            class="divide-y divide-background/15 border-y border-background/15"
           >
-            Pencapaian
-          </p>
-          <div class="flex flex-wrap gap-4">
             {
-              codingTrophies.map((t, i) => (
-                <FocusIn
-                  class="inline-flex items-center gap-2 rounded-full border border-background/25 bg-background/10 px-4 py-2 font-mono text-[10px] tracking-wider text-background/85 uppercase"
-                  delay={160 + i * 60}
-                >
-                  <span class="size-1.5 rounded-full bg-background/70" />
-                  {t}
+              stats.recentRepos.map((repo, i) => (
+                <FocusIn as="li" delay={180 + i * 40}>
+                  <a
+                    href={repo.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flex items-start justify-between gap-4 py-4 transition-colors hover:text-background/80"
+                  >
+                    <div class="min-w-0">
+                      <p class="truncate font-mono text-xs text-background/90">
+                        {repo.name}
+                        {repo.isPrivate && (
+                          <span class="ml-2 text-background/45">private</span>
+                        )}
+                      </p>
+                      <p class="mt-1 font-mono text-[10px] tracking-widest text-background/45 uppercase">
+                        {repo.language ?? "—"} · {repo.totalCommits} commits ·
+                        pushed {repo.pushedLabel}
+                      </p>
+                    </div>
+                    <span class="shrink-0 font-mono text-[10px] text-background/50">
+                      ★ {repo.stars}
+                    </span>
+                  </a>
+                </FocusIn>
+              ))
+            }
+          </ul>
+        </FocusIn>
+      </div>
+
+      <div class="space-y-12">
+        <div>
+          <FocusIn class="mb-6 flex items-center justify-between" delay={40}>
+            <p
+              class="font-mono text-xs tracking-widest text-background/50 uppercase"
+            >
+              Distribusi Bahasa
+            </p>
+            <span
+              class="font-mono text-xs tracking-widest text-background/50 uppercase"
+              >{stats.languages.length} bahasa · 7 hari</span
+            >
+          </FocusIn>
+
+          <div class="max-h-64 space-y-4 overflow-y-auto pr-1">
+            {
+              stats.languages.map((lang, i) => (
+                <FocusIn delay={80 + (i % 8) * 50}>
+                  <div class="mb-2 flex items-center justify-between gap-3">
+                    <span class="font-mono text-xs text-background/90">
+                      {lang.name}
+                    </span>
+                    <span class="font-mono text-[10px] tracking-widest text-background/50">
+                      {lang.pct}% · {lang.text}
+                    </span>
+                  </div>
+                  <div class="h-1 w-full bg-background/15">
+                    <div
+                      class="coding-stats__bar-fill h-full bg-background"
+                      style={`--pct: ${Math.min(lang.pct, 100)}%`}
+                    />
+                  </div>
+                </FocusIn>
+              ))
+            }
+          </div>
+        </div>
+
+        <FocusIn delay={100}>
+          <div class="mb-6 flex items-center justify-between">
+            <p
+              class="font-mono text-xs tracking-widest text-background/50 uppercase"
+            >
+              Projek WakaTime
+            </p>
+            <span
+              class="font-mono text-xs tracking-widest text-background/50 uppercase"
+              >{stats.projects.length} proyek</span
+            >
+          </div>
+          <div class="max-h-56 space-y-4 overflow-y-auto pr-1">
+            {
+              stats.projects.map((project, i) => (
+                <FocusIn delay={120 + (i % 8) * 50}>
+                  <div class="mb-2 flex items-center justify-between gap-3">
+                    <span class="truncate font-mono text-xs text-background/90">
+                      {project.name}
+                    </span>
+                    <span class="shrink-0 font-mono text-[10px] tracking-widest text-background/50">
+                      {project.pct}% · {project.text}
+                    </span>
+                  </div>
+                  <div class="h-1 w-full bg-background/15">
+                    <div
+                      class="coding-stats__bar-fill h-full bg-background"
+                      style={`--pct: ${Math.min(project.pct, 100)}%`}
+                    />
+                  </div>
                 </FocusIn>
               ))
             }
           </div>
         </FocusIn>
+
+        <FocusIn delay={140}>
+          <div class="mb-6 flex items-center justify-between">
+            <p
+              class="font-mono text-xs tracking-widest text-background/50 uppercase"
+            >
+              Waktu Coding
+            </p>
+            <span
+              class="font-mono text-xs tracking-widest text-background/50 uppercase"
+              >WakaTime</span
+            >
+          </div>
+          <div class="grid grid-cols-3 gap-px bg-background/20">
+            {
+              stats.activityStats.map((item, i) => (
+                <FocusIn class="bg-accent p-6 text-center" delay={160 + i * 80}>
+                  <p class={countUpXsClass}>{item.value}</p>
+                  <p class="mt-2 font-mono text-xs tracking-widest text-background/50 uppercase">
+                    {item.label}
+                  </p>
+                </FocusIn>
+              ))
+            }
+          </div>
+        </FocusIn>
+
+        <FocusIn
+          class="space-y-8 border-t border-background/20 pt-10"
+          delay={200}
+        >
+          {
+            stats.dailyActivity.length > 0 && (
+              <div>
+                <p class="mb-4 font-mono text-xs tracking-widest text-background/50 uppercase">
+                  Aktivitas Harian
+                </p>
+                <div
+                  class="grid gap-px bg-background/20"
+                  style={`grid-template-columns: repeat(${Math.min(stats.dailyActivity.length, 3)}, minmax(0, 1fr))`}
+                >
+                  {stats.dailyActivity.map((day) => (
+                    <div class="bg-accent px-4 py-5 text-center">
+                      <p class="font-display text-2xl italic text-background md:text-3xl">
+                        {day.text}
+                      </p>
+                      <p class="mt-2 font-mono text-[10px] tracking-widest text-background/50 uppercase">
+                        {day.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          }
+
+          <div>
+            <p
+              class="mb-4 font-mono text-xs tracking-widest text-background/50 uppercase"
+            >
+              Goals & Pencapaian
+            </p>
+            <div class="flex flex-wrap gap-2">
+              {
+                stats.goals.map((goal) => (
+                  <span
+                    class:list={[
+                      "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 font-mono text-[10px] tracking-wider uppercase",
+                      goal.status === "success"
+                        ? "border-background/30 bg-background/15 text-background"
+                        : "border-background/15 text-background/60",
+                    ]}
+                  >
+                    <span
+                      class:list={[
+                        "size-1.5 shrink-0 rounded-full",
+                        goal.status === "success"
+                          ? "bg-background"
+                          : "bg-background/40",
+                      ]}
+                    />
+                    {goal.title}
+                  </span>
+                ))
+              }
+              {
+                stats.trophies.map((t) => (
+                  <span class="inline-flex items-center gap-2 rounded-full border border-background/25 bg-background/10 px-3 py-1.5 font-mono text-[10px] tracking-wider text-background/85 uppercase">
+                    <span class="size-1.5 shrink-0 rounded-full bg-background/70" />
+                    {t}
+                  </span>
+                ))
+              }
+            </div>
+          </div>
+        </FocusIn>
       </div>
     </div>
+
+    <CommitsRepoDialog repos={stats.commitsByRepo} />
   </div>
 </section>

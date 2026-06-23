@@ -1,0 +1,152 @@
+---
+import FocusIn from "@/components/FocusIn.astro";
+import Dialog from "@/components/ui/dialog.astro";
+import type { RepoView } from "@/service/github-stats.service";
+
+interface Props {
+  repos: RepoView[];
+  limit?: number;
+  dialogId?: string;
+}
+
+const { repos, limit = 10, dialogId = "commits-repo-dialog" } = Astro.props;
+
+const featuredRepos = repos.slice(0, limit);
+const remainingCount = Math.max(0, repos.length - limit);
+---
+
+<FocusIn class="mt-20 border-t border-background/20 pt-12" delay={300}>
+  <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <p
+        class="mb-3 font-mono text-xs tracking-widest text-background/50 uppercase"
+      >
+        Commits per Repo
+      </p>
+      <h3 class="font-display text-3xl italic">
+        {repos.length} repositori
+      </h3>
+    </div>
+    <div class="flex flex-col items-end gap-3">
+      <span class="font-mono text-xs tracking-widest text-background/50 uppercase"
+        >All time</span
+      >
+      {
+        remainingCount > 0 && (
+          <Dialog id={dialogId} class="max-w-4xl overflow-y-auto">
+            <button
+              slot="trigger"
+              type="button"
+              data-dialog-open={dialogId}
+              data-cursor="focus"
+              data-cursor-label="View"
+              class="font-mono text-[10px] tracking-[0.2em] text-background/70 uppercase transition-colors hover:text-background"
+            >
+              Lihat semua ({repos.length}) →
+            </button>
+
+            <article class="px-6 py-8 sm:px-10 sm:py-10">
+              <header class="mb-8 border-b border-border pb-6">
+                <p class="mb-2 font-mono text-[10px] tracking-[0.2em] text-accent">
+                  Arsip / Commits
+                </p>
+                <h2 class="font-display text-3xl italic leading-snug sm:text-4xl">
+                  Semua repositori
+                </h2>
+                <p class="mt-2 text-sm text-muted-foreground">
+                  {repos.length} repo · diurutkan berdasarkan total commits
+                </p>
+              </header>
+
+              <ul class="grid gap-px border border-border bg-border sm:grid-cols-2">
+                {
+                  repos.map((repo) => (
+                    <li class="bg-background">
+                      <a
+                        href={repo.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="flex items-start justify-between gap-4 p-5 transition-colors hover:bg-surface/60"
+                      >
+                        <div class="min-w-0">
+                          <p class="truncate font-mono text-xs text-foreground">
+                            {repo.name}
+                            {
+                              repo.isPrivate && (
+                                <span class="ml-2 text-muted-foreground">
+                                  private
+                                </span>
+                              )
+                            }
+                          </p>
+                          <p class="mt-1 font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
+                            {repo.language ?? "—"} · ★ {repo.stars} · fork{" "}
+                            {repo.forks}
+                          </p>
+                          <p class="mt-1 font-mono text-[10px] tracking-widest text-muted-foreground/80 uppercase">
+                            pushed {repo.pushedLabel}
+                          </p>
+                        </div>
+                        <div class="shrink-0 text-right">
+                          <p class="font-display text-2xl italic text-foreground">
+                            {repo.totalCommits}
+                          </p>
+                          <p class="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
+                            commits
+                          </p>
+                        </div>
+                      </a>
+                    </li>
+                  ))
+                }
+              </ul>
+            </article>
+          </Dialog>
+        )
+      }
+    </div>
+  </div>
+
+  <ul class="grid gap-px border border-background/15 bg-background/15 sm:grid-cols-2">
+    {
+      featuredRepos.map((repo, i) => (
+        <FocusIn as="li" class="bg-accent" delay={320 + i * 30}>
+          <a
+            href={repo.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-start justify-between gap-4 p-5 transition-colors hover:bg-background/5"
+          >
+            <div class="min-w-0">
+              <p class="truncate font-mono text-xs text-background/90">
+                {repo.name}
+                {
+                  repo.isPrivate && (
+                    <span class="ml-2 text-background/45">private</span>
+                  )
+                }
+              </p>
+              <p class="mt-1 font-mono text-[10px] tracking-widest text-background/45 uppercase">
+                {repo.language ?? "—"} · ★ {repo.stars} · fork {repo.forks}
+              </p>
+            </div>
+            <div class="shrink-0 text-right">
+              <p class="font-display text-2xl italic">{repo.totalCommits}</p>
+              <p class="font-mono text-[10px] tracking-widest text-background/45 uppercase">
+                commits
+              </p>
+            </div>
+          </a>
+        </FocusIn>
+      ))
+    }
+  </ul>
+
+  {
+    remainingCount > 0 && (
+      <p class="mt-6 font-mono text-[10px] tracking-widest text-background/45 uppercase">
+        +{remainingCount} repo lainnya · buka arsip lengkap
+      </p>
+    )
+  }
+</FocusIn>

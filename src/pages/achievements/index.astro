@@ -1,0 +1,84 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/layouts/Header.astro";
+import Footer from "@/layouts/Footer.astro";
+import FocusIn from "@/components/FocusIn.astro";
+import CredentialsGrid from "@/components/CredentialsGrid.astro";
+import { project1 } from "@/data/portfolio";
+import { getCredentialsArchive } from "@/service/archivments.service";
+
+const ogImage = new URL(project1.src, Astro.site).href;
+const credentials = await getCredentialsArchive();
+---
+
+<Layout
+  title="Kredensial — R. Ramadhan"
+  description="Arsip sertifikasi dan kredensial Rizki Ramadhan: Dicoding, Dibimbing, MySkills, JavaArch, dan lainnya."
+  ogImage={ogImage}
+>
+  <Header />
+
+  <main class="pt-28">
+    <section class="mx-auto container px-4 pb-12 md:px-6">
+      <FocusIn delay={60}>
+        <p
+          class="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+        >
+          Arsip Kredensial / Achievements
+        </p>
+        <div
+          class="flex flex-col gap-6 border-b border-border pb-10 md:flex-row md:items-end md:justify-between"
+        >
+          <h1
+            class="max-w-2xl text-balance font-display text-4xl italic leading-[0.95] md:text-6xl"
+          >
+            Sertifikasi & kredensial.
+          </h1>
+          <p class="max-w-xs text-sm leading-relaxed text-muted-foreground">
+            {credentials.length} entri — dari fundamental web development hingga
+            spesialisasi AI dan data.
+          </p>
+        </div>
+      </FocusIn>
+    </section>
+
+    <section
+      class="mx-auto container px-4 pb-20 md:px-6"
+      aria-label="Daftar kredensial"
+    >
+      <CredentialsGrid credentials={credentials} idPrefix="archive-credential" />
+    </section>
+
+    <section
+      class="border-t border-border bg-surface/40 px-4 py-10 md:px-6"
+      aria-label="Ajakan kolaborasi"
+    >
+      <div class="mx-auto container px-4 md:px-6">
+        <FocusIn class="grid items-end gap-12 md:grid-cols-12">
+          <div class="md:col-span-7">
+            <p
+              class="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+            >
+              Kolaborasi / Next
+            </p>
+            <h2 class="font-display text-4xl italic leading-tight md:text-5xl">
+              Siap menerapkan skill ini ke proyek berikutnya.
+            </h2>
+          </div>
+          <div class="flex flex-wrap gap-3 md:col-span-5 md:justify-end">
+            <a
+              href="/#kontak"
+              data-cursor="focus"
+              data-cursor-label="Email"
+              class="rounded-full bg-foreground px-8 py-4 text-sm font-medium text-background transition-colors hover:bg-accent"
+            >
+              Mulai proyek →
+            </a>
+          </div>
+        </FocusIn>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

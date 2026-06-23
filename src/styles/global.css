@@ -525,7 +525,7 @@ html.splash-pending .animate-focus {
 
 @keyframes coding-stats-dot-in {
   to {
-    opacity: var(--cell-opacity);
+    opacity: 1;
     transform: scale(1);
   }
 }
@@ -537,7 +537,7 @@ html.splash-pending .animate-focus {
   }
 
   .coding-stats__heatmap-cell {
-    opacity: var(--cell-opacity) !important;
+    opacity: 1 !important;
     transform: none !important;
     animation: none !important;
   }

@@ -1,4 +1,7 @@
-import { fetchAchievementsContents } from "@/utils/FetchArchivments";
+import {
+  fetchAchievementsContents,
+  fetchAchievementsPage,
+} from "@/utils/FetchArchivments";
 import type { AchievementsContentProps } from "@/types/archivments";
 
 export type Credential = {
@@ -45,8 +48,23 @@ function mapAchievement(
   };
 }
 
-/** Kredensial / sertifikasi dari API — di-fetch saat SSR/build. */
+function mapAchievements(items: AchievementsContentProps[]): Credential[] {
+  return items.map(mapAchievement);
+}
+
+/** Kredensial halaman pertama — untuk section landing. */
+export async function getFeaturedCredentials(): Promise<Credential[]> {
+  const { data } = await fetchAchievementsPage({ page: 1 });
+  return mapAchievements(data);
+}
+
+/** Semua kredensial / sertifikasi dari API — di-fetch saat SSR/build. */
 export async function getCredentials(): Promise<Credential[]> {
   const items = await fetchAchievementsContents();
-  return items.map(mapAchievement);
+  return mapAchievements(items);
+}
+
+/** Arsip lengkap kredensial dengan nomor urut global. */
+export async function getCredentialsArchive(): Promise<Credential[]> {
+  return getCredentials();
 }
