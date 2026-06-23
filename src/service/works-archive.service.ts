@@ -1,10 +1,13 @@
 import type { ImageMetadata } from "astro";
+
 import { project1 } from "@/data/portfolio";
+
 import {
   fetchProjectBySlug,
   fetchProjectsContents,
   fetchProjectsPage,
 } from "@/utils/FetchProjects";
+
 import type { ProjectsContentProps } from "@/types/projects";
 
 export type ArchiveWork = {

@@ -1,17 +1,14 @@
 ---
 import FocusIn from "@/components/FocusIn.astro";
 import Card from "@/components/ui/card.astro";
-import type { ArchiveWork } from "@/service/works-archive.service";
-
-interface Props {
-  works: ArchiveWork[];
-}
 
 const { works } = Astro.props;
 ---
 
 <div data-works-archive data-view="list" class="works-archive">
-  <div class="works-archive__toolbar mb-8 flex flex-wrap items-center justify-between gap-4">
+  <div
+    class="works-archive__toolbar mb-8 flex flex-wrap items-center justify-between gap-4"
+  >
     <p
       class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
     >
@@ -48,7 +45,7 @@ const { works } = Astro.props;
 
   <ul class="works-archive__list">
     {
-      works.map((work, i) => (
+      works.map((work: any, i: any) => (
         <FocusIn as="li" delay={(i % 8) * 40} class="works-archive__item">
           <Card
             no={work.no}

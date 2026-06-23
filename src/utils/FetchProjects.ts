@@ -1,17 +1,6 @@
 import { apiFetch } from "@/lib/apiFetch";
-import type {
-  ProjectDetails,
-  ProjectsContentProps,
-  ProjectsPaginatedResponse,
-} from "@/types/projects";
 
 const PROJECTS_PATH = "/api/v1/projects";
-
-export interface FetchProjectsPageOptions {
-  page?: number;
-  pageItem?: number;
-  revalidate?: number;
-}
 
 function buildProjectsUrl(options: FetchProjectsPageOptions = {}): string {
   const params = new URLSearchParams();

@@ -1,4 +1,4 @@
-export interface WakatimeUser {
+interface WakatimeUser {
   lastProject: string;
   lastBranch: string;
   lastLanguage: string;
@@ -8,7 +8,7 @@ export interface WakatimeUser {
   timezone: string;
 }
 
-export interface WakatimeDuration {
+interface WakatimeDuration {
   totalSeconds: number;
   text: string;
   digital?: string;
@@ -17,27 +17,27 @@ export interface WakatimeDuration {
   dailyAverage?: number | string;
 }
 
-export interface WakatimeBestDay {
+interface WakatimeBestDay {
   date: string;
   text: string;
   totalSeconds: number;
 }
 
-export interface WakatimeLanguage {
+interface WakatimeLanguage {
   name: string;
   totalSeconds: number;
   percent: number;
   text: string;
 }
 
-export interface WakatimeProject {
+interface WakatimeProject {
   name: string;
   totalSeconds: number;
   percent: number;
   text: string;
 }
 
-export interface WakatimeLast7Days {
+interface WakatimeLast7Days {
   totalText: string;
   totalSeconds: number;
   dailyAverage: string;
@@ -46,18 +46,18 @@ export interface WakatimeLast7Days {
   projects: WakatimeProject[];
 }
 
-export interface WakatimeTopItem {
+interface WakatimeTopItem {
   name: string;
   text: string;
   percent: number;
 }
 
-export interface WakatimeAiAgent {
+interface WakatimeAiAgent {
   name: string;
   lines: number;
 }
 
-export interface WakatimeInsights {
+interface WakatimeInsights {
   daysCoded: number;
   dailyAverage: string;
   bestDay: WakatimeBestDay;
@@ -72,13 +72,13 @@ export interface WakatimeInsights {
   topProject: WakatimeTopItem;
 }
 
-export interface WakatimeGoal {
+interface WakatimeGoal {
   id: string;
   title: string;
   status: string;
 }
 
-export interface GithubProfile {
+interface GithubProfile {
   username: string;
   name: string;
   avatarUrl: string;
@@ -90,7 +90,7 @@ export interface GithubProfile {
   totalCommits: number;
 }
 
-export interface GithubRepo {
+interface GithubRepo {
   name: string;
   fullName: string;
   url: string;
@@ -102,19 +102,19 @@ export interface GithubRepo {
   isPrivate: boolean;
 }
 
-export interface ContributionDay {
+interface ContributionDay {
   date: string;
   count: number;
   color: string;
 }
 
-export interface ContributionYearGraph {
+interface ContributionYearGraph {
   totalContributions: number;
   colors: string[];
   weeks: ContributionDay[][];
 }
 
-export interface ContributionGraph {
+interface ContributionGraph {
   years: number[];
   defaultView: string;
   lastYear: ContributionYearGraph;
@@ -123,7 +123,7 @@ export interface ContributionGraph {
   note?: string;
 }
 
-export interface CommitsMeta {
+interface CommitsMeta {
   total: number;
   totalAllTime: number;
   privateRepoCount: number;
@@ -131,7 +131,7 @@ export interface CommitsMeta {
   message: string;
 }
 
-export interface GithubStatsResponse {
+interface GithubStatsResponse {
   user: WakatimeUser;
   today: WakatimeDuration;
   allTimeSinceToday: WakatimeDuration;
@@ -147,3 +147,107 @@ export interface GithubStatsResponse {
   contributionGraph: ContributionGraph;
   commitsMeta: CommitsMeta;
 }
+
+type CodingStatItem = {
+  label: string;
+  value: string;
+  sub: string;
+};
+
+type HeatmapCell = ContributionDay;
+
+type LanguageStat = {
+  name: string;
+  pct: number;
+  text: string;
+};
+
+type ProjectStat = {
+  name: string;
+  pct: number;
+  text: string;
+};
+
+type StreakStat = {
+  label: string;
+  value: string;
+  desc: string;
+};
+
+type ActivityStat = {
+  label: string;
+  value: string;
+};
+
+type ProfileView = {
+  name: string;
+  username: string;
+  avatarUrl: string;
+  profileUrl: string;
+  followers: number;
+  following: number;
+  wakatimePhoto: string;
+  wakatimeProfileUrl: string;
+  lastProject: string;
+  lastBranch: string;
+  lastLanguage: string;
+  lastEditor: string;
+  timezone: string;
+};
+
+type AiStatItem = {
+  label: string;
+  value: string;
+};
+
+type RepoView = {
+  name: string;
+  url: string;
+  language: string | null;
+  stars: number;
+  forks: number;
+  totalCommits: number;
+  pushedLabel: string;
+  isPrivate: boolean;
+};
+
+type YearContributionStat = {
+  year: number;
+  total: number;
+};
+
+type GoalView = {
+  title: string;
+  status: string;
+};
+
+type DailyActivityView = {
+  text: string;
+  label: string;
+};
+
+type CodingStatsView = {
+  updatedLabel: string;
+  profile: ProfileView;
+  summaryStats: CodingStatItem[];
+  secondaryStats: CodingStatItem[];
+  heatmapCells: HeatmapCell[];
+  heatmapWeekCount: number;
+  heatmapColors: string[];
+  heatmapStartLabel: string;
+  heatmapEndLabel: string;
+  heatmapNote?: string;
+  streaks: StreakStat[];
+  languages: LanguageStat[];
+  projects: ProjectStat[];
+  activityStats: ActivityStat[];
+  aiStats: AiStatItem[];
+  dailyActivity: DailyActivityView[];
+  yearContributions: YearContributionStat[];
+  commitsMetaMessage: string;
+  privateRepoCount: number;
+  recentRepos: RepoView[];
+  commitsByRepo: RepoView[];
+  goals: GoalView[];
+  trophies: string[];
+};

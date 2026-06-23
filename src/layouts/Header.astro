@@ -4,7 +4,7 @@ import { cn } from "@/lib/utiles";
 const navItems = [
   { index: "01", label: "Karya", href: "/works" },
   { index: "02", label: "Layanan", href: "/layanan" },
-  { index: "03", label: "Kredensial", href: "/#kredensial" },
+  { index: "03", label: "Kredensial", href: "/achievements" },
   { index: "04", label: "Catatan", href: "/#catatan" },
 ];
 
@@ -29,118 +29,118 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
       <div
         class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-6 gap-y-4 py-4 md:grid-cols-[minmax(0,1.1fr)_auto_minmax(0,auto)] md:py-5"
       >
-      <a
-        href="/"
-        data-cursor="focus"
-        data-cursor-label="Home"
-        class={cn(
-          "group/brand flex min-w-0 flex-col gap-0.5 no-underline transition-colors duration-350 ease-cinematic",
-          inverseText,
-        )}
-      >
-        <span
-          class={cn(
-            "font-display text-[clamp(1.35rem,2vw,1.75rem)] leading-none italic transition-colors duration-350 ease-cinematic",
-            "group-hover/brand:text-accent",
-            "group-[.is-inverse]/site-header:group-hover/brand:text-foreground",
-          )}
-        >
-          R. Ramadhan
-        </span>
-        <span
-          class={cn(
-            "font-mono text-[0.5625rem] tracking-[0.22em] uppercase text-muted-foreground transition-colors duration-350 ease-cinematic",
-            "group-hover/brand:text-accent/70",
-            inverseMuted,
-            "group-[.is-inverse]/site-header:group-hover/brand:text-foreground/65",
-          )}
-        >
-          Fullstack · Bogor · 2026
-        </span>
-      </a>
-
-      <nav
-        class="hidden md:block md:justify-self-center"
-        aria-label="Navigasi utama"
-      >
-        <ul
-          class={cn(
-            "m-0 flex list-none items-center gap-0.5 rounded-full border border-border bg-surface/55 p-0.5",
-            "group-[.is-inverse]/site-header:border-background/18 group-[.is-inverse]/site-header:bg-background/8",
-          )}
-        >
-          {
-            navItems.map((item) => (
-              <li>
-                <a
-                  href={item.href}
-                  data-cursor="focus"
-                  data-cursor-label="Go"
-                  class={cn(
-                    "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[0.625rem] font-medium tracking-[0.16em] uppercase no-underline transition-colors duration-300 ease-cinematic",
-                    "hover:bg-foreground/6 hover:text-accent focus-visible:bg-foreground/6 focus-visible:text-accent",
-                    inverseText,
-                    "group-[.is-inverse]/site-header:hover:bg-background/12 group-[.is-inverse]/site-header:hover:text-background",
-                    "group-[.is-inverse]/site-header:focus-visible:bg-background/12 group-[.is-inverse]/site-header:focus-visible:text-background",
-                  )}
-                >
-                  <span
-                    class={cn(
-                      "font-mono text-[0.5625rem] tracking-[0.14em] text-accent/75",
-                      "group-[.is-inverse]/site-header:text-background/72",
-                    )}
-                  >
-                    {item.index}
-                  </span>
-                  <span>{item.label}</span>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </nav>
-
-      <div class="flex items-center justify-end gap-3">
         <a
-          href="/#kontak"
+          href="/"
           data-cursor="focus"
-          data-cursor-label="Email"
+          data-cursor-label="Home"
           class={cn(
-            "hidden items-center justify-center rounded-full border border-border px-4 py-2 text-[0.625rem] font-medium tracking-[0.16em] uppercase no-underline transition-colors duration-300 ease-cinematic sm:inline-flex",
-            "hover:border-accent hover:bg-foreground hover:text-background",
+            "group/brand flex min-w-0 flex-col gap-0.5 no-underline transition-colors duration-350 ease-cinematic",
             inverseText,
-            "group-[.is-inverse]/site-header:border-background/28",
-            "group-[.is-inverse]/site-header:hover:border-background group-[.is-inverse]/site-header:hover:bg-background group-[.is-inverse]/site-header:hover:text-accent",
           )}
         >
-          Kontak
+          <span
+            class={cn(
+              "font-display text-[clamp(1.35rem,2vw,1.75rem)] leading-none italic transition-colors duration-350 ease-cinematic",
+              "group-hover/brand:text-accent",
+              "group-[.is-inverse]/site-header:group-hover/brand:text-foreground",
+            )}
+          >
+            R. Ramadhan
+          </span>
+          <span
+            class={cn(
+              "font-mono text-[0.5625rem] tracking-[0.22em] uppercase text-muted-foreground transition-colors duration-350 ease-cinematic",
+              "group-hover/brand:text-accent/70",
+              inverseMuted,
+              "group-[.is-inverse]/site-header:group-hover/brand:text-foreground/65",
+            )}
+          >
+            Fullstack · Bogor · 2026
+          </span>
         </a>
 
-        <button
-          type="button"
-          data-header-menu-toggle
-          aria-expanded="false"
-          aria-controls="site-header-menu"
-          aria-label="Buka menu navigasi"
-          class={cn(
-            "inline-flex items-center gap-2 rounded-full border border-border bg-surface/55 px-2.5 py-1.5 transition-colors duration-300 ease-cinematic md:hidden",
-            inverseText,
-            "group-[.is-inverse]/site-header:border-background/18 group-[.is-inverse]/site-header:bg-background/8",
-          )}
+        <nav
+          class="hidden md:block md:justify-self-center"
+          aria-label="Navigasi utama"
         >
-          <span class="font-mono text-[0.5625rem] tracking-[0.2em] uppercase">
-            Menu
-          </span>
-          <span class="relative h-[0.55rem] w-3.5" aria-hidden="true">
-            <span
-              class="absolute top-0 left-0 h-px w-full rounded-full bg-current transition-transform duration-350 ease-cinematic group-[.is-menu-open]/site-header:top-1/2 group-[.is-menu-open]/site-header:-translate-y-1/2 group-[.is-menu-open]/site-header:rotate-45"
-            ></span>
-            <span
-              class="absolute bottom-0 left-0 h-px w-full rounded-full bg-current transition-transform duration-350 ease-cinematic group-[.is-menu-open]/site-header:bottom-1/2 group-[.is-menu-open]/site-header:translate-y-1/2 group-[.is-menu-open]/site-header:-rotate-45"
-            ></span>
-          </span>
-        </button>
-      </div>
+          <ul
+            class={cn(
+              "m-0 flex list-none items-center gap-0.5 rounded-full border border-border bg-surface/55 p-0.5",
+              "group-[.is-inverse]/site-header:border-background/18 group-[.is-inverse]/site-header:bg-background/8",
+            )}
+          >
+            {
+              navItems.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    data-cursor="focus"
+                    data-cursor-label="Go"
+                    class={cn(
+                      "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[0.625rem] font-medium tracking-[0.16em] uppercase no-underline transition-colors duration-300 ease-cinematic",
+                      "hover:bg-foreground/6 hover:text-accent focus-visible:bg-foreground/6 focus-visible:text-accent",
+                      inverseText,
+                      "group-[.is-inverse]/site-header:hover:bg-background/12 group-[.is-inverse]/site-header:hover:text-background",
+                      "group-[.is-inverse]/site-header:focus-visible:bg-background/12 group-[.is-inverse]/site-header:focus-visible:text-background",
+                    )}
+                  >
+                    <span
+                      class={cn(
+                        "font-mono text-[0.5625rem] tracking-[0.14em] text-accent/75",
+                        "group-[.is-inverse]/site-header:text-background/72",
+                      )}
+                    >
+                      {item.index}
+                    </span>
+                    <span>{item.label}</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+
+        <div class="flex items-center justify-end gap-3">
+          <a
+            href="/#kontak"
+            data-cursor="focus"
+            data-cursor-label="Email"
+            class={cn(
+              "hidden items-center justify-center rounded-full border border-border px-4 py-2 text-[0.625rem] font-medium tracking-[0.16em] uppercase no-underline transition-colors duration-300 ease-cinematic sm:inline-flex",
+              "hover:border-accent hover:bg-foreground hover:text-background",
+              inverseText,
+              "group-[.is-inverse]/site-header:border-background/28",
+              "group-[.is-inverse]/site-header:hover:border-background group-[.is-inverse]/site-header:hover:bg-background group-[.is-inverse]/site-header:hover:text-accent",
+            )}
+          >
+            Kontak
+          </a>
+
+          <button
+            type="button"
+            data-header-menu-toggle
+            aria-expanded="false"
+            aria-controls="site-header-menu"
+            aria-label="Buka menu navigasi"
+            class={cn(
+              "inline-flex items-center gap-2 rounded-full border border-border bg-surface/55 px-2.5 py-1.5 transition-colors duration-300 ease-cinematic md:hidden",
+              inverseText,
+              "group-[.is-inverse]/site-header:border-background/18 group-[.is-inverse]/site-header:bg-background/8",
+            )}
+          >
+            <span class="font-mono text-[0.5625rem] tracking-[0.2em] uppercase">
+              Menu
+            </span>
+            <span class="relative h-[0.55rem] w-3.5" aria-hidden="true">
+              <span
+                class="absolute top-0 left-0 h-px w-full rounded-full bg-current transition-transform duration-350 ease-cinematic group-[.is-menu-open]/site-header:top-1/2 group-[.is-menu-open]/site-header:-translate-y-1/2 group-[.is-menu-open]/site-header:rotate-45"
+              ></span>
+              <span
+                class="absolute bottom-0 left-0 h-px w-full rounded-full bg-current transition-transform duration-350 ease-cinematic group-[.is-menu-open]/site-header:bottom-1/2 group-[.is-menu-open]/site-header:translate-y-1/2 group-[.is-menu-open]/site-header:-rotate-45"
+              ></span>
+            </span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -157,36 +157,36 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
     >
       <div class="mx-auto container px-4 md:px-6">
         <ul class="m-0 list-none pt-2 pb-5">
-        {
-          navItems.map((item) => (
-            <li>
-              <a
-                href={item.href}
-                data-header-menu-link
-                class={cn(
-                  "grid grid-cols-[2.5rem_1fr] items-baseline gap-3 border-b border-border py-3.5 no-underline",
-                  inverseText,
-                )}
-              >
-                <span class="font-mono text-[0.625rem] tracking-[0.16em] text-accent">
-                  {item.index}
-                </span>
-                <span class="font-display text-[1.75rem] leading-none italic">
-                  {item.label}
-                </span>
-              </a>
-            </li>
-          ))
-        }
-        <li class="pt-4">
-          <a
-            href="/#kontak"
-            data-header-menu-link
-            class="inline-flex text-sm font-medium text-accent no-underline"
-          >
-            Mari berkolaborasi →
-          </a>
-        </li>
+          {
+            navItems.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  data-header-menu-link
+                  class={cn(
+                    "grid grid-cols-[2.5rem_1fr] items-baseline gap-3 border-b border-border py-3.5 no-underline",
+                    inverseText,
+                  )}
+                >
+                  <span class="font-mono text-[0.625rem] tracking-[0.16em] text-accent">
+                    {item.index}
+                  </span>
+                  <span class="font-display text-[1.75rem] leading-none italic">
+                    {item.label}
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+          <li class="pt-4">
+            <a
+              href="/#kontak"
+              data-header-menu-link
+              class="inline-flex text-sm font-medium text-accent no-underline"
+            >
+              Mari berkolaborasi →
+            </a>
+          </li>
         </ul>
       </div>
     </nav>

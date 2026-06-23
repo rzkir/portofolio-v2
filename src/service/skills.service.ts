@@ -1,13 +1,4 @@
 import { fetchSkillsContents } from "@/utils/FetchSkills";
-import type { SkillCategory, SkillsContentProps } from "@/types/skills";
-
-export type Skill = {
-  title: string;
-  imageUrl: string;
-  category: SkillCategory;
-};
-
-export type GroupedSkills = Record<SkillCategory, Skill[]>;
 
 export const SKILL_CATEGORY_LABELS: { key: SkillCategory; label: string }[] = [
   { key: "frontend", label: "Frontend" },

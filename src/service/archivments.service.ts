@@ -2,15 +2,6 @@ import {
   fetchAchievementsContents,
   fetchAchievementsPage,
 } from "@/utils/FetchArchivments";
-import type { AchievementsContentProps } from "@/types/archivments";
-
-export type Credential = {
-  code: string;
-  title: string;
-  issuer: string;
-  year: string;
-  imageUrl: string;
-};
 
 function parseAchievementTitle(title: string): { issuer: string; name: string } {
   const sep = title.indexOf(" - ");

@@ -2,7 +2,6 @@ import {
   fetchProjectBySlug,
   fetchProjectsContents,
 } from "@/utils/FetchProjects";
-import type { ProjectDetails } from "@/types/projects";
 
 export async function getWorkSlugs(): Promise<string[]> {
   const items = await fetchProjectsContents();

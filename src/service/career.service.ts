@@ -1,12 +1,4 @@
 import { fetchCareerContents } from "@/utils/FetchCareer";
-import type { CareerContentProps } from "@/types/carrier";
-
-export type Career = {
-  org: string;
-  role: string;
-  range: string;
-  desc: string;
-};
 
 const MONTHS_ID = [
   "Jan",

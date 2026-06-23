@@ -1,6 +1,6 @@
 import { projects, type Project } from "@/data/portfolio";
 
-export type Work = Project;
+type Work = Project;
 
 export const WORKS_SCROLL_CONFIG = {
   sectionSelector: "[data-works-scroll]",

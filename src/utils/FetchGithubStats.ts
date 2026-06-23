@@ -1,5 +1,4 @@
 import { apiFetch } from "@/lib/apiFetch";
-import type { GithubStatsResponse } from "@/types/github-stats";
 
 const GITHUB_STATS_PATH = "/api/v1/stats/wakatime";
 

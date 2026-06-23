@@ -1,9 +1,9 @@
-export interface CareerDateRange {
+interface CareerDateRange {
   start: string;
   end: string;
 }
 
-export interface CareerContentProps {
+interface CareerContentProps {
   _id: string;
   description: string;
   date: CareerDateRange;
@@ -12,3 +12,10 @@ export interface CareerContentProps {
   createdAt: string;
   updatedAt: string;
 }
+
+type Career = {
+  org: string;
+  role: string;
+  range: string;
+  desc: string;
+};

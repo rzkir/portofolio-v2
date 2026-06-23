@@ -1,5 +1,4 @@
 import { apiFetch } from "@/lib/apiFetch";
-import type { SkillsContentProps } from "@/types/skills";
 
 const SKILLS_PATH = "/api/v1/skills";
 

@@ -176,7 +176,7 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
       </FocusIn>
       <ul class="col-span-12 space-y-2 text-sm sm:col-span-9">
         {
-          featuredCredentials.map((c, i) => (
+          featuredCredentials.map((c: any, i: any) => (
             <FocusIn
               as="li"
               delay={160 + i * 35}
@@ -218,25 +218,33 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
       </h3>
       <dl class="col-span-12 grid grid-cols-2 gap-4 text-sm sm:col-span-9">
         <div>
-          <dt class="text-[10px] tracking-widest text-muted-foreground uppercase">
+          <dt
+            class="text-[10px] tracking-widest text-muted-foreground uppercase"
+          >
             Email
           </dt>
           <dd class="mt-1">hello@rizkiramadhan.biz.id</dd>
         </div>
         <div>
-          <dt class="text-[10px] tracking-widest text-muted-foreground uppercase">
+          <dt
+            class="text-[10px] tracking-widest text-muted-foreground uppercase"
+          >
             Website
           </dt>
           <dd class="mt-1">rizkiramadhan.biz.id</dd>
         </div>
         <div>
-          <dt class="text-[10px] tracking-widest text-muted-foreground uppercase">
+          <dt
+            class="text-[10px] tracking-widest text-muted-foreground uppercase"
+          >
             Lokasi
           </dt>
           <dd class="mt-1">Bogor, ID (UTC+7)</dd>
         </div>
         <div>
-          <dt class="text-[10px] tracking-widest text-muted-foreground uppercase">
+          <dt
+            class="text-[10px] tracking-widest text-muted-foreground uppercase"
+          >
             Status
           </dt>
           <dd class="mt-1 text-accent">Open for work</dd>
@@ -249,7 +257,9 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
       delay={200}
       duration={0.85}
     >
-      <p class="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
+      <p
+        class="font-mono text-[10px] tracking-widest text-muted-foreground uppercase"
+      >
         Versi lengkap tersedia sebagai PDF
       </p>
       <a

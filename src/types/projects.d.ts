@@ -1,11 +1,11 @@
-export interface ProjectCategoryDetail {
+interface ProjectCategoryDetail {
   _id: string;
   name: string;
   createdAt?: string;
   updatedAt?: string;
 }
 
-export interface ProjectsContentProps {
+interface ProjectsContentProps {
   _id: string;
   title: string;
   slug: string;
@@ -17,7 +17,7 @@ export interface ProjectsContentProps {
   updatedAt: string;
 }
 
-export interface ProjectsPaginationMeta {
+interface ProjectsPaginationMeta {
   page: number;
   pageItem: number;
   totalPages: number;
@@ -25,19 +25,29 @@ export interface ProjectsPaginationMeta {
   prevPage: boolean;
 }
 
-export interface ProjectsPaginatedResponse extends ProjectsPaginationMeta {
+interface ProjectsPaginatedResponse extends ProjectsPaginationMeta {
   data: ProjectsContentProps[];
 }
 
-export interface ProjectFramework {
+interface ProjectFramework {
   title: string;
   imageUrl: string;
 }
 
-export interface ProjectDetails extends ProjectsContentProps {
+interface ProjectDetails extends ProjectsContentProps {
   description: string;
   content: string;
   thumbnail: string;
   imageUrl: string[];
   frameworks: ProjectFramework[];
+}
+
+interface FetchProjectsPageOptions {
+  page?: number;
+  pageItem?: number;
+  revalidate?: number;
+}
+
+interface Props {
+  works: ArchiveWork[];
 }

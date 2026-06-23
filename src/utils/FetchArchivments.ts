@@ -1,16 +1,6 @@
 import { apiFetch } from "@/lib/apiFetch";
-import type {
-  AchievementsContentProps,
-  AchievementsPaginatedResponse,
-} from "@/types/archivments";
 
 const ACHIEVEMENTS_PATH = "/api/v1/achievements";
-
-export interface FetchAchievementsPageOptions {
-  page?: number;
-  pageItem?: number;
-  revalidate?: number;
-}
 
 function buildAchievementsUrl(
   options: FetchAchievementsPageOptions = {},
