@@ -26,7 +26,7 @@ const {
 } = Astro.props;
 
 const fieldClass =
-  "w-full border-b border-border bg-transparent py-2 outline-none transition-colors focus:border-accent";
+  "w-full border-b border-border bg-transparent py-2 outline-none transition-colors focus:border-accent disabled:cursor-not-allowed disabled:pointer-events-none disabled:text-muted-foreground disabled:placeholder:text-muted-foreground/60";
 ---
 
 <label class={cn("block", className)}>

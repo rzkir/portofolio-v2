@@ -4,7 +4,6 @@ import Input from "@/components/ui/input.astro";
 import Select from "@/components/ui/select.astro";
 import Textarea from "@/components/ui/textarea.astro";
 import { getGuestNotes, getProviderLabel, MESSAGE_PROVIDERS } from "@/service/noted.service";
-import { API_URL } from "astro:env/server";
 
 const notes = await getGuestNotes();
 
@@ -35,8 +34,8 @@ const providerOptions = MESSAGE_PROVIDERS.map(({ value, label }) => ({
           id="guest-name"
           name="name"
           maxlength={60}
-          required
           placeholder="Siapa kamu?"
+          required
         />
         <Select
           label="Dari mana"
@@ -108,9 +107,9 @@ const providerOptions = MESSAGE_PROVIDERS.map(({ value, label }) => ({
   </div>
 </section>
 
-<script define:vars={{ apiUrl: API_URL, initialNotes: notes }}>
+<script define:vars={{ initialNotes: notes }}>
   import { initGuestNotes } from "@/lib/guest-notes";
 
-  initGuestNotes({ apiUrl, initialNotes });
-  document.addEventListener("astro:page-load", () => initGuestNotes({ apiUrl, initialNotes }));
+  initGuestNotes({ initialNotes });
+  document.addEventListener("astro:page-load", () => initGuestNotes({ initialNotes }));
 </script>

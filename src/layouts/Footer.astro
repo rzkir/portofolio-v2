@@ -1,7 +1,6 @@
 ---
 import FocusIn from "@/components/FocusIn.astro";
-
-const socialLinks = ["LinkedIn", "GitHub", "Instagram", "Read.cv"];
+import { contact, socialLinks } from "@/data/portfolio";
 ---
 
 <footer
@@ -22,14 +21,26 @@ const socialLinks = ["LinkedIn", "GitHub", "Instagram", "Read.cv"];
         >
           Mari berkolaborasi di tahun 2026.
         </h2>
-        <a
-          href="mailto:hello@rizkiramadhan.biz.id"
-          data-cursor="focus"
-          data-cursor-label="Send"
-          class="inline-flex items-center gap-3 border-b border-background/40 pb-2 text-lg font-medium text-background transition-colors hover:border-background"
-        >
-          hello@rizkiramadhan.biz.id →
-        </a>
+        <div class="flex flex-col gap-4">
+          <a
+            href={`mailto:${contact.email}`}
+            data-cursor="focus"
+            data-cursor-label="Send"
+            class="inline-flex w-fit items-center gap-3 border-b border-background/40 pb-2 text-lg font-medium text-background transition-colors hover:border-background"
+          >
+            {contact.email} →
+          </a>
+          <a
+            href={contact.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-cursor="focus"
+            data-cursor-label="Open"
+            class="inline-flex w-fit items-center gap-3 font-mono text-xs tracking-widest text-background/70 uppercase transition-colors hover:text-background"
+          >
+            {contact.websiteLabel} →
+          </a>
+        </div>
       </FocusIn>
 
       <FocusIn
@@ -45,15 +56,17 @@ const socialLinks = ["LinkedIn", "GitHub", "Instagram", "Read.cv"];
             </p>
             <ul class="space-y-2 text-sm text-background/90">
               {
-                socialLinks.map((s) => (
+                socialLinks.map((link) => (
                   <li>
                     <a
-                      href="#"
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       data-cursor="focus"
                       data-cursor-label="Open"
                       class="transition-opacity hover:text-background"
                     >
-                      {s}
+                      {link.label}
                     </a>
                   </li>
                 ))
@@ -66,14 +79,14 @@ const socialLinks = ["LinkedIn", "GitHub", "Instagram", "Read.cv"];
             >
               Lokasi
             </p>
-            <p class="text-sm text-background/90">Bogor, ID</p>
-            <p class="text-xs text-background/60">UTC +7</p>
+            <p class="text-sm text-background/90">{contact.location}</p>
+            <p class="text-xs text-background/60">{contact.timezone}</p>
             <p
               class="mt-4 font-mono text-xs tracking-widest text-background/50 uppercase"
             >
               Status
             </p>
-            <p class="text-sm text-background/90">Open for work</p>
+            <p class="text-sm text-background/90">{contact.status}</p>
           </div>
         </div>
       </FocusIn>

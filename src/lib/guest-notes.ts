@@ -1,3 +1,5 @@
+export const GUEST_NOTES_POST_URL = "/api/guest-notes";
+
 export type GuestNote = {
   id: string;
   name: string;
@@ -15,9 +17,11 @@ const PROVIDER_LABELS: Record<MessageProvider, string> = {
   other: "Lainnya",
 };
 
+type GuestNotesLayout = "card" | "editorial";
+
 type InitGuestNotesOptions = {
-  apiUrl: string;
   initialNotes: GuestNote[];
+  layout?: GuestNotesLayout;
 };
 
 function formatDate(iso: string) {
@@ -32,7 +36,7 @@ function escapeHtml(value: string) {
     .replaceAll('"', "&quot;");
 }
 
-function renderNoteItem(note: GuestNote) {
+function renderCardNoteItem(note: GuestNote) {
   const provider = PROVIDER_LABELS[note.provider] ?? note.provider;
 
   return `
@@ -49,8 +53,44 @@ function renderNoteItem(note: GuestNote) {
   `;
 }
 
+function renderEditorialNoteItem(note: GuestNote, index: number) {
+  const provider = PROVIDER_LABELS[note.provider] ?? note.provider;
+
+  return `
+    <li class="grid grid-cols-12 gap-6 py-10 transition-colors hover:bg-background/60">
+      <div class="col-span-12 md:col-span-1">
+        <span class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
+          ${String(index + 1).padStart(2, "0")}
+        </span>
+      </div>
+      <blockquote class="col-span-12 md:col-span-8">
+        <p class="font-display text-2xl leading-snug text-foreground md:text-[1.75rem]">
+          <span class="mr-1 text-accent">"</span>${escapeHtml(note.message)}<span class="ml-1 text-accent">"</span>
+        </p>
+        <footer class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+          <span class="text-foreground/80">- ${escapeHtml(note.name)}</span>
+          <span aria-hidden>·</span>
+          <span>${escapeHtml(provider)}</span>
+        </footer>
+      </blockquote>
+      <div class="col-span-12 md:col-span-3 md:text-right">
+        <time class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">${formatEditorialDate(note.createdAt)}</time>
+      </div>
+    </li>
+  `;
+}
+
+function formatEditorialDate(iso: string) {
+  return new Date(iso).toLocaleDateString("id-ID", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 function createGuestNotesController(options: InitGuestNotesOptions) {
   let notes = [...options.initialNotes];
+  const layout = options.layout ?? "card";
 
   function renderNotes() {
     const list = document.getElementById("guest-notes-list");
@@ -69,7 +109,10 @@ function createGuestNotesController(options: InitGuestNotesOptions) {
 
     empty.classList.add("hidden");
     list.classList.remove("hidden");
-    list.innerHTML = notes.map(renderNoteItem).join("");
+    list.innerHTML =
+      layout === "editorial"
+        ? notes.map((note, index) => renderEditorialNoteItem(note, index)).join("")
+        : notes.map(renderCardNoteItem).join("");
   }
 
   async function submitNote(payload: {
@@ -77,7 +120,7 @@ function createGuestNotesController(options: InitGuestNotesOptions) {
     description: string;
     provider: MessageProvider;
   }): Promise<GuestNote> {
-    const response = await fetch(`${options.apiUrl}/api/v1/messages`, {
+    const response = await fetch(GUEST_NOTES_POST_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -101,32 +144,44 @@ function createGuestNotesController(options: InitGuestNotesOptions) {
     };
   }
 
-  return { renderNotes, submitNote, prependNote(note: GuestNote) {
-    notes = [note, ...notes];
-  } };
+  return {
+    renderNotes,
+    submitNote,
+    prependNote(note: GuestNote) {
+      notes = [note, ...notes];
+    },
+  };
 }
 
-export function initGuestNotes(options: InitGuestNotesOptions) {
-  const form = document.getElementById("guest-notes-form");
-  const nameInput = document.getElementById("guest-name") as HTMLInputElement | null;
-  const messageInput = document.getElementById("guest-message") as HTMLTextAreaElement | null;
-  const providerInput = document.getElementById("guest-provider") as HTMLSelectElement | null;
-  const errorEl = document.getElementById("guest-notes-error");
-  const countEl = document.getElementById("guest-message-count");
-  const submitBtn = form?.querySelector("button[type='submit']") as HTMLButtonElement | null;
-
-  if (!form || form.dataset.bound === "true") return;
-  form.dataset.bound = "true";
+function bindGuestNotesForm(form: HTMLFormElement, options: InitGuestNotesOptions) {
+  if (form.dataset.guestNotesBound === "true") return;
+  form.dataset.guestNotesBound = "true";
 
   const controller = createGuestNotesController(options);
+  const countEl = document.getElementById("guest-message-count");
+  const errorEl = document.getElementById("guest-notes-error");
+  const submitBtn = form.querySelector("button[type='submit']") as HTMLButtonElement | null;
+  const messageInput = form.querySelector<HTMLTextAreaElement>("#guest-message");
+  const providerInput = form.querySelector<HTMLSelectElement>("#guest-provider");
 
   messageInput?.addEventListener("input", () => {
-    if (countEl && messageInput) countEl.textContent = `${messageInput.value.length}/280`;
+    if (!countEl) return;
+    countEl.textContent = `${messageInput.value.length}/280`;
+    countEl.className =
+      messageInput.value.length >= 280
+        ? "font-mono text-[11px] text-destructive"
+        : "font-mono text-[11px] text-muted-foreground";
   });
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    if (!nameInput || !messageInput || !providerInput || !errorEl) return;
+
+    const nameInput = form.querySelector<HTMLInputElement>("#guest-name");
+
+    if (!nameInput || !messageInput || !providerInput || !errorEl) {
+      console.error("[guest-notes] Form elements missing");
+      return;
+    }
 
     const name = nameInput.value.trim();
     const message = messageInput.value.trim();
@@ -140,6 +195,13 @@ export function initGuestNotes(options: InitGuestNotesOptions) {
       errorEl.classList.remove("hidden");
       return;
     }
+
+    if (!provider) {
+      errorEl.textContent = "Sumber wajib dipilih";
+      errorEl.classList.remove("hidden");
+      return;
+    }
+
     if (!message) {
       errorEl.textContent = "Pesan wajib diisi";
       errorEl.classList.remove("hidden");
@@ -155,11 +217,17 @@ export function initGuestNotes(options: InitGuestNotesOptions) {
         provider,
       });
 
-      controller.prependNote(note);
+      controller.prependNote({ ...note, name });
+
       nameInput.value = "";
       messageInput.value = "";
       providerInput.value = "website";
-      if (countEl) countEl.textContent = "0/280";
+
+      if (countEl) {
+        countEl.textContent = "0/280";
+        countEl.className = "font-mono text-[11px] text-muted-foreground";
+      }
+
       controller.renderNotes();
     } catch (error) {
       errorEl.textContent =
@@ -171,4 +239,21 @@ export function initGuestNotes(options: InitGuestNotesOptions) {
   });
 
   controller.renderNotes();
+}
+
+export function initGuestNotes(options: InitGuestNotesOptions) {
+  const bind = () => {
+    const form = document.getElementById("guest-notes-form");
+    if (form instanceof HTMLFormElement) {
+      bindGuestNotesForm(form, options);
+    }
+  };
+
+  bind();
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", bind, { once: true });
+  }
+
+  document.addEventListener("astro:page-load", bind);
 }

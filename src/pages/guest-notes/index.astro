@@ -1,0 +1,242 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/layouts/Header.astro";
+import Footer from "@/layouts/Footer.astro";
+import {
+  getGuestNotes,
+  getProviderLabel,
+  MESSAGE_PROVIDERS,
+} from "@/service/noted.service";
+
+const notes = await getGuestNotes();
+const providerOptions = MESSAGE_PROVIDERS.map(({ value, label }) => ({
+  value,
+  label,
+}));
+
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleDateString("id-ID", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+---
+
+<Layout
+  title="Buku Tamu — Tinggalkan catatan"
+  description="Ruang tenang untuk meninggalkan catatan singkat."
+>
+  <Header />
+
+  <main class="min-h-screen bg-background text-foreground">
+    <section class="mx-auto container px-6 py-16 md:py-20">
+      <div
+        class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between"
+      >
+        <div>
+          <p
+            class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
+          >
+            Buku Tamu / {String(notes.length).padStart(2, "0")}
+          </p>
+          <h1
+            class="mt-6 font-display text-5xl leading-[1.05] tracking-tight md:text-7xl"
+          >
+            Tinggalkan
+            <br />
+            catatan.
+          </h1>
+        </div>
+        <div
+          id="guest-notes-count"
+          class="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground"
+        >
+          {notes.length} catatan
+        </div>
+      </div>
+    </section>
+
+    <section class="border-t border-border">
+      <div
+        class="mx-auto container grid grid-cols-1 gap-12 px-6 py-16 md:grid-cols-12"
+      >
+        <div class="md:col-span-4">
+          <p
+            class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
+          >
+            // LEAVE_A_NOTE
+          </p>
+          <p
+            class="mt-4 max-w-sm font-display text-2xl italic leading-snug text-foreground/80"
+          >
+            Sapaan, kritik, atau sekedar say hi - semua diterima.
+          </p>
+        </div>
+
+        <form id="guest-notes-form" class="space-y-8 md:col-span-8">
+          <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+            <label class="block">
+              <div class="mb-2 flex items-center justify-between">
+                <span
+                  class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
+                  >Nama</span
+                >
+              </div>
+              <input
+                id="guest-name"
+                name="name"
+                maxlength={60}
+                required
+                placeholder="Siapa kamu?"
+                class="w-full border-b border-border bg-transparent py-2 font-display text-xl text-foreground placeholder:text-muted-foreground/50 focus:border-accent focus:outline-none"
+              />
+            </label>
+
+            <label class="block">
+              <div class="mb-2 flex items-center justify-between">
+                <span
+                  class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
+                  >Dari</span
+                >
+              </div>
+              <select
+                id="guest-provider"
+                name="provider"
+                required
+                class="w-full cursor-pointer border-b border-border bg-transparent py-2 font-display text-xl text-foreground focus:border-accent focus:outline-none"
+              >
+                {
+                  providerOptions.map((opt) => (
+                    <option
+                      key={opt.value}
+                      value={opt.value}
+                      selected={opt.value === "website"}
+                      class="bg-background"
+                    >
+                      {opt.label}
+                    </option>
+                  ))
+                }
+              </select>
+            </label>
+          </div>
+
+          <label class="block">
+            <div class="mb-2 flex items-center justify-between">
+              <span
+                class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
+                >Pesan</span
+              >
+              <span
+                id="guest-message-count"
+                class="font-mono text-[11px] text-muted-foreground">0/280</span
+              >
+            </div>
+            <textarea
+              id="guest-message"
+              name="message"
+              required
+              rows={4}
+              maxlength={280}
+              placeholder="Tulis sesuatu yang ringan..."
+              class="w-full resize-none border-b border-border bg-transparent py-2 font-display text-xl leading-snug text-foreground placeholder:text-muted-foreground/50 focus:border-accent focus:outline-none"
+            ></textarea>
+          </label>
+
+          <p
+            id="guest-notes-error"
+            class="hidden font-mono text-xs text-destructive"
+          >
+          </p>
+
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              class="group inline-flex items-center gap-3 font-mono text-xs uppercase tracking-[0.24em] text-foreground transition-colors hover:text-accent disabled:opacity-50"
+            >
+              Kirim catatan
+              <span class="transition-transform group-hover:translate-x-1"
+                >-></span
+              >
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="border-t border-border bg-surface/40">
+      <div class="mx-auto container px-6 py-20">
+        <div class="mb-12 flex items-baseline justify-between">
+          <h2 class="font-display text-3xl tracking-tight md:text-4xl">
+            Arsip catatan
+          </h2>
+          <span
+            class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
+          >
+            N° {String(notes.length).padStart(3, "0")}
+          </span>
+        </div>
+
+        <p
+          id="guest-notes-empty"
+          class:list={[
+            "py-16 text-center font-display text-2xl italic text-muted-foreground",
+            { hidden: notes.length > 0 },
+          ]}
+        >
+          Belum ada catatan - jadilah yang pertama.
+        </p>
+
+        <ol
+          id="guest-notes-list"
+          class:list={[
+            "divide-y divide-border",
+            { hidden: notes.length === 0 },
+          ]}
+        >
+          {
+            notes.map((note, i) => (
+              <li class="grid grid-cols-12 gap-6 py-10 transition-colors hover:bg-background/60">
+                <div class="col-span-12 md:col-span-1">
+                  <span class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </div>
+
+                <blockquote class="col-span-12 md:col-span-8">
+                  <p class="font-display text-2xl leading-snug text-foreground md:text-[1.75rem]">
+                    <span class="mr-1 text-accent">"</span>
+                    {note.message}
+                    <span class="ml-1 text-accent">"</span>
+                  </p>
+                  <footer class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    <span class="text-foreground/80">- {note.name}</span>
+                    <span aria-hidden>·</span>
+                    <span>{getProviderLabel(note.provider)}</span>
+                  </footer>
+                </blockquote>
+
+                <div class="col-span-12 md:col-span-3 md:text-right">
+                  <time class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    {formatDate(note.createdAt)}
+                  </time>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script define:vars={{ initialNotes: notes }}>
+  import { initGuestNotes } from "@/lib/guest-notes";
+
+  initGuestNotes({ initialNotes, layout: "editorial" });
+  document.addEventListener("astro:page-load", () =>
+    initGuestNotes({ initialNotes, layout: "editorial" }),
+  );
+</script>

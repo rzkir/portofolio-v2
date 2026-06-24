@@ -46,23 +46,6 @@ const category = work.categoryDetail?.name ?? work.category;
   <Header />
 
   <main class="min-h-screen bg-background pt-24 text-foreground">
-    <header class="border-b border-border">
-      <div
-        class="mx-auto container w-full flex items-center justify-between px-4 py-5 md:px-6"
-      >
-        <a
-          href="/works"
-          data-cursor="focus"
-          data-cursor-label="Back"
-          class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ArrowLeft size={14} />
-          Arsip
-        </a>
-        <span class="font-display text-base italic">Works</span>
-      </div>
-    </header>
-
     <section class="border-b border-border">
       <div
         class="mx-auto container w-full grid grid-cols-2 gap-x-10 gap-y-8 px-4 py-5 md:grid-cols-4 md:px-6"
@@ -294,5 +277,49 @@ const category = work.categoryDetail?.name ?? work.category;
     </section>
   </main>
 
+  <a
+    id="work-back-fab"
+    href="/works"
+    data-visible="false"
+    data-cursor="focus"
+    data-cursor-label="Back"
+    aria-hidden="true"
+    class={cn(
+      "fixed bottom-6 left-1/2 z-40 inline-flex -translate-x-1/2 items-center gap-2 rounded-full border border-border bg-background/92 px-5 py-3 font-mono text-xs uppercase tracking-[0.18em] text-foreground shadow-[0_10px_40px_color-mix(in_oklch,var(--foreground)_10%,transparent)] backdrop-blur-md",
+      "translate-y-10 opacity-0 pointer-events-none transition-[transform,opacity] duration-500 ease-cinematic",
+      "hover:border-accent hover:text-accent",
+      "data-[visible=true]:translate-y-0 data-[visible=true]:opacity-100 data-[visible=true]:pointer-events-auto",
+    )}
+  >
+    <ArrowLeft size={14} />
+    Kembali ke arsip
+  </a>
+
   <Footer />
 </Layout>
+
+<script>
+  function bindWorkBackFab() {
+    const fab = document.getElementById("work-back-fab");
+    if (!fab || fab.dataset.bound === "true") return;
+    fab.dataset.bound = "true";
+
+    const threshold = 160;
+    let visible = false;
+
+    const update = () => {
+      const shouldShow = window.scrollY > threshold;
+      if (shouldShow === visible) return;
+
+      visible = shouldShow;
+      fab.dataset.visible = shouldShow ? "true" : "false";
+      fab.setAttribute("aria-hidden", shouldShow ? "false" : "true");
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+  }
+
+  bindWorkBackFab();
+  document.addEventListener("astro:page-load", bindWorkBackFab);
+</script>
