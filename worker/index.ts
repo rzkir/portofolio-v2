@@ -1,23 +1,15 @@
 interface Env {
   ASSETS: Fetcher;
   API_URL: string;
-  API_SECRET?: string;
 }
 
 async function handleGuestNotesPost(request: Request, env: Env): Promise<Response> {
   try {
     const payload = await request.json();
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    };
-
-    if (env.API_SECRET) {
-      headers.Authorization = `Bearer ${env.API_SECRET}`;
-    }
 
     const response = await fetch(`${env.API_URL}/api/v1/messages`, {
       method: "POST",
-      headers,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
 
