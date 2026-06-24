@@ -13,7 +13,6 @@ import {
   getGuestNotes,
   formatGuestNoteDateFull,
 } from "@/service/noted.service";
-import { API_URL } from "astro:env/server";
 
 const notes = await getGuestNotes();
 const noteCount = String(notes.length).padStart(2, "0");
@@ -76,7 +75,6 @@ const fieldClass =
 
         <form
           id="guest-notes-form"
-          data-api-url={API_URL}
           data-layout="page"
           class="space-y-8 md:col-span-8"
         >

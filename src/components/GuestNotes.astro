@@ -5,7 +5,6 @@ import Select from "@/components/ui/select.astro";
 import Textarea from "@/components/ui/textarea.astro";
 import { GUEST_NOTE_PROVIDERS } from "@/lib/guest-note-providers";
 import { getGuestNotes, formatGuestNoteDate } from "@/service/noted.service";
-import { API_URL } from "astro:env/server";
 
 const notes = await getGuestNotes();
 
@@ -33,7 +32,6 @@ const providerOptions = [...GUEST_NOTE_PROVIDERS];
   <div class="grid gap-12 lg:grid-cols-12">
     <form
       id="guest-notes-form"
-      data-api-url={API_URL}
       class="self-start border border-border bg-surface/40 p-8 lg:col-span-5"
     >
       <p

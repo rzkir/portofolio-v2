@@ -3,10 +3,9 @@ import {
   MESSAGE_PROVIDERS,
 } from "@/lib/guest-note-providers";
 
-const MESSAGES_PATH = "/api/v1/messages";
+const GUEST_NOTES_PATH = "/api/guest-notes";
 
 let notes: GuestNote[] = [];
-let apiBaseUrl = "";
 let layout: "section" | "page" = "section";
 
 function mapNotedMessage(item: NotedMessageProps): GuestNote {
@@ -22,7 +21,7 @@ function mapNotedMessage(item: NotedMessageProps): GuestNote {
 async function createMessage(
   payload: CreateNotedPayload,
 ): Promise<GuestNote> {
-  const response = await fetch(`${apiBaseUrl}${MESSAGES_PATH}`, {
+  const response = await fetch(GUEST_NOTES_PATH, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -170,8 +169,7 @@ function escapeHtml(value: string) {
     .replaceAll('"', "&quot;");
 }
 
-function readBootstrap(): { notes: GuestNote[]; apiUrl: string } {
-  const form = document.getElementById("guest-notes-form");
+function readBootstrap(): GuestNote[] {
   const bootstrap = document.getElementById("guest-notes-bootstrap");
   let notes: GuestNote[] = [];
 
@@ -184,23 +182,15 @@ function readBootstrap(): { notes: GuestNote[]; apiUrl: string } {
     }
   }
 
-  return {
-    notes,
-    apiUrl: form?.dataset.apiUrl ?? "",
-  };
+  return notes;
 }
 
 export function bootGuestNotes() {
-  const { notes: initialNotes, apiUrl } = readBootstrap();
-  initGuestNotes(initialNotes, apiUrl);
+  initGuestNotes(readBootstrap());
 }
 
-export function initGuestNotes(
-  initialNotes: GuestNote[] = [],
-  apiUrl = "",
-) {
+export function initGuestNotes(initialNotes: GuestNote[] = []) {
   notes = initialNotes;
-  apiBaseUrl = apiUrl.replace(/\/$/, "");
 
   const form = document.getElementById("guest-notes-form");
   layout = form?.dataset.layout === "page" ? "page" : "section";
