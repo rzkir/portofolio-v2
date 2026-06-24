@@ -2,24 +2,25 @@
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/layouts/Header.astro";
 import Footer from "@/layouts/Footer.astro";
+import Input from "@/components/ui/input.astro";
+import Select from "@/components/ui/select.astro";
+import Textarea from "@/components/ui/textarea.astro";
+import {
+  GUEST_NOTE_PROVIDERS,
+  getProviderLabel,
+} from "@/lib/guest-note-providers";
 import {
   getGuestNotes,
-  getProviderLabel,
-  MESSAGE_PROVIDERS,
+  formatGuestNoteDateFull,
 } from "@/service/noted.service";
+import { API_URL } from "astro:env/server";
 
 const notes = await getGuestNotes();
-const providerOptions = MESSAGE_PROVIDERS.map(({ value, label }) => ({
-  value,
-  label,
-}));
+const noteCount = String(notes.length).padStart(2, "0");
+const archiveCount = String(notes.length).padStart(3, "0");
 
-const formatDate = (iso: string) =>
-  new Date(iso).toLocaleDateString("id-ID", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
+const fieldClass =
+  "font-display text-xl text-foreground placeholder:text-muted-foreground/50";
 ---
 
 <Layout
@@ -28,16 +29,16 @@ const formatDate = (iso: string) =>
 >
   <Header />
 
-  <main class="min-h-screen bg-background text-foreground">
-    <section class="mx-auto container px-6 py-16 md:py-20">
+  <main class="min-h-screen bg-background pt-28 text-foreground">
+    <section class="mx-auto container px-4 md:px-6">
       <div
         class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between"
       >
         <div>
           <p
-            class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
+            class="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase"
           >
-            Buku Tamu / {String(notes.length).padStart(2, "0")}
+            Buku Tamu / <span id="guest-notes-hero-index">{noteCount}</span>
           </p>
           <h1
             class="mt-6 font-display text-5xl leading-[1.05] tracking-tight md:text-7xl"
@@ -49,7 +50,7 @@ const formatDate = (iso: string) =>
         </div>
         <div
           id="guest-notes-count"
-          class="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground"
+          class="font-mono text-[11px] tracking-[0.18em] text-muted-foreground uppercase"
         >
           {notes.length} catatan
         </div>
@@ -58,93 +59,65 @@ const formatDate = (iso: string) =>
 
     <section class="border-t border-border">
       <div
-        class="mx-auto container grid grid-cols-1 gap-12 px-6 py-16 md:grid-cols-12"
+        class="mx-auto grid container grid-cols-1 gap-12 px-4 py-16 md:grid-cols-12 md:px-6"
       >
         <div class="md:col-span-4">
           <p
-            class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
+            class="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase"
           >
             // LEAVE_A_NOTE
           </p>
           <p
-            class="mt-4 max-w-sm font-display text-2xl italic leading-snug text-foreground/80"
+            class="mt-4 max-w-sm font-display text-2xl leading-snug text-foreground/80 italic"
           >
-            Sapaan, kritik, atau sekedar say hi - semua diterima.
+            Sapaan, kritik, atau sekedar say hi — semua diterima.
           </p>
         </div>
 
         <form
           id="guest-notes-form"
+          data-api-url={API_URL}
+          data-layout="page"
           class="space-y-8 md:col-span-8"
-          onsubmit="return false"
         >
           <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-            <label class="block">
-              <div class="mb-2 flex items-center justify-between">
-                <span
-                  class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
-                  >Nama</span
-                >
-              </div>
-              <input
-                id="guest-name"
-                name="name"
-                maxlength={60}
-                required
-                placeholder="Siapa kamu?"
-                class="w-full border-b border-border bg-transparent py-2 font-display text-xl text-foreground placeholder:text-muted-foreground/50 focus:border-accent focus:outline-none"
-              />
-            </label>
-
-            <label class="block">
-              <div class="mb-2 flex items-center justify-between">
-                <span
-                  class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
-                  >Dari</span
-                >
-              </div>
-              <select
-                id="guest-provider"
-                name="provider"
-                required
-                class="w-full cursor-pointer border-b border-border bg-transparent py-2 font-display text-xl text-foreground focus:border-accent focus:outline-none"
-              >
-                {
-                  providerOptions.map((opt) => (
-                    <option
-                      value={opt.value}
-                      selected={opt.value === "website"}
-                      class="bg-background"
-                    >
-                      {opt.label}
-                    </option>
-                  ))
-                }
-              </select>
-            </label>
+            <Input
+              id="guest-name"
+              name="name"
+              label="Nama"
+              maxlength={60}
+              required
+              placeholder="Siapa kamu?"
+              inputClass={fieldClass}
+            />
+            <Select
+              id="guest-provider"
+              name="provider"
+              label="Dari"
+              options={[...GUEST_NOTE_PROVIDERS]}
+              required
+              selectClass={`cursor-pointer ${fieldClass}`}
+            />
           </div>
 
-          <label class="block">
-            <div class="mb-2 flex items-center justify-between">
-              <span
-                class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
-                >Pesan</span
-              >
-              <span
-                id="guest-message-count"
-                class="font-mono text-[11px] text-muted-foreground">0/280</span
-              >
-            </div>
-            <textarea
-              id="guest-message"
-              name="message"
-              required
-              rows={4}
-              maxlength={280}
-              placeholder="Tulis sesuatu yang ringan..."
-              class="w-full resize-none border-b border-border bg-transparent py-2 font-display text-xl leading-snug text-foreground placeholder:text-muted-foreground/50 focus:border-accent focus:outline-none"
-            ></textarea>
-          </label>
+          <Textarea
+            id="guest-message"
+            name="message"
+            label="Pesan"
+            maxlength={280}
+            required
+            rows={4}
+            placeholder="Tulis sesuatu yang ringan…"
+            textareaClass={`resize-none leading-snug ${fieldClass}`}
+          >
+            <span
+              slot="label-extra"
+              id="guest-message-count"
+              class="font-mono text-[11px] text-muted-foreground"
+            >
+              0/280
+            </span>
+          </Textarea>
 
           <p
             id="guest-notes-error"
@@ -155,11 +128,11 @@ const formatDate = (iso: string) =>
           <div class="flex justify-end">
             <button
               type="submit"
-              class="group inline-flex items-center gap-3 font-mono text-xs uppercase tracking-[0.24em] text-foreground transition-colors hover:text-accent disabled:opacity-50"
+              class="group inline-flex items-center gap-3 font-mono text-xs tracking-[0.24em] text-foreground uppercase transition-colors hover:text-accent disabled:opacity-50"
             >
               Kirim catatan
               <span class="transition-transform group-hover:translate-x-1"
-                >-></span
+                >→</span
               >
             </button>
           </div>
@@ -168,60 +141,61 @@ const formatDate = (iso: string) =>
     </section>
 
     <section class="border-t border-border bg-surface/40">
-      <div class="mx-auto container px-6 py-20">
+      <div class="mx-auto container px-4 py-20 md:px-6">
         <div class="mb-12 flex items-baseline justify-between">
           <h2 class="font-display text-3xl tracking-tight md:text-4xl">
             Arsip catatan
           </h2>
           <span
-            class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
+            id="guest-notes-archive-count"
+            class="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase"
           >
-            N° {String(notes.length).padStart(3, "0")}
+            N° {archiveCount}
           </span>
         </div>
 
         <p
           id="guest-notes-empty"
           class:list={[
-            "py-16 text-center font-display text-2xl italic text-muted-foreground",
-            { hidden: notes.length > 0 },
+            "py-16 text-center font-display text-2xl text-muted-foreground italic",
+            notes.length > 0 && "hidden",
           ]}
         >
-          Belum ada catatan - jadilah yang pertama.
+          Belum ada catatan — jadilah yang pertama.
         </p>
 
         <ol
           id="guest-notes-list"
           class:list={[
             "divide-y divide-border",
-            { hidden: notes.length === 0 },
+            notes.length === 0 && "hidden",
           ]}
         >
           {
-            notes.map((note, i) => (
+            notes.map((note, index) => (
               <li class="grid grid-cols-12 gap-6 py-10 transition-colors hover:bg-background/60">
                 <div class="col-span-12 md:col-span-1">
-                  <span class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
-                    {String(i + 1).padStart(2, "0")}
+                  <span class="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase">
+                    {String(index + 1).padStart(2, "0")}
                   </span>
                 </div>
 
                 <blockquote class="col-span-12 md:col-span-8">
                   <p class="font-display text-2xl leading-snug text-foreground md:text-[1.75rem]">
-                    <span class="mr-1 text-accent">"</span>
+                    <span class="mr-1 text-accent">“</span>
                     {note.message}
-                    <span class="ml-1 text-accent">"</span>
+                    <span class="ml-1 text-accent">”</span>
                   </p>
-                  <footer class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                    <span class="text-foreground/80">- {note.name}</span>
-                    <span aria-hidden>·</span>
+                  <footer class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] tracking-[0.18em] text-muted-foreground uppercase">
+                    <span class="text-foreground/80">— {note.name}</span>
+                    <span aria-hidden="true">·</span>
                     <span>{getProviderLabel(note.provider)}</span>
                   </footer>
                 </blockquote>
 
                 <div class="col-span-12 md:col-span-3 md:text-right">
-                  <time class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                    {formatDate(note.createdAt)}
+                  <time class="font-mono text-[11px] tracking-[0.18em] text-muted-foreground uppercase">
+                    {formatGuestNoteDateFull(note.createdAt)}
                   </time>
                 </div>
               </li>
@@ -233,22 +207,17 @@ const formatDate = (iso: string) =>
   </main>
 
   <Footer />
+
+  <script
+    id="guest-notes-bootstrap"
+    type="application/json"
+    set:html={JSON.stringify(notes)}
+  />
+
+  <script>
+    import { bootGuestNotes } from "@/lib/guest-notes";
+
+    bootGuestNotes();
+    document.addEventListener("astro:page-load", bootGuestNotes);
+  </script>
 </Layout>
-
-<script id="guest-notes-initial" type="application/json" set:html={JSON.stringify(notes)} />
-
-<script>
-  import { initGuestNotes } from "@/lib/guest-notes";
-
-  function readInitialNotes() {
-    const el = document.getElementById("guest-notes-initial");
-    return JSON.parse(el?.textContent ?? "[]");
-  }
-
-  const initialNotes = readInitialNotes();
-
-  initGuestNotes({ initialNotes, layout: "editorial" });
-  document.addEventListener("astro:page-load", () =>
-    initGuestNotes({ initialNotes: readInitialNotes(), layout: "editorial" }),
-  );
-</script>

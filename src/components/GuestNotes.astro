@@ -3,24 +3,29 @@ import FocusIn from "@/components/FocusIn.astro";
 import Input from "@/components/ui/input.astro";
 import Select from "@/components/ui/select.astro";
 import Textarea from "@/components/ui/textarea.astro";
-import { getGuestNotes, getProviderLabel, MESSAGE_PROVIDERS } from "@/service/noted.service";
+import { GUEST_NOTE_PROVIDERS } from "@/lib/guest-note-providers";
+import { getGuestNotes, formatGuestNoteDate } from "@/service/noted.service";
+import { API_URL } from "astro:env/server";
 
 const notes = await getGuestNotes();
 
-const providerOptions = MESSAGE_PROVIDERS.map(({ value, label }) => ({
-  value,
-  label,
-  selected: value === "website",
-}));
+const providerOptions = [...GUEST_NOTE_PROVIDERS];
 ---
 
 <section id="catatan" class="mx-auto max-w-6xl px-6 py-32">
   <FocusIn class="mb-12 flex items-end justify-between">
     <div>
-      <p class="mb-4 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">Buku Tamu / 11</p>
+      <p
+        class="mb-4 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
+      >
+        Buku Tamu / 11
+      </p>
       <h2 class="font-display text-5xl italic">Tinggalkan catatan.</h2>
     </div>
-    <span id="guest-notes-count" class="hidden font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase md:block">
+    <span
+      id="guest-notes-count"
+      class="hidden font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase md:block"
+    >
       {notes.length} catatan
     </span>
   </FocusIn>
@@ -28,30 +33,34 @@ const providerOptions = MESSAGE_PROVIDERS.map(({ value, label }) => ({
   <div class="grid gap-12 lg:grid-cols-12">
     <form
       id="guest-notes-form"
+      data-api-url={API_URL}
       class="self-start border border-border bg-surface/40 p-8 lg:col-span-5"
-      onsubmit="return false"
     >
-      <p class="mb-6 font-mono text-[10px] tracking-[0.2em] text-accent uppercase">// LEAVE_A_NOTE</p>
+      <p
+        class="mb-6 font-mono text-[10px] tracking-[0.2em] text-accent uppercase"
+      >
+        // LEAVE_A_NOTE
+      </p>
       <div class="space-y-5">
         <Input
-          label="Nama"
           id="guest-name"
           name="name"
+          label="Nama"
           maxlength={60}
-          placeholder="Siapa kamu?"
           required
+          placeholder="Siapa kamu?"
         />
         <Select
-          label="Dari mana"
           id="guest-provider"
           name="provider"
+          label="Dari mana kamu tahu?"
           options={providerOptions}
           required
         />
         <Textarea
-          label="Catatan"
           id="guest-message"
           name="message"
+          label="Catatan"
           maxlength={280}
           required
           rows={4}
@@ -59,7 +68,11 @@ const providerOptions = MESSAGE_PROVIDERS.map(({ value, label }) => ({
         >
           <span slot="label-extra" id="guest-message-count">0/280</span>
         </Textarea>
-        <p id="guest-notes-error" class="hidden font-mono text-xs text-destructive"></p>
+        <p
+          id="guest-notes-error"
+          class="hidden font-mono text-xs text-destructive"
+        >
+        </p>
         <button
           type="submit"
           data-cursor="focus"
@@ -74,11 +87,17 @@ const providerOptions = MESSAGE_PROVIDERS.map(({ value, label }) => ({
     <div class="lg:col-span-7">
       <div
         id="guest-notes-empty"
-        class:list={["grid h-64 place-items-center border border-dashed border-border text-sm text-muted-foreground", { hidden: notes.length > 0 }]}
+        class:list={[
+          "grid h-64 place-items-center border border-dashed border-border text-sm text-muted-foreground",
+          notes.length > 0 && "hidden",
+        ]}
       >
         Belum ada catatan — jadilah yang pertama.
       </div>
-      <ul id="guest-notes-list" class:list={["grid gap-4 sm:grid-cols-2", { hidden: notes.length === 0 }]}>
+      <ul
+        id="guest-notes-list"
+        class:list={["grid gap-4 sm:grid-cols-2", notes.length === 0 && "hidden"]}
+      >
         {
           notes.map((note) => (
             <li
@@ -86,21 +105,13 @@ const providerOptions = MESSAGE_PROVIDERS.map(({ value, label }) => ({
               data-cursor-label="Read"
               class="border border-border bg-background p-5 transition-colors hover:border-accent/40"
             >
-              <p class="mb-3 font-display text-lg leading-snug italic">"{note.message}"</p>
+              <p class="mb-3 font-display text-lg leading-snug italic">
+                "{note.message}"
+              </p>
               <div class="flex items-end justify-between border-t border-border pt-3">
-                <div>
-                  <p class="text-sm font-medium">— {note.name}</p>
-                  <p class="mt-1 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
-                    {getProviderLabel(note.provider)}
-                  </p>
-                </div>
+                <p class="text-sm font-medium">— {note.name}</p>
                 <p class="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
-                  {
-                    new Date(note.createdAt).toLocaleDateString("id-ID", {
-                      day: "2-digit",
-                      month: "short",
-                    })
-                  }
+                  {formatGuestNoteDate(note.createdAt)}
                 </p>
               </div>
             </li>
@@ -111,20 +122,11 @@ const providerOptions = MESSAGE_PROVIDERS.map(({ value, label }) => ({
   </div>
 </section>
 
-<script id="guest-notes-initial" type="application/json" set:html={JSON.stringify(notes)} />
+<script id="guest-notes-bootstrap" type="application/json" set:html={JSON.stringify(notes)} />
 
 <script>
-  import { initGuestNotes } from "@/lib/guest-notes";
+  import { bootGuestNotes } from "@/lib/guest-notes";
 
-  function readInitialNotes() {
-    const el = document.getElementById("guest-notes-initial");
-    return JSON.parse(el?.textContent ?? "[]");
-  }
-
-  const initialNotes = readInitialNotes();
-
-  initGuestNotes({ initialNotes });
-  document.addEventListener("astro:page-load", () =>
-    initGuestNotes({ initialNotes: readInitialNotes() }),
-  );
+  bootGuestNotes();
+  document.addEventListener("astro:page-load", bootGuestNotes);
 </script>
