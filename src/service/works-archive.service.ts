@@ -50,6 +50,12 @@ async function mapProjectsToArchive<T extends ArchiveWork>(
   return items.map((item, index) => mapItem(item, index, details[index]));
 }
 
+/** Jumlah total karya dari API. */
+export async function getWorksCount(): Promise<number> {
+  const items = await fetchProjectsContents();
+  return items.length;
+}
+
 /** Karya arsip dari API — di-fetch saat SSR/build. */
 export async function getWorksArchive(): Promise<ArchiveWork[]> {
   const items = await fetchProjectsContents();

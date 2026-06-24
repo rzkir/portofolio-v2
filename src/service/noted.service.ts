@@ -10,13 +10,6 @@ function mapNotedMessage(item: NotedMessageProps): GuestNote {
   };
 }
 
-export function formatGuestNoteDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("id-ID", {
-    day: "2-digit",
-    month: "short",
-  });
-}
-
 export function formatGuestNoteDateFull(iso: string): string {
   return new Date(iso).toLocaleDateString("id-ID", {
     day: "2-digit",

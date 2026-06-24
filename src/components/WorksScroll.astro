@@ -36,17 +36,17 @@ const inViewMargin = "-12%";
         <div class="flex items-end justify-between">
           <div>
             <p
-              class="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] opacity-50"
+              class="mb-4 font-mono text-sm tracking-widest text-gray-300 uppercase"
             >
-              Karya Pilihan / 02
+              Latest works
             </p>
             <h2 class="font-display text-5xl italic">Featured Works</h2>
           </div>
           <div class="hidden flex-col items-end gap-3 md:flex">
             <span
-              class="font-mono text-[10px] uppercase tracking-[0.2em] opacity-50"
+              class="font-mono text-sm tracking-widest text-gray-300 uppercase"
             >
-              Scroll untuk menjelajah
+              Scroll to explore
             </span>
             <a
               href="/works"
@@ -54,7 +54,7 @@ const inViewMargin = "-12%";
               data-cursor-label="View"
               class="font-mono text-[10px] uppercase tracking-[0.2em] text-background/70 transition-colors hover:text-background"
             >
-              Lihat arsip lengkap →
+              View all works →
             </a>
           </div>
         </div>
@@ -95,23 +95,21 @@ const inViewMargin = "-12%";
                     class="overflow-hidden rounded-lg bg-background/10 md:col-span-7"
                   >
                     <figure data-cursor="grab">
-                      {
-                        typeof work.image === "string" ? (
-                          <img
-                            src={work.image}
-                            alt={work.title}
-                            loading="lazy"
-                            decoding="async"
-                            class="aspect-video w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-                          />
-                        ) : (
-                          <Image
-                            src={work.image}
-                            alt={work.title}
-                            class="aspect-video w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-                          />
-                        )
-                      }
+                      {typeof work.image === "string" ? (
+                        <img
+                          src={work.image}
+                          alt={work.title}
+                          loading="lazy"
+                          decoding="async"
+                          class="aspect-video w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                        />
+                      ) : (
+                        <Image
+                          src={work.image}
+                          alt={work.title}
+                          class="aspect-video w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                        />
+                      )}
                     </figure>
                   </ScaleIn>
                   <div

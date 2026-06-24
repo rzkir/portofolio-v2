@@ -43,6 +43,12 @@ function mapAchievements(items: AchievementsContentProps[]): Credential[] {
   return items.map(mapAchievement);
 }
 
+/** Jumlah total sertifikasi dari API. */
+export async function getCredentialsCount(): Promise<number> {
+  const items = await fetchAchievementsContents();
+  return items.length;
+}
+
 /** Kredensial halaman pertama — untuk section landing. */
 export async function getFeaturedCredentials(): Promise<Credential[]> {
   const { data } = await fetchAchievementsPage({ page: 1 });

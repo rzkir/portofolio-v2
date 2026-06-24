@@ -6,7 +6,6 @@ import {
 const GUEST_NOTES_PATH = "/api/guest-notes";
 
 let notes: GuestNote[] = [];
-let layout: "section" | "page" = "section";
 
 function mapNotedMessage(item: NotedMessageProps): GuestNote {
   return {
@@ -38,8 +37,7 @@ async function fetchGuestNotes(): Promise<GuestNote[]> {
 }
 
 async function refreshGuestNotes() {
-  const fresh = await fetchGuestNotes();
-  notes = fresh;
+  notes = await fetchGuestNotes();
   renderNotes();
 }
 
@@ -65,13 +63,6 @@ async function createMessage(
 
   const created = (await response.json()) as NotedMessageProps;
   return mapNotedMessage(created);
-}
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("id-ID", {
-    day: "2-digit",
-    month: "short",
-  });
 }
 
 function formatDateFull(iso: string) {
@@ -100,39 +91,7 @@ function updateCounts() {
   if (archiveCount) archiveCount.textContent = `N° ${pad3(notes.length)}`;
 }
 
-function renderSectionNotes() {
-  const list = document.getElementById("guest-notes-list");
-  const empty = document.getElementById("guest-notes-empty");
-  const countEl = document.getElementById("guest-notes-count");
-  if (!list || !empty) return;
-
-  if (countEl) countEl.textContent = `${notes.length} catatan`;
-
-  if (notes.length === 0) {
-    empty.classList.remove("hidden");
-    list.classList.add("hidden");
-    list.innerHTML = "";
-    return;
-  }
-
-  empty.classList.add("hidden");
-  list.classList.remove("hidden");
-  list.innerHTML = notes
-    .map(
-      (n) => `
-        <li data-cursor="focus" data-cursor-label="Read" class="border border-border bg-background p-5 transition-colors hover:border-accent/40">
-          <p class="mb-3 font-display text-lg leading-snug italic">"${escapeHtml(n.message)}"</p>
-          <div class="flex items-end justify-between border-t border-border pt-3">
-            <p class="text-sm font-medium">— ${escapeHtml(n.name)}</p>
-            <p class="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">${formatDate(n.createdAt)}</p>
-          </div>
-        </li>
-      `,
-    )
-    .join("");
-}
-
-function renderPageNotes() {
+function renderNotes() {
   const list = document.getElementById("guest-notes-list");
   const empty = document.getElementById("guest-notes-empty");
   if (!list || !empty) return;
@@ -178,14 +137,6 @@ function renderPageNotes() {
     .join("");
 }
 
-function renderNotes() {
-  if (layout === "page") {
-    renderPageNotes();
-    return;
-  }
-  renderSectionNotes();
-}
-
 function escapeHtml(value: string) {
   return value
     .replaceAll("&", "&amp;")
@@ -216,7 +167,6 @@ export function bootGuestNotes() {
 
 export function initGuestNotes(initialNotes: GuestNote[] = []) {
   const form = document.getElementById("guest-notes-form");
-  layout = form?.dataset.layout === "page" ? "page" : "section";
 
   if (!form || form.dataset.bound === "true") {
     void refreshGuestNotes();
