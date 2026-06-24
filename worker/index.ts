@@ -3,6 +3,25 @@ interface Env {
   API_URL: string;
 }
 
+async function handleGuestNotesGet(env: Env): Promise<Response> {
+  try {
+    const response = await fetch(`${env.API_URL}/api/v1/messages`);
+
+    return new Response(await response.text(), {
+      status: response.status,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store",
+      },
+    });
+  } catch {
+    return new Response(JSON.stringify([]), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}
+
 async function handleGuestNotesPost(request: Request, env: Env): Promise<Response> {
   try {
     const payload = await request.json();
@@ -29,8 +48,9 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
-    if (url.pathname === "/api/guest-notes" && request.method === "POST") {
-      return handleGuestNotesPost(request, env);
+    if (url.pathname === "/api/guest-notes") {
+      if (request.method === "GET") return handleGuestNotesGet(env);
+      if (request.method === "POST") return handleGuestNotesPost(request, env);
     }
 
     return env.ASSETS.fetch(request);

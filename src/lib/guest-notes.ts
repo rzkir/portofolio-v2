@@ -18,6 +18,31 @@ function mapNotedMessage(item: NotedMessageProps): GuestNote {
   };
 }
 
+async function fetchGuestNotes(): Promise<GuestNote[]> {
+  try {
+    const response = await fetch(GUEST_NOTES_PATH, { cache: "no-store" });
+    if (!response.ok) return [];
+
+    const data = (await response.json()) as NotedMessageProps[];
+    if (!Array.isArray(data)) return [];
+
+    return data
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      )
+      .map(mapNotedMessage);
+  } catch {
+    return [];
+  }
+}
+
+async function refreshGuestNotes() {
+  const fresh = await fetchGuestNotes();
+  notes = fresh;
+  renderNotes();
+}
+
 async function createMessage(
   payload: CreateNotedPayload,
 ): Promise<GuestNote> {
@@ -190,10 +215,15 @@ export function bootGuestNotes() {
 }
 
 export function initGuestNotes(initialNotes: GuestNote[] = []) {
-  notes = initialNotes;
-
   const form = document.getElementById("guest-notes-form");
   layout = form?.dataset.layout === "page" ? "page" : "section";
+
+  if (!form || form.dataset.bound === "true") {
+    void refreshGuestNotes();
+    return;
+  }
+
+  notes = initialNotes;
 
   const nameInput = document.getElementById("guest-name") as HTMLInputElement | null;
   const providerInput = document.getElementById("guest-provider") as HTMLSelectElement | null;
@@ -202,10 +232,6 @@ export function initGuestNotes(initialNotes: GuestNote[] = []) {
   const countEl = document.getElementById("guest-message-count");
   const submitBtn = form?.querySelector("button[type='submit']") as HTMLButtonElement | null;
 
-  if (!form || form.dataset.bound === "true") {
-    renderNotes();
-    return;
-  }
   form.dataset.bound = "true";
 
   messageInput?.addEventListener("input", () => {
@@ -254,6 +280,7 @@ export function initGuestNotes(initialNotes: GuestNote[] = []) {
       messageInput.value = "";
       if (countEl) countEl.textContent = "0/280";
       renderNotes();
+      void refreshGuestNotes();
     } catch (error) {
       errorEl.textContent =
         error instanceof Error ? error.message : "Gagal mengirim catatan. Coba lagi.";
@@ -264,4 +291,5 @@ export function initGuestNotes(initialNotes: GuestNote[] = []) {
   });
 
   renderNotes();
+  void refreshGuestNotes();
 }
