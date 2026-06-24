@@ -1,4 +1,7 @@
+import { setDefaultResultOrder } from "node:dns";
 import { API_SECRET, API_URL } from "astro:env/server";
+
+setDefaultResultOrder("ipv4first");
 
 interface ApiFetchOptions {
   revalidate?: number;
@@ -11,6 +14,7 @@ type CacheEntry = {
 };
 
 const cache = new Map<string, CacheEntry>();
+const FETCH_TIMEOUT_MS = 30_000;
 
 function getCached<T>(key: string): T | null {
   const entry = cache.get(key);
@@ -20,6 +24,11 @@ function getCached<T>(key: string): T | null {
   }
 
   return entry.data as T;
+}
+
+function getStaleCached<T>(key: string): T | null {
+  const entry = cache.get(key);
+  return entry ? (entry.data as T) : null;
 }
 
 function setCached(key: string, data: unknown, revalidate: number): void {
@@ -50,21 +59,34 @@ export async function apiFetch<T>(
     headers.Authorization = `Bearer ${API_SECRET}`;
   }
 
-  const response = await fetch(url, { headers });
+  try {
+    const response = await fetch(url, {
+      headers,
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    });
 
-  if (!response.ok) {
-    const error: Error & { status?: number } = new Error(
-      `Failed to fetch: ${response.statusText}`,
-    );
-    error.status = response.status;
+    if (!response.ok) {
+      const error: Error & { status?: number } = new Error(
+        `Failed to fetch: ${response.statusText}`,
+      );
+      error.status = response.status;
+      throw error;
+    }
+
+    const data = (await response.json()) as T;
+
+    if (revalidate > 0) {
+      setCached(cacheKey, data, revalidate);
+    }
+
+    return data;
+  } catch (error) {
+    const stale = getStaleCached<T>(cacheKey);
+    if (stale) {
+      console.warn(`[apiFetch] Using stale cache for ${url}`);
+      return stale;
+    }
+
     throw error;
   }
-
-  const data = (await response.json()) as T;
-
-  if (revalidate > 0) {
-    setCached(cacheKey, data, revalidate);
-  }
-
-  return data;
 }

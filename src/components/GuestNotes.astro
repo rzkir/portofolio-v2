@@ -26,7 +26,11 @@ const providerOptions = MESSAGE_PROVIDERS.map(({ value, label }) => ({
   </FocusIn>
 
   <div class="grid gap-12 lg:grid-cols-12">
-    <form id="guest-notes-form" class="self-start border border-border bg-surface/40 p-8 lg:col-span-5">
+    <form
+      id="guest-notes-form"
+      class="self-start border border-border bg-surface/40 p-8 lg:col-span-5"
+      onsubmit="return false"
+    >
       <p class="mb-6 font-mono text-[10px] tracking-[0.2em] text-accent uppercase">// LEAVE_A_NOTE</p>
       <div class="space-y-5">
         <Input
@@ -107,9 +111,20 @@ const providerOptions = MESSAGE_PROVIDERS.map(({ value, label }) => ({
   </div>
 </section>
 
-<script define:vars={{ initialNotes: notes }}>
+<script id="guest-notes-initial" type="application/json" set:html={JSON.stringify(notes)} />
+
+<script>
   import { initGuestNotes } from "@/lib/guest-notes";
 
+  function readInitialNotes() {
+    const el = document.getElementById("guest-notes-initial");
+    return JSON.parse(el?.textContent ?? "[]");
+  }
+
+  const initialNotes = readInitialNotes();
+
   initGuestNotes({ initialNotes });
-  document.addEventListener("astro:page-load", () => initGuestNotes({ initialNotes }));
+  document.addEventListener("astro:page-load", () =>
+    initGuestNotes({ initialNotes: readInitialNotes() }),
+  );
 </script>

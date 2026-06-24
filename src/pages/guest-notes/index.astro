@@ -73,7 +73,11 @@ const formatDate = (iso: string) =>
           </p>
         </div>
 
-        <form id="guest-notes-form" class="space-y-8 md:col-span-8">
+        <form
+          id="guest-notes-form"
+          class="space-y-8 md:col-span-8"
+          onsubmit="return false"
+        >
           <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
             <label class="block">
               <div class="mb-2 flex items-center justify-between">
@@ -231,11 +235,20 @@ const formatDate = (iso: string) =>
   <Footer />
 </Layout>
 
-<script define:vars={{ initialNotes: notes }}>
+<script id="guest-notes-initial" type="application/json" set:html={JSON.stringify(notes)} />
+
+<script>
   import { initGuestNotes } from "@/lib/guest-notes";
+
+  function readInitialNotes() {
+    const el = document.getElementById("guest-notes-initial");
+    return JSON.parse(el?.textContent ?? "[]");
+  }
+
+  const initialNotes = readInitialNotes();
 
   initGuestNotes({ initialNotes, layout: "editorial" });
   document.addEventListener("astro:page-load", () =>
-    initGuestNotes({ initialNotes, layout: "editorial" }),
+    initGuestNotes({ initialNotes: readInitialNotes(), layout: "editorial" }),
   );
 </script>

@@ -8,9 +8,12 @@
     "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page",
-    "run_worker_first": ["/api/*"]
+    "run_worker_first": [
+      "/api/*"
+    ]
   },
   "vars": {
-    "API_URL": "https://api.rizkiramadhan.biz.id"
+    "API_URL": "https://api.rizkiramadhan.biz.id",
+    "BASE_URL": "https://rizkiramadhan.biz.id"
   }
 }

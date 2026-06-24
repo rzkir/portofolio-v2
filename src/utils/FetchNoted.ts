@@ -10,6 +10,6 @@ export async function fetchNotedMessages(): Promise<NotedMessageProps[]> {
     });
   } catch (error) {
     console.error("Error fetching noted messages:", error);
-    throw error;
+    return [];
   }
 }
