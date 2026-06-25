@@ -1,0 +1,26 @@
+---
+interface Props {
+  duration?: string;
+  class?: string;
+  fade?: boolean;
+}
+
+const { duration = "38s", class: className = "", fade = false } = Astro.props;
+
+const chunk = Astro.slots.has("default")
+  ? await Astro.slots.render("default")
+  : "";
+---
+
+<div
+  class:list={[
+    "marquee-shell overflow-hidden",
+    fade && "marquee-shell--fade",
+    className,
+  ]}
+>
+  <div class="marquee-runner" style={`--marquee-duration: ${duration}`}>
+    <div class="marquee-chunk" set:html={chunk} />
+    <div class="marquee-chunk" aria-hidden="true" set:html={chunk} />
+  </div>
+</div>

@@ -1,11 +1,16 @@
+import { handle } from "@astrojs/cloudflare/handler";
+
 interface Env {
   ASSETS: Fetcher;
   API_URL: string;
+  API_SECRET?: string;
 }
 
 async function handleGuestNotesGet(env: Env): Promise<Response> {
   try {
-    const response = await fetch(`${env.API_URL}/api/v1/messages`);
+    const response = await fetch(`${env.API_URL}/api/v1/messages`, {
+      cache: "no-store",
+    });
 
     return new Response(await response.text(), {
       status: response.status,
@@ -22,7 +27,10 @@ async function handleGuestNotesGet(env: Env): Promise<Response> {
   }
 }
 
-async function handleGuestNotesPost(request: Request, env: Env): Promise<Response> {
+async function handleGuestNotesPost(
+  request: Request,
+  env: Env,
+): Promise<Response> {
   try {
     const payload = await request.json();
 
@@ -45,7 +53,11 @@ async function handleGuestNotesPost(request: Request, env: Env): Promise<Respons
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(
+    request: Request,
+    env: Env,
+    ctx: ExecutionContext,
+  ): Promise<Response> {
     const url = new URL(request.url);
 
     if (url.pathname === "/api/guest-notes") {
@@ -53,6 +65,6 @@ export default {
       if (request.method === "POST") return handleGuestNotesPost(request, env);
     }
 
-    return env.ASSETS.fetch(request);
+    return handle(request, env, ctx);
   },
 } satisfies ExportedHandler<Env>;

@@ -22,7 +22,7 @@ export const fetchAchievementsPage = async (
     const data = await apiFetch<AchievementsPaginatedResponse>(
       buildAchievementsUrl(options),
       {
-        revalidate: options.revalidate ?? 3600,
+        revalidate: options.revalidate ?? 60,
         tags: ["achievements"],
       },
     );

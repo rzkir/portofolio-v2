@@ -20,7 +20,7 @@ export const fetchProjectsPage = async (
     const data = await apiFetch<ProjectsPaginatedResponse>(
       buildProjectsUrl(options),
       {
-        revalidate: options.revalidate ?? 3600,
+        revalidate: options.revalidate ?? 60,
         tags: ["projects"],
       },
     );
@@ -58,7 +58,7 @@ export const fetchProjectBySlug = async (
 ): Promise<ProjectDetails> => {
   try {
     const data = await apiFetch<ProjectDetails>(`${PROJECTS_PATH}/${slug}`, {
-      revalidate: 3600,
+      revalidate: 60,
       tags: ["projects"],
     });
     return data;

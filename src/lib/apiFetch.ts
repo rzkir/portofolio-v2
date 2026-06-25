@@ -33,9 +33,11 @@ export async function apiFetch<T>(
   path: string,
   options: ApiFetchOptions = {},
 ): Promise<T> {
-  const revalidate = options.revalidate ?? 0;
+  const revalidate = options.revalidate ?? 60;
   const url = path.startsWith("http") ? path : `${API_URL}${path}`;
-  const cacheKey = url;
+  const cacheKey = options.tags?.length
+    ? `${url}::${options.tags.join(",")}`
+    : url;
 
   if (revalidate > 0) {
     const cached = getCached<T>(cacheKey);
@@ -50,7 +52,10 @@ export async function apiFetch<T>(
     headers.Authorization = `Bearer ${API_SECRET}`;
   }
 
-  const response = await fetch(url, { headers });
+  const response = await fetch(url, {
+    headers,
+    cache: "no-store",
+  });
 
   if (!response.ok) {
     const error: Error & { status?: number } = new Error(

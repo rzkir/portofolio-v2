@@ -1,3 +1,4 @@
+import cloudflare from "@astrojs/cloudflare";
 import { defineConfig, envField } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import { fileURLToPath } from "node:url";
@@ -7,6 +8,10 @@ const apiUrl = process.env.API_URL ?? "https://api.rizkiramadhan.biz.id";
 // https://astro.build/config
 export default defineConfig({
   site: "https://rizkiramadhan.biz.id",
+  output: "server",
+  adapter: cloudflare({
+    imageService: "compile",
+  }),
   env: {
     schema: {
       API_URL: envField.string({

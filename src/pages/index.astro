@@ -6,7 +6,7 @@ import Footer from "@/layouts/Footer.astro";
 import CodingStats from "@/components/CodingStats.astro";
 import CvDialog from "@/components/CvDialog.astro";
 import GuestNotesTeaser from "@/components/GuestNotesTeaser.astro";
-import InfiniteMarquee from "@astroanimate/core/InfiniteMarquee";
+import Marquee from "@/components/Marquee.astro";
 import FocusIn from "@/components/FocusIn.astro";
 import WorksScroll from "@/components/WorksScroll.astro";
 import ArchivmentsLayout from "@/components/ArchivmentsLayout.astro";
@@ -88,24 +88,20 @@ const [projectCount, certificationCount] = await Promise.all([
     </section>
 
     <!-- MARQUEE -->
-    <FocusIn class="mt-32 overflow-hidden border-y border-border py-6">
-      <div class="flex whitespace-nowrap marquee">
+    <Marquee duration="38s" class="mt-32 border-y border-border py-6">
+      <div class="flex shrink-0 items-center gap-12 px-6">
         {
-          [0, 1].map(() => (
-            <div class="flex shrink-0 items-center gap-12 px-6">
-              {stack.map((s) => (
-                <>
-                  <span class="font-display text-3xl italic opacity-40">
-                    {s}
-                  </span>
-                  <span class="size-1.5 rounded-full bg-border" />
-                </>
-              ))}
-            </div>
+          stack.map((s) => (
+            <>
+              <span class="font-display text-3xl italic opacity-40">
+                {s}
+              </span>
+              <span class="size-1.5 rounded-full bg-border" />
+            </>
           ))
         }
       </div>
-    </FocusIn>
+    </Marquee>
 
     <!-- ABOUT -->
     <section
@@ -209,14 +205,8 @@ const [projectCount, certificationCount] = await Promise.all([
         </FocusIn>
       </div>
 
-      <FocusIn class="relative mt-2">
-        <InfiniteMarquee
-          direction="left"
-          speed="52s"
-          pauseOnHover={true}
-          gap="1.5rem"
-          fade={true}
-        >
+      <Marquee duration="52s" fade class="relative mt-2">
+        <div class="flex shrink-0 gap-6">
           {
             testimonials.map((t, i) => (
               <figure
@@ -239,8 +229,8 @@ const [projectCount, certificationCount] = await Promise.all([
               </figure>
             ))
           }
-        </InfiniteMarquee>
-      </FocusIn>
+        </div>
+      </Marquee>
     </section>
 
     <CareerLayout />

@@ -9,17 +9,8 @@ import { cn } from "@/lib/utiles";
 import {
   formatWorkDate,
   getWorkBySlug,
-  getWorkSlugs,
   getWorkYear,
 } from "@/service/works-detail.service";
-
-export async function getStaticPaths() {
-  const slugs = await getWorkSlugs();
-
-  return slugs.map((slug) => ({
-    params: { slug },
-  }));
-}
 
 const { slug } = Astro.params;
 

@@ -5,7 +5,7 @@ const SKILLS_PATH = "/api/v1/skills";
 export const fetchSkillsContents = async (): Promise<SkillsContentProps[]> => {
     try {
         const data = await apiFetch<SkillsContentProps[]>(SKILLS_PATH, {
-            revalidate: 3600,
+            revalidate: 60,
             tags: ["skills"],
         });
         return data;
