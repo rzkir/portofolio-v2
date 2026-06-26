@@ -107,7 +107,7 @@ const m = getMessages(locale);
 </style>
 
 <script>
-  import { bindWorksView } from "@/service/works-view.service";
+  import { bindWorksView } from "@/service/works.client";
 
   bindWorksView();
   document.addEventListener("astro:page-load", () => bindWorksView());

@@ -68,7 +68,7 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
   <div class={shellClass}>
     <div class="mx-auto container px-4 md:px-6">
       <div
-        class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-4 py-4 md:grid-cols-[minmax(0,1.1fr)_auto_minmax(0,auto)_auto] md:gap-x-6 md:py-5"
+        class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-4 py-4 lg:grid-cols-[minmax(0,1.1fr)_auto_minmax(0,auto)_auto] lg:gap-x-6 lg:py-5"
       >
         <a
           href="/"
@@ -101,7 +101,7 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
         </a>
 
         <nav
-          class="site-header__nav animate-focus hidden [animation-delay:120ms] md:block md:justify-self-center"
+          class="site-header__nav animate-focus hidden [animation-delay:120ms] lg:block lg:justify-self-center"
           aria-label={m.nav.main}
         >
           <ul data-header-nav class={desktopNavPillClass}>
@@ -157,7 +157,7 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
   </div>
 
   <nav
-    class="site-header__mobile-dock pointer-events-auto fixed inset-x-0 bottom-[max(0.85rem,env(safe-area-inset-bottom))] z-50 px-4 md:hidden"
+    class="site-header__mobile-dock pointer-events-auto fixed inset-x-0 bottom-[max(0.85rem,env(safe-area-inset-bottom))] z-50 px-4 lg:hidden"
     aria-label={m.nav.mobile}
   >
     <ul
@@ -271,7 +271,7 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
     width: 100%;
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 1023px) {
     body {
       padding-bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px));
     }

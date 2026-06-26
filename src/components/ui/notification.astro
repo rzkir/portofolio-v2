@@ -1,0 +1,29 @@
+<template id="notification-template">
+  <article
+    class="notification"
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+    data-notification
+  >
+    <span class="notification__accent" aria-hidden="true" data-notification-accent
+    ></span>
+    <div class="notification__content">
+      <p class="notification__label" data-notification-label></p>
+      <p class="notification__title" data-notification-title></p>
+      <p
+        class="notification__description hidden"
+        data-notification-description
+      >
+      </p>
+    </div>
+    <button
+      type="button"
+      class="notification__dismiss"
+      data-notification-dismiss
+      aria-label="Dismiss notification"
+    >
+      <span aria-hidden="true">×</span>
+    </button>
+  </article>
+</template>

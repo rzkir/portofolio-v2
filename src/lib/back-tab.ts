@@ -1,4 +1,4 @@
-export function bindBackFab(
+export function bindBackTab(
   id: string,
   root: ParentNode = document,
   threshold = 160,

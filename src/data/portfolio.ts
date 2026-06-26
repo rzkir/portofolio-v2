@@ -16,7 +16,7 @@ export const contact = {
   location: "Bogor, ID",
   timezone: "UTC+7",
   status: "Open for work",
-  cvUrl: "https://www.rizkiramadhan.biz.id/cv.pdf",
+  cvUrl: "/cv-rizkiramadhan.pdf",
 } as const;
 
 export const socialLinks: SocialLink[] = [
@@ -29,5 +29,5 @@ export const socialLinks: SocialLink[] = [
     label: "Instagram",
     href: "https://www.instagram.com/rzkir.20",
   },
-  { label: "Read.cv", href: "https://www.rizkiramadhan.biz.id/cv.pdf" },
+  { label: "Read.cv", href: "/cv-rizkiramadhan.pdf" },
 ];

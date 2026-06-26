@@ -6,7 +6,7 @@ import FocusIn from "@/components/FocusIn.astro";
 import WorksGrid from "@/components/WorksGrid.astro";
 import { project1 } from "@/data/portfolio";
 import { getLocale, getMessages } from "@/lib/i18n";
-import { getWorksArchive } from "@/service/works-archive.service";
+import { getWorksArchive } from "@/service/works.service";
 
 const locale = getLocale(Astro);
 const m = getMessages(locale);

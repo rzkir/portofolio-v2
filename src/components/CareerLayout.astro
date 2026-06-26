@@ -10,16 +10,12 @@ const m = getMessages(locale);
 const careers = await getCareers();
 ---
 
-<section id="pengalaman" class="mx-auto container px-4 py-20 md:px-6">
+<section id="pengalaman" class="mx-auto container px-4 py-10 md:px-6">
   <FocusIn class="mb-12 flex items-end justify-between">
-    <p
-      class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
-    >
+    <p class="font-mono text-xs uppercase tracking-[0.2em]">
       {m.career.eyebrow}
     </p>
-    <span
-      class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
-    >
+    <span class="font-mono text-xs uppercase tracking-[0.2em]">
       {m.career.positions.replace("{count}", String(careers.length))}
     </span>
   </FocusIn>
@@ -51,7 +47,7 @@ const careers = await getCareers();
             class="experience-timeline__item grid grid-cols-[var(--timeline-track)_minmax(0,1fr)] items-start gap-x-(--timeline-gap) border-b border-border py-8 md:grid-cols-[var(--timeline-track)_minmax(0,1fr)_9.5rem]"
           >
             <div class="experience-timeline__track relative z-10 flex min-h-6 items-center justify-center self-start">
-              <span class="experience-timeline__index block font-mono text-[10px] uppercase tracking-[0.2em] leading-none text-accent tabular-nums">
+              <span class="experience-timeline__index block font-mono text-xs uppercase tracking-[0.2em] leading-none text-accent tabular-nums">
                 {formatExperienceIndex(i)}
               </span>
             </div>
@@ -70,14 +66,14 @@ const careers = await getCareers();
                   {career.role}
                 </h3>
               </div>
-              <p class="mt-2 text-sm text-muted-foreground">{career.org}</p>
-              <p class="mt-3 max-w-prose text-sm leading-relaxed whitespace-pre-line text-muted-foreground">
+              <p class="mt-2 text-sm">{career.org}</p>
+              <p class="mt-3 max-w-prose text-sm leading-relaxed whitespace-pre-line">
                 {career.desc}
               </p>
             </div>
 
             <div class="experience-timeline__meta col-start-2 mt-3 md:col-start-3 md:mt-0 md:flex md:min-h-6 md:items-center md:justify-end">
-              <span class="inline-flex border border-border/80 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+              <span class="inline-flex border border-border/80 px-3 py-1.5 font-mono text-xs uppercase tracking-[0.2em]">
                 {career.range}
               </span>
             </div>

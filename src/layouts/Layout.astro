@@ -1,5 +1,6 @@
 ---
 import GrabCursor from "@/components/GrabCursor.astro";
+import NotificationContext from "@/layouts/NotificationContext.astro";
 import SplashScreen from "@/components/SplashScreen.astro";
 import { FORCE_MOTION_INLINE_SCRIPT } from "@/lib/force-motion";
 import { getLocale, getMessages } from "@/lib/i18n";
@@ -156,6 +157,7 @@ const verification = getSiteVerification();
     }
     <SplashScreen />
     <GrabCursor />
+    <NotificationContext />
     <slot />
     <link rel="stylesheet" href="/force-motion.css" />
   </body>

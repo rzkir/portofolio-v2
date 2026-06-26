@@ -1,3 +1,5 @@
+// Client: grid/list toggle — dipakai works archive dan blog archive.
+
 export type ArchiveView = "grid" | "list";
 
 export type ArchiveViewConfig = {

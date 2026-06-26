@@ -1,4 +1,4 @@
-import { apiFetch, CACHE_TTL } from "@/lib/apiFetch";
+import { apiFetch, CACHE_TTL } from "@/lib/apiFetch.server";
 
 const ARTICLES_PATH = "/api/v1/articles";
 

@@ -2,6 +2,7 @@ import {
   getProviderLabel,
   MESSAGE_PROVIDERS,
 } from "@/lib/guest-note-providers";
+import { toast } from "@/lib/notifications";
 import {
   clearOwnedNoteId,
   createNotedMessageClient,
@@ -293,11 +294,14 @@ function bindEditDialog() {
       notes = notes.map((note) => (note.id === mapped.id ? mapped : note));
       renderNotes();
       closeDialog(EDIT_DIALOG_ID);
+      toast.success("Catatan diperbarui");
       void refreshGuestNotes();
     } catch (error) {
-      errorEl.textContent =
+      const message =
         error instanceof Error ? error.message : "Gagal memperbarui catatan. Coba lagi.";
+      errorEl.textContent = message;
       errorEl.classList.remove("hidden");
+      toast.error("Gagal memperbarui", message);
     } finally {
       if (submitBtn) submitBtn.disabled = false;
     }
@@ -339,16 +343,14 @@ function bindNoteActions() {
                 notes = notes.filter((item) => item.id !== note.id);
                 clearOwnedNoteId();
                 renderNotes();
+                toast.success("Catatan dihapus");
                 void refreshGuestNotes();
               } catch (error) {
-                const errorEl = document.getElementById("guest-notes-error");
-                if (errorEl) {
-                  errorEl.textContent =
-                    error instanceof Error
-                      ? error.message
-                      : "Gagal menghapus catatan. Coba lagi.";
-                  errorEl.classList.remove("hidden");
-                }
+                const message =
+                  error instanceof Error
+                    ? error.message
+                    : "Gagal menghapus catatan. Coba lagi.";
+                toast.error("Gagal menghapus", message);
                 throw error;
               }
             },
@@ -450,11 +452,14 @@ export function initGuestNotes(
       messageInput.value = "";
       if (countEl) countEl.textContent = "0/280";
       renderNotes();
+      toast.success("Catatan terkirim", "Terima kasih sudah meninggalkan pesan.");
       void refreshGuestNotes();
     } catch (error) {
-      errorEl.textContent =
+      const message =
         error instanceof Error ? error.message : "Gagal mengirim catatan. Coba lagi.";
+      errorEl.textContent = message;
       errorEl.classList.remove("hidden");
+      toast.error("Gagal mengirim", message);
     } finally {
       if (submitBtn) submitBtn.disabled = false;
     }

@@ -1,3 +1,5 @@
+export const HEADER_SYNC_EVENT = "site-header:sync";
+
 export const HEADER_CONFIG = {
   headerId: "site-header",
   inverseThemeSelector: "[data-header-theme='inverse']",
@@ -6,7 +8,7 @@ export const HEADER_CONFIG = {
   navLinkSelector: "[data-header-nav-link]",
   navIndicatorSelector: "[data-header-nav-indicator]",
   scrollThreshold: 12,
-  mobileBreakpoint: 768,
+  mobileBreakpoint: 1024,
 } as const;
 
 export function updateNavIndicator(
@@ -39,11 +41,12 @@ export function isHeaderInverse(
   scrollY: number,
   inverseSections: NodeListOf<HTMLElement>,
 ): boolean {
-  const probeY = scrollY + header.offsetHeight * 0.5;
+  const probeY = scrollY + header.getBoundingClientRect().height * 0.5;
 
   for (const section of inverseSections) {
-    const top = section.offsetTop;
-    const bottom = top + section.offsetHeight;
+    const rect = section.getBoundingClientRect();
+    const top = scrollY + rect.top;
+    const bottom = top + rect.height;
     if (probeY >= top && probeY < bottom) return true;
   }
 
@@ -120,8 +123,14 @@ export function createSiteHeaderController(header: HTMLElement): () => void {
     }
   };
 
+  const onSync = () => {
+    requestUpdate();
+    syncNavIndicator();
+  };
+
   window.addEventListener("scroll", requestUpdate, { passive: true });
   window.addEventListener("resize", onResize, { passive: true });
+  window.addEventListener(HEADER_SYNC_EVENT, onSync);
 
   const resizeObserver =
     typeof ResizeObserver !== "undefined"
@@ -139,8 +148,13 @@ export function createSiteHeaderController(header: HTMLElement): () => void {
     resizeObserver?.disconnect();
     window.removeEventListener("scroll", requestUpdate);
     window.removeEventListener("resize", onResize);
+    window.removeEventListener(HEADER_SYNC_EVENT, onSync);
     header.dataset.bound = "false";
   };
+}
+
+export function syncSiteHeader(): void {
+  window.dispatchEvent(new Event(HEADER_SYNC_EVENT));
 }
 
 export function bindSiteHeader(root: ParentNode = document): void {

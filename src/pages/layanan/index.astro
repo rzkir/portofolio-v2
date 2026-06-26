@@ -21,9 +21,7 @@ const ogImage = new URL(project1.src, Astro.site).href;
   <main class="pt-28">
     <section class="mx-auto container px-4 pb-12 md:px-6">
       <FocusIn delay={60}>
-        <p
-          class="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
-        >
+        <p class="mb-4 font-mono text-xs tracking-[0.2em] uppercase">
           {m.layanan.eyebrow}
         </p>
         <div
@@ -34,7 +32,7 @@ const ogImage = new URL(project1.src, Astro.site).href;
           >
             {m.layanan.title}
           </h1>
-          <p class="max-w-sm text-sm leading-relaxed text-muted-foreground">
+          <p class="max-w-sm text-sm leading-relaxed">
             {m.layanan.subtitle}
           </p>
         </div>
@@ -44,9 +42,7 @@ const ogImage = new URL(project1.src, Astro.site).href;
     <section id="layanan" class="mx-auto container px-4 py-12 md:px-6">
       <FocusIn class="mb-16 flex items-end justify-between">
         <div>
-          <p
-            class="mb-4 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
-          >
+          <p class="mb-4 font-mono text-xs tracking-[0.2em] uppercase">
             {m.layanan.servicesEyebrow}
           </p>
           <h2 class="font-display text-5xl italic">
@@ -65,11 +61,11 @@ const ogImage = new URL(project1.src, Astro.site).href;
               data-cursor-label="Detail"
               class="group bg-background p-10 transition-colors hover:bg-accent/5"
             >
-              <p class="mb-6 font-mono text-[10px] tracking-[0.2em] text-accent uppercase">
+              <p class="mb-6 font-mono text-xs tracking-[0.2em] text-accent uppercase">
                 {s.n}
               </p>
               <h3 class="mb-3 font-display text-3xl italic">{s.t}</h3>
-              <p class="text-sm leading-relaxed text-muted-foreground">{s.d}</p>
+              <p class="text-sm leading-relaxed">{s.d}</p>
             </FocusIn>
           ))
         }
@@ -82,9 +78,7 @@ const ogImage = new URL(project1.src, Astro.site).href;
     >
       <div class="mx-auto container px-4 md:px-6">
         <FocusIn>
-          <p
-            class="mb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase"
-          >
+          <p class="mb-4 font-mono text-xs tracking-widest uppercase">
             {m.layanan.processEyebrow}
           </p>
           <h2
@@ -105,9 +99,7 @@ const ogImage = new URL(project1.src, Astro.site).href;
                   {p.n}
                 </span>
                 <h3 class="mb-3 font-display text-2xl italic">{p.t}</h3>
-                <p class="text-sm leading-relaxed text-muted-foreground">
-                  {p.d}
-                </p>
+                <p class="text-sm leading-relaxed">{p.d}</p>
               </FocusIn>
             ))
           }
@@ -117,9 +109,7 @@ const ogImage = new URL(project1.src, Astro.site).href;
 
     <section id="faq" class="mx-auto container px-4 py-20 md:px-6">
       <FocusIn>
-        <p
-          class="mb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase"
-        >
+        <p class="mb-4 font-mono text-xs tracking-widest uppercase">
           {m.layanan.faqEyebrow}
         </p>
         <h2 class="mb-16 font-display text-5xl italic">{m.layanan.faqTitle}</h2>
@@ -135,22 +125,21 @@ const ogImage = new URL(project1.src, Astro.site).href;
               class="grid grid-cols-1 gap-4 py-8 md:grid-cols-12"
             >
               <h3 class="font-display text-xl italic md:col-span-5">{f.q}</h3>
-              <p class="text-sm leading-relaxed text-muted-foreground md:col-span-7">
-                {f.a}
-              </p>
+              <p class="text-sm leading-relaxed md:col-span-7">{f.a}</p>
             </FocusIn>
           ))
         }
       </ul>
     </section>
 
-    <section class="bg-surface/40 px-4 py-10 md:px-6" aria-label={m.layanan.ctaAria}>
+    <section
+      class="bg-surface/40 px-4 py-10 md:px-6"
+      aria-label={m.layanan.ctaAria}
+    >
       <div class="mx-auto container px-4 md:px-6">
         <FocusIn class="grid items-end gap-12 md:grid-cols-12">
           <div class="md:col-span-7">
-            <p
-              class="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
-            >
+            <p class="mb-4 font-mono text-xs tracking-[0.2em] uppercase">
               {m.common.collaboration}
             </p>
             <h2 class="font-display text-4xl italic leading-tight md:text-5xl">

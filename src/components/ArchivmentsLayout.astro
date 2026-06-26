@@ -20,19 +20,17 @@ const hasMore = meta.nextPage;
 >
   <div class="mx-auto container px-4 md:px-6">
     <FocusIn class="mb-12 flex items-end justify-between gap-4">
-      <p
-        class="font-mono text-xs tracking-widest text-muted-foreground uppercase"
-      >
+      <p class="font-mono text-xs tracking-widest uppercase">
         {m.achievementsSection.eyebrow}
       </p>
       <div class="flex flex-col items-end gap-2 text-right">
-        <span
-          class="font-mono text-xs tracking-widest text-muted-foreground uppercase"
-        >
-          {m.achievementsSection.entries.replace(
-            "{count}",
-            String(credentials.length),
-          )}
+        <span class="font-mono text-xs tracking-widest uppercase">
+          {
+            m.achievementsSection.entries.replace(
+              "{count}",
+              String(credentials.length),
+            )
+          }
         </span>
         {
           hasMore && (
@@ -40,7 +38,7 @@ const hasMore = meta.nextPage;
               href="/achievements"
               data-cursor="focus"
               data-cursor-label="View"
-              class="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase transition-colors hover:text-accent"
+              class="font-mono text-xs tracking-[0.2em] uppercase transition-colors hover:text-accent"
             >
               {m.common.viewArchive}
             </a>

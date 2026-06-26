@@ -203,10 +203,183 @@ html.splash-seen #splash-screen {
   justify-content: center;
   background-color: var(--accent-warm);
   will-change: transform;
+  transition: transform 800ms var(--ease-cinematic);
+}
+
+.splash-screen.is-exiting {
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+
+.splash-screen.is-exiting #splash-content {
+  opacity: 0;
+  transform: translateY(-16px) scale(0.97);
 }
 
 html.splash-pending .animate-focus {
   animation-play-state: paused !important;
+}
+
+/* ── Notifications ── */
+@keyframes notification-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes notification-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+}
+
+.notification-viewport {
+  position: fixed;
+  inset-inline: 1rem;
+  bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  z-index: 60;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.75rem;
+  width: min(100%, 22rem);
+  margin-inline-start: auto;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .notification-viewport {
+    inset-inline: auto 1.5rem;
+    bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 1023px) {
+  .notification-viewport {
+    bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px) + 0.85rem);
+  }
+}
+
+.notification {
+  pointer-events: auto;
+  display: grid;
+  grid-template-columns: 3px 1fr auto;
+  align-items: stretch;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: color-mix(in oklch, var(--background) 90%, transparent);
+  backdrop-filter: blur(14px);
+  box-shadow:
+    0 1px 0 color-mix(in oklch, var(--foreground) 4%, transparent),
+    0 16px 48px color-mix(in oklch, var(--foreground) 8%, transparent);
+  animation: notification-in 0.55s var(--ease-cinematic) both;
+  will-change: transform, opacity;
+}
+
+.notification.is-exiting {
+  animation: notification-out 0.42s var(--ease-cinematic) both;
+}
+
+.notification__accent {
+  background: var(--accent);
+}
+
+.notification--success .notification__accent {
+  background: var(--accent);
+}
+
+.notification--error .notification__accent {
+  background: var(--destructive);
+}
+
+.notification--info .notification__accent {
+  background: color-mix(in oklch, var(--foreground) 28%, transparent);
+}
+
+.notification--default .notification__accent {
+  background: color-mix(in oklch, var(--foreground) 18%, transparent);
+}
+
+.notification__content {
+  min-width: 0;
+  padding: 0.9rem 0.85rem 0.95rem 1rem;
+}
+
+.notification__label {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.notification--success .notification__label {
+  color: color-mix(in oklch, var(--accent) 82%, var(--foreground));
+}
+
+.notification--error .notification__label {
+  color: color-mix(in oklch, var(--destructive) 88%, var(--foreground));
+}
+
+.notification__title {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  line-height: 1.2;
+  font-style: italic;
+  color: var(--foreground);
+}
+
+.notification__description {
+  margin: 0.4rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+}
+
+.notification__dismiss {
+  display: grid;
+  place-items: center;
+  align-self: start;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: 0.15rem 0.15rem 0 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 1.125rem;
+  line-height: 1;
+  color: var(--muted-foreground);
+  transition: color 0.3s var(--ease-cinematic);
+}
+
+.notification__dismiss:hover {
+  color: var(--foreground);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notification {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .notification.is-exiting {
+    animation: none;
+    opacity: 0;
+  }
 }
 
 @keyframes experience-line-grow {

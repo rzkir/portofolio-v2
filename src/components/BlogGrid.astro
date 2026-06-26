@@ -115,7 +115,7 @@ const cards = articles.map((article, index) =>
 </style>
 
 <script>
-  import { bindBlogView } from "@/service/blog-view.service";
+  import { bindBlogView } from "@/service/blogs.client";
 
   bindBlogView();
   document.addEventListener("astro:page-load", () => bindBlogView());

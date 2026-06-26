@@ -49,10 +49,10 @@ const bootstrap = {
         class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between"
       >
         <div>
-          <p
-            class="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase"
-          >
-            {m.guestNotesPage.eyebrow} / <span id="guest-notes-hero-index">{noteCount}</span>
+          <p class="font-mono text-xs tracking-[0.24em] uppercase">
+            {m.guestNotesPage.eyebrow} / <span id="guest-notes-hero-index"
+              >{noteCount}</span
+            >
           </p>
           <h1
             class="mt-6 font-display text-5xl leading-[1.05] tracking-tight md:text-7xl"
@@ -64,7 +64,7 @@ const bootstrap = {
         </div>
         <div
           id="guest-notes-count"
-          class="font-mono text-[11px] tracking-[0.18em] text-muted-foreground uppercase"
+          class="font-mono text-xs tracking-[0.18em] uppercase"
         >
           {m.guestNotesPage.notesCount.replace("{count}", String(notes.length))}
         </div>
@@ -76,9 +76,7 @@ const bootstrap = {
         class="mx-auto grid container grid-cols-1 gap-12 px-4 py-16 md:grid-cols-12 md:px-6"
       >
         <div class="md:col-span-4">
-          <p
-            class="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase"
-          >
+          <p class="font-mono text-xs tracking-[0.24em] uppercase">
             {m.guestNotesPage.formEyebrow}
           </p>
           <p
@@ -122,7 +120,7 @@ const bootstrap = {
             <span
               slot="label-extra"
               id="guest-message-count"
-              class="font-mono text-[11px] text-muted-foreground"
+              class="font-mono text-xs"
             >
               0/280
             </span>
@@ -137,10 +135,12 @@ const bootstrap = {
           <div class="flex justify-end">
             <button
               type="submit"
-              class="group inline-flex items-center gap-3 font-mono text-xs tracking-[0.24em] text-foreground uppercase transition-colors hover:text-accent disabled:opacity-50"
+              class="group inline-flex items-center gap-3 font-mono text-xs tracking-[0.24em] uppercase transition-colors hover:text-accent disabled:opacity-50"
             >
               {m.guestNotesPage.submit}
-              <span class="transition-transform group-hover:translate-x-1">→</span>
+              <span class="transition-transform group-hover:translate-x-1"
+                >→</span
+              >
             </button>
           </div>
         </form>
@@ -155,7 +155,7 @@ const bootstrap = {
           </h2>
           <span
             id="guest-notes-archive-count"
-            class="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase"
+            class="font-mono text-xs tracking-[0.24em] uppercase"
           >
             {m.guestNotesPage.archiveNo.replace("{count}", archiveCount)}
           </span>
@@ -164,7 +164,7 @@ const bootstrap = {
         <p
           id="guest-notes-empty"
           class:list={[
-            "py-16 text-center font-display text-2xl text-muted-foreground italic",
+            "py-16 text-center font-display text-2xl italic",
             notes.length > 0 && "hidden",
           ]}
         >
@@ -173,13 +173,16 @@ const bootstrap = {
 
         <ol
           id="guest-notes-list"
-          class:list={["divide-y divide-border", notes.length === 0 && "hidden"]}
+          class:list={[
+            "divide-y divide-border",
+            notes.length === 0 && "hidden",
+          ]}
         >
           {
             notes.map((note, index) => (
               <li class="grid grid-cols-12 gap-6 py-10 transition-colors hover:bg-background/60">
                 <div class="col-span-12 md:col-span-1">
-                  <span class="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase">
+                  <span class="font-mono text-xs tracking-[0.24em] uppercase">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                 </div>
@@ -190,7 +193,7 @@ const bootstrap = {
                     {note.message}
                     <span class="ml-1 text-accent">”</span>
                   </p>
-                  <footer class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] tracking-[0.18em] text-muted-foreground uppercase">
+                  <footer class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs tracking-[0.18em] uppercase">
                     <span class="text-foreground/80">— {note.name}</span>
                     <span aria-hidden="true">·</span>
                     <span>{getProviderLabel(note.provider)}</span>
@@ -198,7 +201,7 @@ const bootstrap = {
                 </blockquote>
 
                 <div class="col-span-12 md:col-span-3 md:text-right">
-                  <time class="font-mono text-[11px] tracking-[0.18em] text-muted-foreground uppercase">
+                  <time class="font-mono text-xs tracking-[0.18em] uppercase">
                     {formatGuestNoteDateFull(note.createdAt)}
                   </time>
                 </div>

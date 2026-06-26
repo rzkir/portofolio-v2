@@ -168,7 +168,7 @@ function parseStatValue(raw: string) {
 
           return (
             <FocusIn class="bg-accent p-6 md:p-8" delay={360 + i * 70}>
-              <p class="mb-2 font-mono text-[10px] tracking-widest text-background/50 uppercase">
+              <p class="mb-2 font-mono text-xs tracking-widest text-background/50 uppercase">
                 {s.label}
               </p>
               {parsed ? (
@@ -188,7 +188,7 @@ function parseStatValue(raw: string) {
                   {s.value}
                 </p>
               )}
-              <p class="mt-2 font-mono text-[10px] tracking-widest text-background/50 uppercase">
+              <p class="mt-2 font-mono text-xs tracking-widest text-background/50 uppercase">
                 {s.sub}
               </p>
             </FocusIn>
@@ -201,13 +201,13 @@ function parseStatValue(raw: string) {
       <div class="space-y-12">
         <div>
           <FocusIn class="mb-6 flex items-center justify-between" delay={40}>
-            <p
-              class="font-mono text-xs tracking-widest text-background/50 uppercase"
-            >
-              {m.codingStats.contributionWeeks.replace(
-                "{count}",
-                String(stats.heatmapWeekCount),
-              )}
+            <p class="font-mono text-xs tracking-widest uppercase">
+              {
+                m.codingStats.contributionWeeks.replace(
+                  "{count}",
+                  String(stats.heatmapWeekCount),
+                )
+              }
             </p>
             <span
               class="font-mono text-xs tracking-widest text-background/50 uppercase"
@@ -276,7 +276,7 @@ function parseStatValue(raw: string) {
             }
             {
               stats.heatmapNote && (
-                <p class="mt-4 font-mono text-[10px] leading-relaxed text-background/45">
+                <p class="mt-4 font-mono text-xs leading-relaxed text-background/45">
                   {stats.heatmapNote}
                 </p>
               )
@@ -332,10 +332,12 @@ function parseStatValue(raw: string) {
             </p>
             <span
               class="font-mono text-xs tracking-widest text-background/50 uppercase"
-              >{m.codingStats.repoCount.replace(
-                "{count}",
-                String(stats.recentRepos.length),
-              )}</span
+              >{
+                m.codingStats.repoCount.replace(
+                  "{count}",
+                  String(stats.recentRepos.length),
+                )
+              }</span
             >
           </div>
           <ul
@@ -359,14 +361,14 @@ function parseStatValue(raw: string) {
                           </span>
                         )}
                       </p>
-                      <p class="mt-1 font-mono text-[10px] tracking-widest text-background/45 uppercase">
+                      <p class="mt-1 font-mono text-xs tracking-widest text-background/45 uppercase">
                         {m.codingStats.repoMeta
                           .replace("{language}", repo.language ?? "—")
                           .replace("{commits}", String(repo.totalCommits))
                           .replace("{date}", repo.pushedLabel)}
                       </p>
                     </div>
-                    <span class="shrink-0 font-mono text-[10px] text-background/50">
+                    <span class="shrink-0 font-mono text-xs text-background/50">
                       ★ {repo.stars}
                     </span>
                   </a>
@@ -387,10 +389,12 @@ function parseStatValue(raw: string) {
             </p>
             <span
               class="font-mono text-xs tracking-widest text-background/50 uppercase"
-              >{m.codingStats.languageCount.replace(
-                "{count}",
-                String(stats.languages.length),
-              )}</span
+              >{
+                m.codingStats.languageCount.replace(
+                  "{count}",
+                  String(stats.languages.length),
+                )
+              }</span
             >
           </FocusIn>
 
@@ -402,7 +406,7 @@ function parseStatValue(raw: string) {
                     <span class="font-mono text-xs text-background/90">
                       {lang.name}
                     </span>
-                    <span class="font-mono text-[10px] tracking-widest text-background/50">
+                    <span class="font-mono text-xs tracking-widest text-background/50">
                       {lang.pct}% · {lang.text}
                     </span>
                   </div>
@@ -427,10 +431,12 @@ function parseStatValue(raw: string) {
             </p>
             <span
               class="font-mono text-xs tracking-widest text-background/50 uppercase"
-              >{m.codingStats.projectCount.replace(
-                "{count}",
-                String(stats.projects.length),
-              )}</span
+              >{
+                m.codingStats.projectCount.replace(
+                  "{count}",
+                  String(stats.projects.length),
+                )
+              }</span
             >
           </div>
           <div class="max-h-56 space-y-4 overflow-y-auto pr-1">
@@ -441,7 +447,7 @@ function parseStatValue(raw: string) {
                     <span class="truncate font-mono text-xs text-background/90">
                       {project.name}
                     </span>
-                    <span class="shrink-0 font-mono text-[10px] tracking-widest text-background/50">
+                    <span class="shrink-0 font-mono text-xs tracking-widest text-background/50">
                       {project.pct}% · {project.text}
                     </span>
                   </div>
@@ -502,7 +508,7 @@ function parseStatValue(raw: string) {
                       <p class="font-display text-2xl italic text-background md:text-3xl">
                         {day.text}
                       </p>
-                      <p class="mt-2 font-mono text-[10px] tracking-widest text-background/50 uppercase">
+                      <p class="mt-2 font-mono text-xs tracking-widest text-background/50 uppercase">
                         {day.label}
                       </p>
                     </div>
@@ -523,7 +529,7 @@ function parseStatValue(raw: string) {
                 stats.goals.map((goal) => (
                   <span
                     class:list={[
-                      "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 font-mono text-[10px] tracking-wider uppercase",
+                      "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 font-mono text-xs tracking-wider uppercase",
                       goal.status === "success"
                         ? "border-background/30 bg-background/15 text-background"
                         : "border-background/15 text-background/60",
@@ -543,7 +549,7 @@ function parseStatValue(raw: string) {
               }
               {
                 stats.trophies.map((t) => (
-                  <span class="inline-flex items-center gap-2 rounded-full border border-background/25 bg-background/10 px-3 py-1.5 font-mono text-[10px] tracking-wider text-background/85 uppercase">
+                  <span class="inline-flex items-center gap-2 rounded-full border border-background/25 bg-background/10 px-3 py-1.5 font-mono text-xs tracking-wider text-background/85 uppercase">
                     <span class="size-1.5 shrink-0 rounded-full bg-background/70" />
                     {t}
                   </span>

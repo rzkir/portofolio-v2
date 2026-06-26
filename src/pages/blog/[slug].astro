@@ -56,22 +56,18 @@ const related = await getRelatedArticles(slug);
           <div
             class="flex flex-wrap items-baseline justify-between gap-4 border-b border-border pb-4"
           >
-            <p
-              class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
-            >
+            <p class="font-mono text-xs tracking-[0.24em] uppercase">
               {m.blogPage.mastheadEyebrow}
             </p>
             <time
               datetime={article.createdAt}
-              class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
+              class="font-mono text-xs tracking-[0.24em] uppercase"
             >
               {published}
             </time>
           </div>
 
-          <p
-            class="mt-6 font-mono text-[11px] uppercase tracking-[0.24em] text-accent"
-          >
+          <p class="mt-6 font-mono text-xs tracking-[0.24em] text-accent">
             {category}
           </p>
 
@@ -82,7 +78,7 @@ const related = await getRelatedArticles(slug);
           </h1>
 
           <p
-            class="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg md:leading-8"
+            class="mt-6 max-w-2xl text-base leading-relaxed md:text-lg md:leading-8"
           >
             {article.description}
           </p>
@@ -113,17 +109,13 @@ const related = await getRelatedArticles(slug);
               class="space-y-6 border-t border-border pt-8 lg:border-t-0 lg:pt-0"
             >
               <div>
-                <dt
-                  class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
-                >
+                <dt class="font-mono text-xs tracking-[0.2em] uppercase">
                   {m.blogDetail.category}
                 </dt>
                 <dd class="mt-2 text-sm">{category}</dd>
               </div>
               <div>
-                <dt
-                  class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
-                >
+                <dt class="font-mono text-xs tracking-[0.2em] uppercase">
                   {m.blogDetail.published}
                 </dt>
                 <dd class="mt-2 text-sm">
@@ -133,7 +125,7 @@ const related = await getRelatedArticles(slug);
               {
                 showUpdated && (
                   <div>
-                    <dt class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                    <dt class="font-mono text-xs tracking-[0.2em] uppercase">
                       {m.blogDetail.updated}
                     </dt>
                     <dd class="mt-2 text-sm">
@@ -162,7 +154,7 @@ const related = await getRelatedArticles(slug);
                 <h2 class="font-display text-2xl italic md:text-3xl">
                   {m.blogDetail.relatedTitle}
                 </h2>
-                <p class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
+                <p class="font-mono text-xs tracking-[0.24em] uppercase">
                   {m.blogPage.indexNo}
                 </p>
               </div>
@@ -191,14 +183,14 @@ const related = await getRelatedArticles(slug);
                         />
                       </div>
                       <div class="md:col-span-6">
-                        <p class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
+                        <p class="font-mono text-xs tracking-[0.24em] uppercase">
                           {getArticleCategory(entry)}
                         </p>
                         <h3 class="mt-2 font-display text-xl leading-tight transition-colors group-hover:text-accent md:text-2xl">
                           {entry.title}
                         </h3>
                       </div>
-                      <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors group-hover:text-accent md:col-span-2 md:text-right">
+                      <span class="font-mono text-xs tracking-[0.18em] uppercase transition-colors group-hover:text-accent md:col-span-2 md:text-right">
                         {m.blogPage.read}
                       </span>
                     </a>
@@ -218,7 +210,7 @@ const related = await getRelatedArticles(slug);
             href="/blog"
             data-cursor="focus"
             data-cursor-label="Back"
-            class="group inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-accent"
+            class="group inline-flex items-center gap-2 font-mono text-xs tracking-[0.18em] uppercase transition-colors hover:text-accent"
           >
             <ArrowLeft
               size={14}
@@ -256,10 +248,10 @@ const related = await getRelatedArticles(slug);
 </Layout>
 
 <script>
-  import { bindBackFab } from "@/service/back-fab.service";
+  import { bindBackTab } from "@/lib/back-tab";
 
-  bindBackFab("blog-back-fab");
+  bindBackTab("blog-back-fab");
   document.addEventListener("astro:page-load", () =>
-    bindBackFab("blog-back-fab"),
+    bindBackTab("blog-back-fab"),
   );
 </script>

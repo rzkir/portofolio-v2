@@ -53,7 +53,7 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
     >
       <div>
         <p
-          class="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase"
+          class="font-mono text-xs tracking-[0.3em] text-muted-foreground uppercase"
         >
           {m.cv.eyebrow}
         </p>
@@ -65,9 +65,10 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
         </p>
       </div>
       <div
-        class="hidden text-right font-mono text-[10px] tracking-widest text-muted-foreground uppercase sm:block"
+        class="hidden text-right font-mono text-xs tracking-widest uppercase sm:block"
       >
-        {m.cv.updated} <br />
+        {m.cv.updated}
+        <br />
         <span class="text-accent">Jun 2026</span>
       </div>
     </FocusIn>
@@ -79,7 +80,7 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
       duration={0.85}
     >
       <h3
-        class="col-span-12 font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase sm:col-span-3"
+        class="col-span-12 font-mono text-xs tracking-[0.3em] text-muted-foreground uppercase sm:col-span-3"
       >
         {m.cv.profile}
       </h3>
@@ -93,7 +94,7 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
     <section class="mt-8 grid grid-cols-12 gap-6 border-b border-border pb-8">
       <FocusIn
         as="h3"
-        class="col-span-12 font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase sm:col-span-3"
+        class="col-span-12 font-mono text-xs tracking-[0.3em] text-accent uppercase sm:col-span-3"
         delay={100}
         duration={0.85}
       >
@@ -109,11 +110,11 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
             >
               <div class="flex flex-wrap items-baseline justify-between gap-2">
                 <p class="text-base font-medium">{career.role}</p>
-                <span class="font-mono text-[10px] tracking-widest text-accent uppercase">
+                <span class="font-mono text-xs tracking-widest text-accent uppercase">
                   {career.range}
                 </span>
               </div>
-              <p class="text-xs tracking-widest text-muted-foreground uppercase">
+              <p class="text-xs tracking-widest text-accent uppercase">
                 {career.org}
               </p>
               <p class="mt-1 text-sm leading-relaxed whitespace-pre-line text-foreground/75">
@@ -128,7 +129,7 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
     <section class="mt-8 grid grid-cols-12 gap-6 border-b border-border pb-8">
       <FocusIn
         as="h3"
-        class="col-span-12 font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase sm:col-span-3"
+        class="col-span-12 font-mono text-xs tracking-[0.3em] text-accent uppercase sm:col-span-3"
         delay={120}
         duration={0.85}
       >
@@ -139,7 +140,7 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
           SKILL_CATEGORY_LABELS.map((group, i) =>
             skillGroups[group.key].length > 0 ? (
               <FocusIn delay={160 + i * 50} duration={0.85}>
-                <p class="mb-2 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
+                <p class="mb-2 font-mono text-xs tracking-[0.2em] text-accent uppercase">
                   {group.label}
                 </p>
                 <div class="flex flex-wrap gap-2">
@@ -168,7 +169,7 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
     <section class="mt-8 grid grid-cols-12 gap-6 border-b border-border pb-8">
       <FocusIn
         as="h3"
-        class="col-span-12 font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase sm:col-span-3"
+        class="col-span-12 font-mono text-xs tracking-[0.3em] text-accent uppercase sm:col-span-3"
         delay={120}
         duration={0.85}
       >
@@ -184,7 +185,7 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
               class="flex items-baseline justify-between gap-4 border-b border-border/60 pb-2"
             >
               <span class="leading-snug">{c.title}</span>
-              <span class="shrink-0 font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
+              <span class="shrink-0 font-mono text-xs tracking-widest text-accent uppercase">
                 {c.issuer} · {c.year}
               </span>
             </FocusIn>
@@ -196,7 +197,7 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
               as="li"
               delay={160 + featuredCredentials.length * 35}
               duration={0.8}
-              class="pt-1 font-mono text-[10px] tracking-widest text-muted-foreground uppercase"
+              class="pt-1 font-mono text-xs tracking-widest text-accent uppercase"
             >
               {m.cv.moreCerts.replace("{count}", String(remainingCredentials))}
             </FocusIn>
@@ -212,39 +213,31 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
       duration={0.85}
     >
       <h3
-        class="col-span-12 font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase sm:col-span-3"
+        class="col-span-12 font-mono text-xs tracking-[0.3em] text-accent uppercase sm:col-span-3"
       >
         {m.cv.contact}
       </h3>
       <dl class="col-span-12 grid grid-cols-2 gap-4 text-sm sm:col-span-9">
         <div>
-          <dt
-            class="text-[10px] tracking-widest text-muted-foreground uppercase"
-          >
+          <dt class="text-xs tracking-widest text-accent uppercase">
             {m.cv.contactEmail}
           </dt>
           <dd class="mt-1">hello@rizkiramadhan.biz.id</dd>
         </div>
         <div>
-          <dt
-            class="text-[10px] tracking-widest text-muted-foreground uppercase"
-          >
+          <dt class="text-xs tracking-widest text-accent uppercase">
             {m.cv.contactWebsite}
           </dt>
           <dd class="mt-1">rizkiramadhan.biz.id</dd>
         </div>
         <div>
-          <dt
-            class="text-[10px] tracking-widest text-muted-foreground uppercase"
-          >
+          <dt class="text-xs tracking-widest text-accent uppercase">
             {m.cv.contactLocation}
           </dt>
           <dd class="mt-1">Bogor, ID (UTC+7)</dd>
         </div>
         <div>
-          <dt
-            class="text-[10px] tracking-widest text-muted-foreground uppercase"
-          >
+          <dt class="text-xs tracking-widest text-accent uppercase">
             {m.cv.contactStatus}
           </dt>
           <dd class="mt-1 text-accent">{m.cv.statusValue}</dd>
@@ -257,13 +250,11 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
       delay={200}
       duration={0.85}
     >
-      <p
-        class="font-mono text-[10px] tracking-widest text-muted-foreground uppercase"
-      >
+      <p class="font-mono text-xs tracking-widest uppercase">
         {m.cv.pdfNote}
       </p>
       <a
-        href="https://www.rizkiramadhan.biz.id/cv.pdf"
+        href="/cv-rizkiramadhan.pdf"
         target="_blank"
         rel="noreferrer"
         class="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2 text-xs font-medium text-background transition-transform hover:-translate-y-0.5"

@@ -10,7 +10,7 @@ import {
   formatWorkDate,
   getWorkBySlug,
   getWorkYear,
-} from "@/service/works-detail.service";
+} from "@/service/works.service";
 import { getLocale, getMessages } from "@/lib/i18n";
 
 const locale = getLocale(Astro);
@@ -302,8 +302,8 @@ const category = work.categoryDetail?.name ?? work.category;
 </Layout>
 
 <script>
-  import { bindBackFab } from "@/service/back-fab.service";
+  import { bindBackTab } from "@/lib/back-tab";
 
-  bindBackFab("work-back-fab");
-  document.addEventListener("astro:page-load", () => bindBackFab("work-back-fab"));
+  bindBackTab("work-back-fab");
+  document.addEventListener("astro:page-load", () => bindBackTab("work-back-fab"));
 </script>

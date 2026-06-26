@@ -1,33 +1,18 @@
 const DEFAULT_API_URL = "https://api.rizkiramadhan.biz.id";
 
-type ServerEnv = {
-  API_URL: string;
-  API_SECRET: string;
-};
-
-let serverEnvPromise: Promise<ServerEnv> | undefined;
-
-function getServerEnv(): Promise<ServerEnv> {
-  if (!serverEnvPromise) {
-    serverEnvPromise = import("astro:env/server")
-      .then((env) => ({
-        API_URL: env.API_URL,
-        API_SECRET: env.API_SECRET ?? "",
-      }))
-      .catch(() => ({
-        API_URL: process.env.API_URL ?? DEFAULT_API_URL,
-        API_SECRET: process.env.API_SECRET ?? "",
-      }));
-  }
-
-  return serverEnvPromise;
+function getServerEnv() {
+  return {
+    API_URL: process.env.API_URL ?? DEFAULT_API_URL,
+    API_SECRET: process.env.API_SECRET ?? "",
+  };
 }
 
-async function resolveApiUrl(path: string): Promise<string> {
+function resolveApiUrl(path: string): string {
   if (path.startsWith("http")) return path;
-  const { API_URL } = await getServerEnv();
+  const { API_URL } = getServerEnv();
   return `${API_URL}${path}`;
 }
+
 interface ApiFetchOptions {
   /** Fresh period — serve cache without network (seconds). */
   revalidate?: number;
@@ -133,7 +118,7 @@ export function fingerprintData(data: unknown): string {
 }
 
 async function networkFetch<T>(url: string): Promise<T> {
-  const { API_SECRET } = await getServerEnv();
+  const { API_SECRET } = getServerEnv();
   const headers: HeadersInit = {
     "Content-Type": "application/json",
   };
@@ -208,7 +193,7 @@ export async function apiFetch<T>(
 ): Promise<T> {
   const revalidate = options.revalidate ?? 60;
   const staleTime = options.staleTime ?? revalidate * 10;
-  const url = await resolveApiUrl(path);
+  const url = resolveApiUrl(path);
   const cacheKey = buildCacheKey(url, options.tags);
 
   if (revalidate <= 0) {

@@ -1,0 +1,32 @@
+---
+import NotificationTemplate from "@/components/ui/notification.astro";
+---
+
+<div
+  id="notification-viewport"
+  class="notification-viewport"
+  data-notification-viewport
+  aria-live="polite"
+  aria-relevant="additions"
+>
+</div>
+
+<NotificationTemplate />
+
+<script>
+  import { bindNotifications } from "@/lib/notifications";
+
+  function initNotifications() {
+    bindNotifications();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initNotifications, {
+      once: true,
+    });
+  } else {
+    initNotifications();
+  }
+
+  document.addEventListener("astro:page-load", initNotifications);
+</script>

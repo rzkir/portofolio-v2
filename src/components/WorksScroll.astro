@@ -4,8 +4,10 @@ import ScaleIn from "@astroanimate/core/ScaleIn";
 import { Image } from "astro:assets";
 import FocusIn from "@/components/FocusIn.astro";
 import PreviewIcon from "@/components/svg/priview.astro";
-import { getFeaturedWorks } from "@/service/works-archive.service";
-import { getWorksScrollVh } from "@/service/works.service";
+import {
+  getFeaturedWorks,
+  getWorksScrollVh,
+} from "@/service/works.service";
 import { getLocale, getMessages } from "@/lib/i18n";
 
 const locale = getLocale(Astro);
@@ -250,7 +252,7 @@ const inViewMargin = "-12%";
 </style>
 
 <script>
-  import { bindWorksScroll } from "@/service/works.service";
+  import { bindWorksScroll } from "@/service/works.client";
 
   bindWorksScroll();
   document.addEventListener("astro:page-load", () => bindWorksScroll());

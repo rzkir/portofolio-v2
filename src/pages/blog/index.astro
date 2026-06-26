@@ -35,14 +35,12 @@ const ogImage = lead?.thumbnail;
         <div
           class="flex items-baseline justify-between gap-6 border-b border-border pb-4"
         >
-          <p
-            class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
-          >
+          <p class="font-mono text-xs tracking-[0.24em] uppercase">
             {m.blogPage.mastheadEyebrow}
           </p>
           <p
             data-blog-count
-            class="hidden font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground md:block"
+            class="hidden font-mono text-xs tracking-[0.24em] uppercase md:block"
           >
             {t("blogPage.entries", { count: articles.length })}
           </p>
@@ -54,7 +52,7 @@ const ogImage = lead?.thumbnail;
           <br />
           <span class="italic">{m.blogPage.titleLine2}</span>
         </h1>
-        <p class="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
+        <p class="mt-4 max-w-xl text-sm leading-relaxed">
           {m.blogPage.subtitle}
         </p>
       </FocusIn>
@@ -63,7 +61,7 @@ const ogImage = lead?.thumbnail;
     <section class="mt-10 border-y border-border">
       <div class="mx-auto container px-4 py-3 md:px-6">
         <div
-          class="flex flex-wrap items-center gap-x-5 gap-y-1.5 font-mono text-[11px] uppercase tracking-[0.18em]"
+          class="flex flex-wrap items-center gap-x-5 gap-y-1.5 font-mono text-xs tracking-[0.18em]"
           role="tablist"
           aria-label={m.blogPage.filterAria}
           data-blog-filters
@@ -84,7 +82,10 @@ const ogImage = lead?.thumbnail;
               >
                 <span
                   data-blog-prefix
-                  class:list={[{ hidden: category !== "All" }]}>— </span>
+                  class:list={[{ hidden: category !== "All" }]}
+                >
+                  —{" "}
+                </span>
                 {category === "All" ? m.blogPage.filterAll : category}
               </button>
             ))
@@ -119,9 +120,7 @@ const ogImage = lead?.thumbnail;
                 </a>
               </div>
               <div class="flex flex-col justify-center md:col-span-5">
-                <p
-                  class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
-                >
+                <p class="font-mono text-xs tracking-[0.24em] uppercase">
                   {m.blogPage.featured} · {getArticleCategory(lead)}
                 </p>
                 <h2 class="mt-3 font-display text-2xl leading-[1.1] tracking-tight md:text-4xl">
@@ -134,14 +133,10 @@ const ogImage = lead?.thumbnail;
                     {lead.title}
                   </a>
                 </h2>
-                <p class="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  {lead.description}
-                </p>
-                <div
-                  class="mt-5 flex items-center gap-4 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground"
-                >
+                <p class="mt-3 text-sm leading-relaxed">{lead.description}</p>
+                <div class="mt-5 flex items-center gap-4 font-mono text-xs tracking-[0.18em]">
                   <span>{formatBlogDate(lead.createdAt, locale)}</span>
-                  <span class="h-px flex-1 bg-border"></span>
+                  <span class="h-px flex-1 bg-border" />
                   <a
                     href={`/blog/${lead.slug}`}
                     data-cursor="focus"
@@ -157,12 +152,15 @@ const ogImage = lead?.thumbnail;
         )
       }
 
-      <section aria-label={m.blogPage.listAria} class="mx-auto container px-4 pb-16 md:px-6">
+      <section
+        aria-label={m.blogPage.listAria}
+        class="mx-auto container px-4 pb-16 md:px-6"
+      >
         <BlogGrid articles={rest} />
 
         <p
           data-blog-empty
-          class="hidden py-16 text-center font-display text-2xl italic text-muted-foreground"
+          class="hidden py-16 text-center font-display text-2xl italic"
         >
           {m.blogPage.empty}
         </p>
@@ -174,72 +172,16 @@ const ogImage = lead?.thumbnail;
 </Layout>
 
 <script>
-  function bindBlogFilters(root: ParentNode = document) {
-    const container = root.querySelector("[data-blog-root]");
-    const filters = root.querySelector("[data-blog-filters]");
-    if (!container || !filters) return;
-
-    const blogRoot = container;
-
-    const lead = blogRoot.querySelector("[data-blog-lead]");
-    const items = blogRoot.querySelectorAll("[data-blog-item]");
-    const empty = blogRoot.querySelector("[data-blog-empty]");
-    const countEl = root.querySelector("[data-blog-count]");
-    const entriesTemplate = countEl?.textContent?.replace(/\d+/, "{count}") ?? "";
-
-    const buttons = filters.querySelectorAll<HTMLButtonElement>(
-      "[data-blog-filter]",
-    );
-
-    function applyFilter(category: string) {
-      let visible = 0;
-
-      const match = (el: Element | null) => {
-        if (!el) return;
-        const itemCategory = el.getAttribute("data-blog-category") ?? "";
-        const show = category === "All" || itemCategory === category;
-        el.classList.toggle("hidden", !show);
-        if (show) visible += 1;
-      };
-
-      match(lead);
-      items.forEach((item) => match(item));
-
-      const archive = blogRoot.querySelector("[data-blog-archive]");
-      const visibleArchiveItems = [...items].filter(
-        (item) => !item.classList.contains("hidden"),
-      ).length;
-      archive?.classList.toggle("hidden", visibleArchiveItems === 0);
-
-      empty?.classList.toggle("hidden", visible > 0);
-
-      if (countEl && entriesTemplate) {
-        countEl.textContent = entriesTemplate.replace("{count}", String(visible));
-      }
-
-      buttons.forEach((button) => {
-        const value = button.getAttribute("data-blog-filter") ?? "";
-        const active = value === category;
-        button.setAttribute("aria-selected", active ? "true" : "false");
-        button.classList.toggle("text-foreground", active);
-        button.classList.toggle("text-muted-foreground", !active);
-        button.querySelector("[data-blog-prefix]")?.classList.toggle("hidden", !active);
-      });
-    }
-
-    buttons.forEach((button) => {
-      button.addEventListener("click", () => {
-        applyFilter(button.getAttribute("data-blog-filter") ?? "All");
-      });
-    });
-  }
+  import { bindBlogFilters } from "@/service/blogs.client";
 
   function initBlogFilters() {
     bindBlogFilters();
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initBlogFilters, { once: true });
+    document.addEventListener("DOMContentLoaded", initBlogFilters, {
+      once: true,
+    });
   } else {
     initBlogFilters();
   }
