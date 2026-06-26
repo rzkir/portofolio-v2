@@ -13,7 +13,7 @@ type GuestNotesCache = {
   staleUntil: number;
 };
 
-const GUEST_NOTES_TTL = { revalidate: 60, staleTime: 300 };
+const GUEST_NOTES_TTL = { revalidate: 30, staleTime: 120 };
 let guestNotesCache: GuestNotesCache | null = null;
 let guestNotesInflight: Promise<string> | null = null;
 
@@ -123,7 +123,7 @@ async function handleGuestNotesGet(env: Env): Promise<Response> {
       status,
       headers: {
         "Content-Type": "application/json",
-        "Cache-Control": "private, max-age=60, stale-while-revalidate=300",
+        "Cache-Control": "private, max-age=30, stale-while-revalidate=120",
       },
     });
   } catch {

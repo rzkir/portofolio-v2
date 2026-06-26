@@ -54,7 +54,7 @@ export const CACHE_TTL = {
   /** GitHub + WakaTime stats. */
   stats: { revalidate: 300, staleTime: 1800 },
   /** Guest notes — lebih sering berubah. */
-  dynamic: { revalidate: 60, staleTime: 300 },
+  dynamic: { revalidate: 30, staleTime: 120 },
 } as const;
 
 const cache = new Map<string, CacheEntry>();
