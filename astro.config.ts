@@ -25,6 +25,24 @@ export default defineConfig({
         optional: true,
         default: "",
       }),
+      GOOGLE_SEARCH_CONSOLE_ID: envField.string({
+        context: "server",
+        access: "secret",
+        optional: true,
+        default: "",
+      }),
+      GOOGLE_TAG_MANAGER_ID: envField.string({
+        context: "server",
+        access: "secret",
+        optional: true,
+        default: "",
+      }),
+      BING_VERIFICATION: envField.string({
+        context: "server",
+        access: "secret",
+        optional: true,
+        default: "",
+      }),
     },
   },
   vite: {

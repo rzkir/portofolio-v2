@@ -4,6 +4,7 @@ import SplashScreen from "@/components/SplashScreen.astro";
 import { FORCE_MOTION_INLINE_SCRIPT } from "@/lib/force-motion";
 import { getLocale, getMessages } from "@/lib/i18n";
 import {
+  getSiteVerification,
   resolvePageMetadata,
   type OgType,
 } from "@/lib/metadata";
@@ -42,6 +43,8 @@ const meta = resolvePageMetadata({
   noIndex,
   messages: m,
 });
+
+const verification = getSiteVerification();
 ---
 
 <!doctype html>
@@ -70,6 +73,23 @@ const meta = resolvePageMetadata({
     <link rel="canonical" href={meta.canonicalUrl} />
     {meta.robots && <meta name="robots" content={meta.robots} />}
 
+    {
+      verification.googleSiteVerification && (
+        <meta
+          name="google-site-verification"
+          content={verification.googleSiteVerification}
+        />
+      )
+    }
+    {
+      verification.bingSiteVerification && (
+        <meta
+          name="msvalidate.01"
+          content={verification.bingSiteVerification}
+        />
+      )
+    }
+
     <meta property="og:type" content={meta.og.type} />
     <meta property="og:site_name" content={meta.og.siteName} />
     <meta property="og:locale" content={meta.og.locale} />
@@ -94,6 +114,26 @@ const meta = resolvePageMetadata({
       )
     }
 
+    {
+      verification.googleTagManagerId && (
+        <script
+          is:inline
+          define:vars={{ gtmId: verification.googleTagManagerId }}
+        >
+          (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+            var f = d.getElementsByTagName(s)[0],
+              j = d.createElement(s),
+              dl = l != "dataLayer" ? "&l=" + l : "";
+            j.async = true;
+            j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+            f.parentNode.insertBefore(j, f);
+          })(window, document, "script", "dataLayer", gtmId);
+        </script>
+      )
+    }
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -102,6 +142,17 @@ const meta = resolvePageMetadata({
     />
   </head>
   <body>
+    {
+      verification.googleTagManagerId && (
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${verification.googleTagManagerId}`}
+            height="0"
+            width="0"
+            style="display:none;visibility:hidden"></iframe>
+        </noscript>
+      )
+    }
     <SplashScreen />
     <GrabCursor />
     <slot />

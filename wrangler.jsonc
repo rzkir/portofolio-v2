@@ -8,7 +8,9 @@
     "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page",
-    "run_worker_first": ["/api/*"]
+    "run_worker_first": [
+      "/api/*"
+    ]
   },
   "kv_namespaces": [
     {
@@ -17,6 +19,9 @@
   ],
   "vars": {
     "API_URL": "https://api.rizkiramadhan.biz.id",
-    "BASE_URL": "https://rizkiramadhan.biz.id"
+    "BASE_URL": "https://rizkiramadhan.biz.id",
+    "GOOGLE_SEARCH_CONSOLE_ID": "KKKjy1KODm-6a6H8PjKyenrDHgOEKVTktC5dO6YIjJc",
+    "GOOGLE_TAG_MANAGER_ID": "GTM-WNWHRR58",
+    "BING_VERIFICATION": "0D0D4C1488B53F1754982A8F49A01CE7"
   }
 }

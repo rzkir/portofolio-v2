@@ -1,7 +1,11 @@
 import { project1 } from "@/data/portfolio";
+import {
+  BING_VERIFICATION,
+  GOOGLE_SEARCH_CONSOLE_ID,
+  GOOGLE_TAG_MANAGER_ID,
+} from "astro:env/server";
 
 import type { Locale, Messages } from "@/lib/i18n";
-
 export type BreadcrumbItem = {
   name: string;
   path: string;
@@ -46,6 +50,25 @@ export type PageMetadata = {
   breadcrumbs: BreadcrumbItem[];
   breadcrumbJsonLd: string | null;
 };
+
+export type SiteVerification = {
+  googleSiteVerification: string | null;
+  bingSiteVerification: string | null;
+  googleTagManagerId: string | null;
+};
+
+function normalizeEnv(value: string | undefined): string | null {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : null;
+}
+
+export function getSiteVerification(): SiteVerification {
+  return {
+    googleSiteVerification: normalizeEnv(GOOGLE_SEARCH_CONSOLE_ID),
+    bingSiteVerification: normalizeEnv(BING_VERIFICATION),
+    googleTagManagerId: normalizeEnv(GOOGLE_TAG_MANAGER_ID),
+  };
+}
 
 const SITE_NAME = "Rizki Ramadhan";
 
