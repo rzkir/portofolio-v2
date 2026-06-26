@@ -34,9 +34,11 @@ const category = work.categoryDetail?.name ?? work.category;
 ---
 
 <Layout
-  title={`${work.title} — R. Ramadhan`}
+  title={`${work.title} — Rizki Ramadhan`}
   description={work.description}
   ogImage={work.thumbnail}
+  ogType="article"
+  breadcrumbCurrent={work.title}
 >
   <Header />
 

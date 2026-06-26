@@ -1,15 +1,22 @@
 ---
-interface Props {
-  title?: string;
-  description?: string;
-  ogImage?: string;
-}
-
 import GrabCursor from "@/components/GrabCursor.astro";
 import SplashScreen from "@/components/SplashScreen.astro";
 import { FORCE_MOTION_INLINE_SCRIPT } from "@/lib/force-motion";
 import { getLocale, getMessages } from "@/lib/i18n";
+import {
+  resolvePageMetadata,
+  type OgType,
+} from "@/lib/metadata";
 import "@/styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  ogType?: OgType;
+  breadcrumbCurrent?: string;
+  noIndex?: boolean;
+}
 
 const locale = getLocale(Astro);
 const m = getMessages(locale);
@@ -18,7 +25,23 @@ const {
   title = m.meta.siteTitle,
   description = m.meta.siteDescription,
   ogImage,
+  ogType,
+  breadcrumbCurrent,
+  noIndex,
 } = Astro.props;
+
+const meta = resolvePageMetadata({
+  site: Astro.site,
+  pathname: Astro.url.pathname,
+  locale,
+  title,
+  description,
+  ogImage,
+  ogType,
+  breadcrumbCurrent,
+  noIndex,
+  messages: m,
+});
 ---
 
 <!doctype html>
@@ -41,11 +64,36 @@ const {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
+
+    <title>{meta.title}</title>
+    <meta name="description" content={meta.description} />
+    <link rel="canonical" href={meta.canonicalUrl} />
+    {meta.robots && <meta name="robots" content={meta.robots} />}
+
+    <meta property="og:type" content={meta.og.type} />
+    <meta property="og:site_name" content={meta.og.siteName} />
+    <meta property="og:locale" content={meta.og.locale} />
+    <meta property="og:locale:alternate" content={meta.og.localeAlternate} />
+    <meta property="og:title" content={meta.og.title} />
+    <meta property="og:description" content={meta.og.description} />
+    <meta property="og:url" content={meta.og.url} />
+    <meta property="og:image" content={meta.og.image} />
+    <meta property="og:image:alt" content={meta.og.title} />
+
+    <meta name="twitter:card" content={meta.twitter.card} />
+    <meta name="twitter:title" content={meta.twitter.title} />
+    <meta name="twitter:description" content={meta.twitter.description} />
+    <meta name="twitter:image" content={meta.twitter.image} />
+
+    {
+      meta.breadcrumbJsonLd && (
+        <script
+          type="application/ld+json"
+          set:html={meta.breadcrumbJsonLd}
+        />
+      )
+    }
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

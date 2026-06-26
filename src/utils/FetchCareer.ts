@@ -1,11 +1,11 @@
-import { apiFetch } from "@/lib/apiFetch";
+import { apiFetch, CACHE_TTL } from "@/lib/apiFetch";
 
 const CAREER_PATH = "/api/v1/careers";
 
 export const fetchCareerContents = async (): Promise<CareerContentProps[]> => {
   try {
     const data = await apiFetch<CareerContentProps[]>(CAREER_PATH, {
-      revalidate: 60,
+      ...CACHE_TTL.static,
       tags: ["career"],
     });
     return data;

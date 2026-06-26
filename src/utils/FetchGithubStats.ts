@@ -1,11 +1,11 @@
-import { apiFetch } from "@/lib/apiFetch";
+import { apiFetch, CACHE_TTL } from "@/lib/apiFetch";
 
 const GITHUB_STATS_PATH = "/api/v1/stats/wakatime";
 
 export const fetchGithubStats = async (): Promise<GithubStatsResponse> => {
   try {
     const data = await apiFetch<GithubStatsResponse>(GITHUB_STATS_PATH, {
-      revalidate: 60,
+      ...CACHE_TTL.stats,
       tags: ["github-stats"],
     });
     return data;

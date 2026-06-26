@@ -221,7 +221,7 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
           <dt
             class="text-[10px] tracking-widest text-muted-foreground uppercase"
           >
-            Email
+            {m.cv.contactEmail}
           </dt>
           <dd class="mt-1">hello@rizkiramadhan.biz.id</dd>
         </div>
@@ -229,7 +229,7 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
           <dt
             class="text-[10px] tracking-widest text-muted-foreground uppercase"
           >
-            Website
+            {m.cv.contactWebsite}
           </dt>
           <dd class="mt-1">rizkiramadhan.biz.id</dd>
         </div>
@@ -237,7 +237,7 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
           <dt
             class="text-[10px] tracking-widest text-muted-foreground uppercase"
           >
-            Lokasi
+            {m.cv.contactLocation}
           </dt>
           <dd class="mt-1">Bogor, ID (UTC+7)</dd>
         </div>
@@ -245,9 +245,9 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
           <dt
             class="text-[10px] tracking-widest text-muted-foreground uppercase"
           >
-            Status
+            {m.cv.contactStatus}
           </dt>
-          <dd class="mt-1 text-accent">Open for work</dd>
+          <dd class="mt-1 text-accent">{m.cv.statusValue}</dd>
         </div>
       </dl>
     </FocusIn>
@@ -260,7 +260,7 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
       <p
         class="font-mono text-[10px] tracking-widest text-muted-foreground uppercase"
       >
-        Versi lengkap tersedia sebagai PDF
+        {m.cv.pdfNote}
       </p>
       <a
         href="https://www.rizkiramadhan.biz.id/cv.pdf"

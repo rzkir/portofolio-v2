@@ -1,4 +1,4 @@
-import { apiFetch } from "@/lib/apiFetch";
+import { apiFetch, CACHE_TTL } from "@/lib/apiFetch";
 
 const ACHIEVEMENTS_PATH = "/api/v1/achievements";
 
@@ -22,7 +22,8 @@ export const fetchAchievementsPage = async (
     const data = await apiFetch<AchievementsPaginatedResponse>(
       buildAchievementsUrl(options),
       {
-        revalidate: options.revalidate ?? 60,
+        revalidate: options.revalidate ?? CACHE_TTL.semiStatic.revalidate,
+        staleTime: CACHE_TTL.semiStatic.staleTime,
         tags: ["achievements"],
       },
     );

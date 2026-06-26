@@ -1,7 +1,7 @@
 ---
 import FocusIn from "@/components/FocusIn.astro";
-import Dialog from "@/components/ui/dialog.astro";
-import type { RepoView } from "@/service/github-stats.service";
+import UiDialog from "@/components/ui/dialog.astro";
+import { getLocale, getMessages } from "@/lib/i18n";
 
 interface Props {
   repos: RepoView[];
@@ -10,6 +10,10 @@ interface Props {
 }
 
 const { repos, limit = 10, dialogId = "commits-repo-dialog" } = Astro.props;
+
+const locale = getLocale(Astro);
+const m = getMessages(locale);
+const cd = m.commitsDialog;
 
 const featuredRepos = repos.slice(0, limit);
 const remainingCount = Math.max(0, repos.length - limit);
@@ -21,19 +25,19 @@ const remainingCount = Math.max(0, repos.length - limit);
       <p
         class="mb-3 font-mono text-xs tracking-widest text-background/50 uppercase"
       >
-        Commits per Repo
+        {cd.eyebrow}
       </p>
       <h3 class="font-display text-3xl italic">
-        {repos.length} repositori
+        {cd.title.replace("{count}", String(repos.length))}
       </h3>
     </div>
     <div class="flex flex-col items-end gap-3">
       <span class="font-mono text-xs tracking-widest text-background/50 uppercase"
-        >All time</span
+        >{cd.allTime}</span
       >
       {
         remainingCount > 0 && (
-          <Dialog id={dialogId} class="max-w-4xl overflow-y-auto">
+          <UiDialog id={dialogId} class="max-w-4xl overflow-y-auto">
             <button
               slot="trigger"
               type="button"
@@ -42,19 +46,19 @@ const remainingCount = Math.max(0, repos.length - limit);
               data-cursor-label="View"
               class="font-mono text-[10px] tracking-[0.2em] text-background/70 uppercase transition-colors hover:text-background"
             >
-              Lihat semua ({repos.length}) →
+              {cd.viewAll.replace("{count}", String(repos.length))}
             </button>
 
             <article class="px-6 py-8 sm:px-10 sm:py-10">
               <header class="mb-8 border-b border-border pb-6">
                 <p class="mb-2 font-mono text-[10px] tracking-[0.2em] text-accent">
-                  Arsip / Commits
+                  {cd.archiveEyebrow}
                 </p>
                 <h2 class="font-display text-3xl italic leading-snug sm:text-4xl">
-                  Semua repositori
+                  {cd.archiveTitle}
                 </h2>
                 <p class="mt-2 text-sm text-muted-foreground">
-                  {repos.length} repo · diurutkan berdasarkan total commits
+                  {cd.archiveSubtitle.replace("{count}", String(repos.length))}
                 </p>
               </header>
 
@@ -74,17 +78,17 @@ const remainingCount = Math.max(0, repos.length - limit);
                             {
                               repo.isPrivate && (
                                 <span class="ml-2 text-muted-foreground">
-                                  private
+                                  {m.codingStats.private}
                                 </span>
                               )
                             }
                           </p>
                           <p class="mt-1 font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
-                            {repo.language ?? "—"} · ★ {repo.stars} · fork{" "}
+                            {repo.language ?? "—"} · ★ {repo.stars} · {cd.fork}{" "}
                             {repo.forks}
                           </p>
                           <p class="mt-1 font-mono text-[10px] tracking-widest text-muted-foreground/80 uppercase">
-                            pushed {repo.pushedLabel}
+                            {cd.pushed.replace("{date}", repo.pushedLabel)}
                           </p>
                         </div>
                         <div class="shrink-0 text-right">
@@ -92,7 +96,7 @@ const remainingCount = Math.max(0, repos.length - limit);
                             {repo.totalCommits}
                           </p>
                           <p class="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
-                            commits
+                            {cd.commits}
                           </p>
                         </div>
                       </a>
@@ -101,7 +105,7 @@ const remainingCount = Math.max(0, repos.length - limit);
                 }
               </ul>
             </article>
-          </Dialog>
+          </UiDialog>
         )
       }
     </div>
@@ -122,18 +126,20 @@ const remainingCount = Math.max(0, repos.length - limit);
                 {repo.name}
                 {
                   repo.isPrivate && (
-                    <span class="ml-2 text-background/45">private</span>
+                    <span class="ml-2 text-background/45">
+                      {m.codingStats.private}
+                    </span>
                   )
                 }
               </p>
               <p class="mt-1 font-mono text-[10px] tracking-widest text-background/45 uppercase">
-                {repo.language ?? "—"} · ★ {repo.stars} · fork {repo.forks}
+                {repo.language ?? "—"} · ★ {repo.stars} · {cd.fork} {repo.forks}
               </p>
             </div>
             <div class="shrink-0 text-right">
               <p class="font-display text-2xl italic">{repo.totalCommits}</p>
               <p class="font-mono text-[10px] tracking-widest text-background/45 uppercase">
-                commits
+                {cd.commits}
               </p>
             </div>
           </a>
@@ -145,7 +151,7 @@ const remainingCount = Math.max(0, repos.length - limit);
   {
     remainingCount > 0 && (
       <p class="mt-6 font-mono text-[10px] tracking-widest text-background/45 uppercase">
-        +{remainingCount} repo lainnya · buka arsip lengkap
+        {cd.moreRepos.replace("{count}", String(remainingCount))}
       </p>
     )
   }

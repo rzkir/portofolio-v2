@@ -1,4 +1,5 @@
 import { defineMiddleware } from "astro:middleware";
+
 import { DEFAULT_LOCALE, isLocale, LOCALE_COOKIE } from "@/lib/i18n";
 
 export const onRequest = defineMiddleware(async (context, next) => {

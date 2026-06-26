@@ -6,17 +6,106 @@ interface Env {
   API_SECRET?: string;
 }
 
+type GuestNotesCache = {
+  body: string;
+  fingerprint: string;
+  freshUntil: number;
+  staleUntil: number;
+};
+
+const GUEST_NOTES_TTL = { revalidate: 60, staleTime: 300 };
+let guestNotesCache: GuestNotesCache | null = null;
+let guestNotesInflight: Promise<string> | null = null;
+
+function guestNotesFingerprint(body: string): string {
+  try {
+    const items = JSON.parse(body) as Array<{
+      createdAt?: string;
+      updatedAt?: string;
+    }>;
+    if (!Array.isArray(items)) return body.length.toString();
+    const latest = items
+      .map((item) => item.updatedAt ?? item.createdAt ?? "")
+      .filter(Boolean)
+      .sort()
+      .pop();
+    return `${items.length}:${latest ?? ""}`;
+  } catch {
+    return body.length.toString();
+  }
+}
+
+async function fetchGuestNotesFromApi(env: Env): Promise<string> {
+  const response = await fetch(`${env.API_URL}/api/v1/messages`, {
+    cache: "no-store",
+  });
+  return response.text();
+}
+
+async function getGuestNotesBody(
+  env: Env,
+  force = false,
+): Promise<{ body: string; status: number }> {
+  const now = Date.now();
+  const { revalidate, staleTime } = GUEST_NOTES_TTL;
+
+  if (!force && guestNotesCache && now < guestNotesCache.freshUntil) {
+    return { body: guestNotesCache.body, status: 200 };
+  }
+
+  if (
+    !force &&
+    guestNotesCache &&
+    now < guestNotesCache.staleUntil &&
+    guestNotesInflight
+  ) {
+    const body = await guestNotesInflight;
+    return { body, status: 200 };
+  }
+
+  const previous = guestNotesCache;
+
+  if (!guestNotesInflight) {
+    guestNotesInflight = (async () => {
+      try {
+        const body = await fetchGuestNotesFromApi(env);
+        const fp = guestNotesFingerprint(body);
+
+        if (previous && fp === previous.fingerprint) {
+          previous.freshUntil = Date.now() + revalidate * 1000;
+          previous.staleUntil = Date.now() + (revalidate + staleTime) * 1000;
+          return previous.body;
+        }
+
+        guestNotesCache = {
+          body,
+          fingerprint: fp,
+          freshUntil: Date.now() + revalidate * 1000,
+          staleUntil: Date.now() + (revalidate + staleTime) * 1000,
+        };
+        return body;
+      } catch {
+        if (previous) return previous.body;
+        return "[]";
+      } finally {
+        guestNotesInflight = null;
+      }
+    })();
+  }
+
+  const body = await guestNotesInflight;
+  return { body, status: 200 };
+}
+
 async function handleGuestNotesGet(env: Env): Promise<Response> {
   try {
-    const response = await fetch(`${env.API_URL}/api/v1/messages`, {
-      cache: "no-store",
-    });
+    const { body, status } = await getGuestNotesBody(env);
 
-    return new Response(await response.text(), {
-      status: response.status,
+    return new Response(body, {
+      status,
       headers: {
         "Content-Type": "application/json",
-        "Cache-Control": "no-store",
+        "Cache-Control": "private, max-age=60, stale-while-revalidate=300",
       },
     });
   } catch {
@@ -39,6 +128,10 @@ async function handleGuestNotesPost(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
+
+    if (response.ok) {
+      guestNotesCache = null;
+    }
 
     return new Response(await response.text(), {
       status: response.status,

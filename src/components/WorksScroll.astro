@@ -193,7 +193,7 @@ const inViewMargin = "-12%";
                         href={`/works/${work.slug}`}
                         data-cursor="focus"
                         data-cursor-label="View"
-                        aria-label={`Lihat ${work.title}`}
+                        aria-label={m.worksScroll.viewWork.replace("{title}", work.title)}
                         class="group/cta inline-flex items-center gap-2 border-b border-background/40 pb-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-background transition-colors hover:border-background"
                       >
                         {m.worksScroll.detail}

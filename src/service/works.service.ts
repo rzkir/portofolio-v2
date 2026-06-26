@@ -1,18 +1,9 @@
-import { projects, type Project } from "@/data/portfolio";
-
-type Work = Project;
-
 export const WORKS_SCROLL_CONFIG = {
   sectionSelector: "[data-works-scroll]",
   transitionStart: 0.48,
   followSpeed: 14,
   settleEpsilon: 0.0005,
 } as const;
-
-/** Semua karya untuk section scroll. */
-export function getWorks(): Work[] {
-  return projects;
-}
 
 /** Tinggi section scroll = jumlah slide × viewport. */
 export function getWorksScrollVh(count: number): number {

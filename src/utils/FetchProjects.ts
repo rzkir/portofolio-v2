@@ -1,4 +1,4 @@
-import { apiFetch } from "@/lib/apiFetch";
+import { apiFetch, CACHE_TTL } from "@/lib/apiFetch";
 
 const PROJECTS_PATH = "/api/v1/projects";
 
@@ -20,7 +20,8 @@ export const fetchProjectsPage = async (
     const data = await apiFetch<ProjectsPaginatedResponse>(
       buildProjectsUrl(options),
       {
-        revalidate: options.revalidate ?? 60,
+        revalidate: options.revalidate ?? CACHE_TTL.content.revalidate,
+        staleTime: CACHE_TTL.content.staleTime,
         tags: ["projects"],
       },
     );
@@ -58,7 +59,7 @@ export const fetchProjectBySlug = async (
 ): Promise<ProjectDetails> => {
   try {
     const data = await apiFetch<ProjectDetails>(`${PROJECTS_PATH}/${slug}`, {
-      revalidate: 60,
+      ...CACHE_TTL.content,
       tags: ["projects"],
     });
     return data;

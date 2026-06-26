@@ -1,41 +1,59 @@
+import { DEFAULT_LOCALE, getMessages, type Locale } from "@/lib/i18n";
 import { fetchGithubStats } from "@/utils/FetchGithubStats";
 
-function formatMonthYear(dateStr: string): string {
+type CodingStatsMessages = ReturnType<typeof getMessages>["codingStats"];
+
+function localeTag(locale: Locale): string {
+  return locale === "id" ? "id-ID" : "en-US";
+}
+
+function fill(
+  template: string,
+  vars: Record<string, string | number>,
+): string {
+  return Object.entries(vars).reduce(
+    (text, [name, replacement]) =>
+      text.replaceAll(`{${name}}`, String(replacement)),
+    template,
+  );
+}
+
+function formatMonthYear(dateStr: string, locale: Locale): string {
   const date = new Date(`${dateStr}T00:00:00`);
   if (Number.isNaN(date.getTime())) return dateStr;
 
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat(localeTag(locale), {
     month: "short",
     year: "numeric",
   }).format(date);
 }
 
-function formatShortDate(dateStr: string): string {
+function formatShortDate(dateStr: string, locale: Locale): string {
   const date = new Date(`${dateStr}T00:00:00`);
   if (Number.isNaN(date.getTime())) return dateStr;
 
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat(localeTag(locale), {
     month: "short",
     day: "numeric",
   }).format(date);
 }
 
-function formatPushedAt(iso: string): string {
+function formatPushedAt(iso: string, locale: Locale): string {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return "—";
 
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat(localeTag(locale), {
     month: "short",
     day: "numeric",
     year: "numeric",
   }).format(date);
 }
 
-function formatFetchedAt(iso: string): string {
+function formatFetchedAt(iso: string, locale: Locale, fallback: string): string {
   const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return "Update · —";
+  if (Number.isNaN(date.getTime())) return fallback;
 
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat(localeTag(locale), {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -60,7 +78,10 @@ function flattenContributionWeeks(weeks: ContributionDay[][]): HeatmapCell[] {
   return cells;
 }
 
-function getHeatmapRangeLabels(weeks: ContributionDay[][]): {
+function getHeatmapRangeLabels(
+  weeks: ContributionDay[][],
+  locale: Locale,
+): {
   start: string;
   end: string;
 } {
@@ -70,8 +91,8 @@ function getHeatmapRangeLabels(weeks: ContributionDay[][]): {
   const lastDay = [...(lastWeek ?? [])].reverse().find((day) => day.date)?.date ?? "";
 
   return {
-    start: firstDay ? formatMonthYear(firstDay) : "—",
-    end: lastDay ? formatMonthYear(lastDay) : "—",
+    start: firstDay ? formatMonthYear(firstDay, locale) : "—",
+    end: lastDay ? formatMonthYear(lastDay, locale) : "—",
   };
 }
 
@@ -95,59 +116,67 @@ function mapProfile(data: GithubStatsResponse): ProfileView {
   };
 }
 
-function mapSummaryStats(data: GithubStatsResponse): CodingStatItem[] {
+function mapSummaryStats(
+  data: GithubStatsResponse,
+  cs: CodingStatsMessages,
+): CodingStatItem[] {
   const { github, contributionGraph, last7Days, insights } = data;
 
   return [
     {
-      label: "Repositori",
+      label: cs.summaryRepos,
       value: String(github.publicRepos),
-      sub: "publik",
+      sub: cs.summaryReposSub,
     },
     {
-      label: "Kontribusi",
+      label: cs.summaryContributions,
       value: String(contributionGraph.lastYear.totalContributions),
-      sub: "12 bulan",
+      sub: cs.summaryContributionsSub,
     },
     {
-      label: "Total Commits",
+      label: cs.summaryCommits,
       value: String(github.totalCommits),
-      sub: "all time",
+      sub: cs.summaryCommitsSub,
     },
     {
-      label: "Coding 7 Hari",
+      label: cs.summaryCoding7d,
       value: last7Days.totalText,
-      sub: `${insights.daysCoded} hari aktif`,
+      sub: fill(cs.summaryCoding7dSub, { days: insights.daysCoded }),
     },
   ];
 }
 
-function mapSecondaryStats(data: GithubStatsResponse): CodingStatItem[] {
+function mapSecondaryStats(
+  data: GithubStatsResponse,
+  cs: CodingStatsMessages,
+): CodingStatItem[] {
   const { github, insights, allTimeSinceToday } = data;
 
   return [
     {
-      label: "Followers",
+      label: cs.secondaryFollowers,
       value: String(github.followers),
-      sub: "GitHub",
+      sub: cs.secondaryFollowersSub,
     },
     {
-      label: "Following",
+      label: cs.secondaryFollowing,
       value: String(github.following),
-      sub: "GitHub",
+      sub: cs.secondaryFollowingSub,
     },
     {
-      label: "Rata-rata All Time",
+      label: cs.secondaryDailyAvg,
       value:
         typeof allTimeSinceToday.dailyAverage === "number"
-          ? `${Math.round(allTimeSinceToday.dailyAverage / 3600)} jam`
+          ? `${Math.round(allTimeSinceToday.dailyAverage / 3600)} ${cs.secondaryDailyAvgSuffix}`
           : String(allTimeSinceToday.dailyAverage ?? "—"),
-      sub: "WakaTime",
+      sub: cs.secondaryDailyAvgSub,
     },
     {
-      label: "AI Sessions",
+      label: cs.secondaryAiSessions,
       value: String(insights.aiSessions),
-      sub: `$${insights.aiAgentTotalCost.toFixed(2)} cost`,
+      sub: fill(cs.secondaryAiSessionsSub, {
+        cost: `$${insights.aiAgentTotalCost.toFixed(2)}`,
+      }),
     },
   ];
 }
@@ -172,28 +201,35 @@ function mapProjects(data: GithubStatsResponse): ProjectStat[] {
     }));
 }
 
-function mapStreaks(data: GithubStatsResponse): StreakStat[] {
+function mapStreaks(
+  data: GithubStatsResponse,
+  cs: CodingStatsMessages,
+  locale: Locale,
+): StreakStat[] {
   const { insights } = data;
 
   return [
     {
-      label: "Rata-rata harian",
+      label: cs.streakDailyAvg,
       value: insights.dailyAverage,
-      desc: "7 hari terakhir · WakaTime",
+      desc: cs.streakDailyAvgDesc,
     },
     {
-      label: "Hari terbaik",
+      label: cs.streakBestDay,
       value: insights.bestDay.text,
-      desc: formatShortDate(insights.bestDay.date),
+      desc: formatShortDate(insights.bestDay.date, locale),
     },
   ];
 }
 
-function mapActivityStats(data: GithubStatsResponse): ActivityStat[] {
+function mapActivityStats(
+  data: GithubStatsResponse,
+  cs: CodingStatsMessages,
+): ActivityStat[] {
   return [
-    { label: "Hari ini", value: data.today.text },
-    { label: "7 Hari", value: data.last7Days.totalText },
-    { label: "All Time", value: data.allTimeSinceToday.text },
+    { label: cs.activityToday, value: data.today.text },
+    { label: cs.activity7d, value: data.last7Days.totalText },
+    { label: cs.activityAllTime, value: data.allTimeSinceToday.text },
   ];
 }
 
@@ -219,10 +255,13 @@ function mapAiStats(data: GithubStatsResponse): AiStatItem[] {
   ];
 }
 
-function mapDailyActivity(data: GithubStatsResponse): DailyActivityView[] {
+function mapDailyActivity(
+  data: GithubStatsResponse,
+  cs: CodingStatsMessages,
+): DailyActivityView[] {
   return data.dailyActivity.map((day, index) => ({
     text: day.text,
-    label: `Hari ${index + 1}`,
+    label: fill(cs.dayLabel, { n: index + 1 }),
   }));
 }
 
@@ -235,7 +274,10 @@ function mapYearContributions(data: GithubStatsResponse): YearContributionStat[]
     .sort((a, b) => b.year - a.year);
 }
 
-function mapRepo(repo: GithubStatsResponse["recentRepos"][number]): RepoView {
+function mapRepo(
+  repo: GithubStatsResponse["recentRepos"][number],
+  locale: Locale,
+): RepoView {
   return {
     name: repo.name,
     url: repo.url,
@@ -243,7 +285,7 @@ function mapRepo(repo: GithubStatsResponse["recentRepos"][number]): RepoView {
     stars: repo.stars,
     forks: repo.forks,
     totalCommits: repo.totalCommits,
-    pushedLabel: formatPushedAt(repo.pushedAt),
+    pushedLabel: formatPushedAt(repo.pushedAt, locale),
     isPrivate: repo.isPrivate,
   };
 }
@@ -255,7 +297,10 @@ function mapGoals(data: GithubStatsResponse): GoalView[] {
   }));
 }
 
-function mapTrophies(data: GithubStatsResponse): string[] {
+function mapTrophies(
+  data: GithubStatsResponse,
+  cs: CodingStatsMessages,
+): string[] {
   const trophies = new Set<string>();
 
   for (const goal of data.goals) {
@@ -263,53 +308,65 @@ function mapTrophies(data: GithubStatsResponse): string[] {
   }
 
   if (data.insights.topLanguage.name) {
-    trophies.add(`Top · ${data.insights.topLanguage.name}`);
+    trophies.add(
+      fill(cs.trophyTopLanguage, { name: data.insights.topLanguage.name }),
+    );
   }
 
   if (data.insights.topProject.name) {
-    trophies.add(`Projek · ${data.insights.topProject.name}`);
+    trophies.add(
+      fill(cs.trophyTopProject, { name: data.insights.topProject.name }),
+    );
   }
 
   for (const agent of data.insights.aiAgents) {
-    trophies.add(`${agent.name} · ${agent.lines} lines`);
+    trophies.add(
+      fill(cs.trophyAiAgent, { name: agent.name, lines: agent.lines }),
+    );
   }
 
   return [...trophies];
 }
 
-function mapGithubStats(data: GithubStatsResponse): CodingStatsView {
+function mapGithubStats(
+  data: GithubStatsResponse,
+  locale: Locale,
+): CodingStatsView {
+  const cs = getMessages(locale).codingStats;
   const { weeks } = data.contributionGraph.lastYear;
-  const range = getHeatmapRangeLabels(weeks);
+  const range = getHeatmapRangeLabels(weeks, locale);
 
   return {
-    updatedLabel: formatFetchedAt(data.fetchedAt),
+    updatedLabel: formatFetchedAt(data.fetchedAt, locale, cs.updatedFallback),
     profile: mapProfile(data),
-    summaryStats: mapSummaryStats(data),
-    secondaryStats: mapSecondaryStats(data),
+    summaryStats: mapSummaryStats(data, cs),
+    secondaryStats: mapSecondaryStats(data, cs),
     heatmapCells: flattenContributionWeeks(weeks),
     heatmapWeekCount: weeks.length,
     heatmapColors: data.contributionGraph.lastYear.colors,
     heatmapStartLabel: range.start,
     heatmapEndLabel: range.end,
     heatmapNote: data.contributionGraph.note,
-    streaks: mapStreaks(data),
+    streaks: mapStreaks(data, cs, locale),
     languages: mapLanguages(data),
     projects: mapProjects(data),
-    activityStats: mapActivityStats(data),
+    activityStats: mapActivityStats(data, cs),
     aiStats: mapAiStats(data),
-    dailyActivity: mapDailyActivity(data),
+    dailyActivity: mapDailyActivity(data, cs),
     yearContributions: mapYearContributions(data),
     commitsMetaMessage: data.commitsMeta.message,
     privateRepoCount: data.commitsMeta.privateRepoCount,
-    recentRepos: data.recentRepos.map(mapRepo),
-    commitsByRepo: data.commitsByRepo.map(mapRepo),
+    recentRepos: data.recentRepos.map((repo) => mapRepo(repo, locale)),
+    commitsByRepo: data.commitsByRepo.map((repo) => mapRepo(repo, locale)),
     goals: mapGoals(data),
-    trophies: mapTrophies(data),
+    trophies: mapTrophies(data, cs),
   };
 }
 
 /** Metrik coding dari GitHub + WakaTime — di-fetch saat SSR/build. */
-export async function getCodingStatsView(): Promise<CodingStatsView> {
+export async function getCodingStatsView(
+  locale: Locale = DEFAULT_LOCALE,
+): Promise<CodingStatsView> {
   const data = await fetchGithubStats();
-  return mapGithubStats(data);
+  return mapGithubStats(data, locale);
 }

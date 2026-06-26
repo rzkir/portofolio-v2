@@ -12,18 +12,20 @@ import WorksScroll from "@/components/WorksScroll.astro";
 import ArchivmentsLayout from "@/components/ArchivmentsLayout.astro";
 import CareerLayout from "@/components/CareerLayout.astro";
 import { getCredentialsCount } from "@/service/archivments.service";
+import { getSkills } from "@/service/skills.service";
 import { getWorksCount } from "@/service/works-archive.service";
 import { getLocale, getMessages } from "@/lib/i18n";
-import { portrait, project1, stack } from "@/data/portfolio";
+import { portrait, project1 } from "@/data/portfolio";
 
 const locale = getLocale(Astro);
 const m = getMessages(locale);
 
 const ogImage = new URL(project1.src, Astro.site).href;
 
-const [projectCount, certificationCount] = await Promise.all([
+const [projectCount, certificationCount, skills] = await Promise.all([
   getWorksCount(),
   getCredentialsCount(),
+  getSkills(),
 ]);
 ---
 
@@ -92,9 +94,11 @@ const [projectCount, certificationCount] = await Promise.all([
     <Marquee duration="38s" class="mt-32 border-y border-border py-6">
       <div class="flex shrink-0 items-center gap-12 px-6">
         {
-          stack.map((s) => (
+          skills.map((skill) => (
             <>
-              <span class="font-display text-3xl italic opacity-40">{s}</span>
+              <span class="font-display text-3xl italic opacity-40">
+                {skill.title}
+              </span>
               <span class="size-1.5 rounded-full bg-border" />
             </>
           ))
