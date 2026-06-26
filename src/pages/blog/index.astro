@@ -1,0 +1,248 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/layouts/Header.astro";
+import Footer from "@/layouts/Footer.astro";
+import FocusIn from "@/components/FocusIn.astro";
+import BlogGrid from "@/components/BlogGrid.astro";
+import { getLocale, getMessages, useTranslations } from "@/lib/i18n";
+import {
+  formatBlogDate,
+  getArticleCategory,
+  getBlogArchive,
+  getBlogCategories,
+} from "@/service/blogs.service";
+
+const locale = getLocale(Astro);
+const m = getMessages(locale);
+const t = useTranslations(locale);
+
+const articles = await getBlogArchive();
+const categories = getBlogCategories(articles);
+const [lead, ...rest] = articles;
+const ogImage = lead?.thumbnail;
+---
+
+<Layout
+  title={m.meta.blogTitle}
+  description={m.meta.blogDescription}
+  ogImage={ogImage}
+>
+  <Header />
+
+  <main class="min-h-screen bg-background pt-28 text-foreground">
+    <section class="mx-auto container px-4 md:px-6">
+      <FocusIn>
+        <div
+          class="flex items-baseline justify-between gap-6 border-b border-border pb-4"
+        >
+          <p
+            class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
+          >
+            {m.blogPage.mastheadEyebrow}
+          </p>
+          <p
+            data-blog-count
+            class="hidden font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground md:block"
+          >
+            {t("blogPage.entries", { count: articles.length })}
+          </p>
+        </div>
+        <h1
+          class="mt-5 font-display text-4xl leading-[1.05] tracking-tight md:text-6xl"
+        >
+          {m.blogPage.titleLine1}
+          <br />
+          <span class="italic">{m.blogPage.titleLine2}</span>
+        </h1>
+        <p class="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
+          {m.blogPage.subtitle}
+        </p>
+      </FocusIn>
+    </section>
+
+    <section class="mt-10 border-y border-border">
+      <div class="mx-auto container px-4 py-3 md:px-6">
+        <div
+          class="flex flex-wrap items-center gap-x-5 gap-y-1.5 font-mono text-[11px] uppercase tracking-[0.18em]"
+          role="tablist"
+          aria-label={m.blogPage.filterAria}
+          data-blog-filters
+        >
+          {
+            categories.map((category) => (
+              <button
+                type="button"
+                role="tab"
+                data-blog-filter={category}
+                aria-selected={category === "All" ? "true" : "false"}
+                class:list={[
+                  "transition-colors",
+                  category === "All"
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground",
+                ]}
+              >
+                <span
+                  data-blog-prefix
+                  class:list={[{ hidden: category !== "All" }]}>— </span>
+                {category === "All" ? m.blogPage.filterAll : category}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <div data-blog-root>
+      {
+        lead && (
+          <section
+            class="border-b border-border"
+            data-blog-lead
+            data-blog-category={getArticleCategory(lead)}
+          >
+            <div class="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-4 py-10 md:grid-cols-12 md:gap-10 md:px-6 md:py-14">
+              <div class="md:col-span-7">
+                <a
+                  href={`/blog/${lead.slug}`}
+                  data-cursor="focus"
+                  data-cursor-label="Read"
+                  class="group block overflow-hidden"
+                >
+                  <img
+                    src={lead.thumbnail}
+                    alt={lead.title}
+                    loading="eager"
+                    decoding="async"
+                    class="aspect-4/3 w-full object-cover grayscale-[0.15] transition-all duration-700 ease-cinematic group-hover:scale-[1.02] group-hover:grayscale-0"
+                  />
+                </a>
+              </div>
+              <div class="flex flex-col justify-center md:col-span-5">
+                <p
+                  class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
+                >
+                  {m.blogPage.featured} · {getArticleCategory(lead)}
+                </p>
+                <h2 class="mt-3 font-display text-2xl leading-[1.1] tracking-tight md:text-4xl">
+                  <a
+                    href={`/blog/${lead.slug}`}
+                    data-cursor="focus"
+                    data-cursor-label="Read"
+                    class="transition-colors hover:text-accent"
+                  >
+                    {lead.title}
+                  </a>
+                </h2>
+                <p class="mt-3 text-sm leading-relaxed text-muted-foreground">
+                  {lead.description}
+                </p>
+                <div
+                  class="mt-5 flex items-center gap-4 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground"
+                >
+                  <span>{formatBlogDate(lead.createdAt, locale)}</span>
+                  <span class="h-px flex-1 bg-border"></span>
+                  <a
+                    href={`/blog/${lead.slug}`}
+                    data-cursor="focus"
+                    data-cursor-label="Read"
+                    class="text-foreground transition-colors hover:text-accent"
+                  >
+                    {m.blogPage.read}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </section>
+        )
+      }
+
+      <section aria-label={m.blogPage.listAria} class="mx-auto container px-4 pb-16 md:px-6">
+        <BlogGrid articles={rest} />
+
+        <p
+          data-blog-empty
+          class="hidden py-16 text-center font-display text-2xl italic text-muted-foreground"
+        >
+          {m.blogPage.empty}
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  function bindBlogFilters(root: ParentNode = document) {
+    const container = root.querySelector("[data-blog-root]");
+    const filters = root.querySelector("[data-blog-filters]");
+    if (!container || !filters) return;
+
+    const blogRoot = container;
+
+    const lead = blogRoot.querySelector("[data-blog-lead]");
+    const items = blogRoot.querySelectorAll("[data-blog-item]");
+    const empty = blogRoot.querySelector("[data-blog-empty]");
+    const countEl = root.querySelector("[data-blog-count]");
+    const entriesTemplate = countEl?.textContent?.replace(/\d+/, "{count}") ?? "";
+
+    const buttons = filters.querySelectorAll<HTMLButtonElement>(
+      "[data-blog-filter]",
+    );
+
+    function applyFilter(category: string) {
+      let visible = 0;
+
+      const match = (el: Element | null) => {
+        if (!el) return;
+        const itemCategory = el.getAttribute("data-blog-category") ?? "";
+        const show = category === "All" || itemCategory === category;
+        el.classList.toggle("hidden", !show);
+        if (show) visible += 1;
+      };
+
+      match(lead);
+      items.forEach((item) => match(item));
+
+      const archive = blogRoot.querySelector("[data-blog-archive]");
+      const visibleArchiveItems = [...items].filter(
+        (item) => !item.classList.contains("hidden"),
+      ).length;
+      archive?.classList.toggle("hidden", visibleArchiveItems === 0);
+
+      empty?.classList.toggle("hidden", visible > 0);
+
+      if (countEl && entriesTemplate) {
+        countEl.textContent = entriesTemplate.replace("{count}", String(visible));
+      }
+
+      buttons.forEach((button) => {
+        const value = button.getAttribute("data-blog-filter") ?? "";
+        const active = value === category;
+        button.setAttribute("aria-selected", active ? "true" : "false");
+        button.classList.toggle("text-foreground", active);
+        button.classList.toggle("text-muted-foreground", !active);
+        button.querySelector("[data-blog-prefix]")?.classList.toggle("hidden", !active);
+      });
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        applyFilter(button.getAttribute("data-blog-filter") ?? "All");
+      });
+    });
+  }
+
+  function initBlogFilters() {
+    bindBlogFilters();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initBlogFilters, { once: true });
+  } else {
+    initBlogFilters();
+  }
+
+  document.addEventListener("astro:page-load", initBlogFilters);
+</script>

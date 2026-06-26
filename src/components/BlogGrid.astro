@@ -1,0 +1,122 @@
+---
+import FocusIn from "@/components/FocusIn.astro";
+import Card from "@/components/ui/card.astro";
+import { getLocale, getMessages } from "@/lib/i18n";
+import { mapArticleToCard } from "@/service/blogs.service";
+
+interface Props {
+  articles: ArticlesContentProps[];
+  indexOffset?: number;
+}
+
+const { articles, indexOffset = 2 } = Astro.props;
+const m = getMessages(getLocale(Astro));
+const cards = articles.map((article, index) =>
+  mapArticleToCard(article, index, indexOffset),
+);
+---
+
+<div data-blog-archive data-archive-view data-view="list" class="blog-archive">
+  <div
+    class="blog-archive__toolbar mb-8 flex flex-wrap items-center justify-between gap-4"
+  >
+    <p class="font-display text-lg italic">{m.blogPage.moreEntries}</p>
+
+    <div
+      role="group"
+      aria-label={m.blogPage.viewAria}
+      class="flex gap-1 rounded-full border border-border p-1"
+    >
+      <button
+        type="button"
+        data-archive-view-btn="grid"
+        aria-pressed="false"
+        data-cursor="focus"
+        data-cursor-label="Grid"
+        class="blog-archive__toggle rounded-full px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
+      >
+        {m.blogPage.viewGrid}
+      </button>
+      <button
+        type="button"
+        data-archive-view-btn="list"
+        aria-pressed="true"
+        data-cursor="focus"
+        data-cursor-label="List"
+        class="blog-archive__toggle rounded-full px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
+      >
+        {m.blogPage.viewList}
+      </button>
+    </div>
+  </div>
+
+  <ul class="blog-archive__list">
+    {
+      cards.map((entry, i) => (
+        <FocusIn
+          as="li"
+          delay={(i % 8) * 40}
+          class="blog-archive__item"
+          data-blog-item
+          data-blog-category={entry.category}
+        >
+          <Card
+            no={entry.no}
+            title={entry.title}
+            tag={entry.tag}
+            year={entry.year}
+            image={entry.image}
+            href={entry.href}
+          />
+        </FocusIn>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .blog-archive__toggle.is-active {
+    background-color: var(--foreground);
+    color: var(--background);
+  }
+
+  .blog-archive[data-view="list"] .blog-archive__list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .blog-archive[data-view="list"] .blog-archive__item {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .blog-archive[data-view="list"] .blog-archive__item:last-child {
+    border-bottom: none;
+  }
+
+  .blog-archive[data-view="grid"] .blog-archive__list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .blog-archive[data-view="grid"] .blog-archive__list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .blog-archive[data-view="grid"] .blog-archive__list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
+
+<script>
+  import { bindBlogView } from "@/service/blog-view.service";
+
+  bindBlogView();
+  document.addEventListener("astro:page-load", () => bindBlogView());
+</script>

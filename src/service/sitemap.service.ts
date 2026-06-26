@@ -3,12 +3,13 @@ import { fetchSitemap } from "../utils/FetchSitemap";
 const LOCAL_STATIC_ROUTES: Array<SitemapRoute & { path: string }> = [
   { path: "/", changefreq: "daily", priority: 1 },
   { path: "/works", changefreq: "weekly", priority: 0.9 },
+  { path: "/blog", changefreq: "weekly", priority: 0.85 },
   { path: "/achievements", changefreq: "monthly", priority: 0.8 },
   { path: "/layanan", changefreq: "monthly", priority: 0.8 },
   { path: "/guest-notes", changefreq: "weekly", priority: 0.6 },
 ];
 
-const EXCLUDED_PATHS = new Set(["/about", "/accounts", "/articles", "/projects"]);
+const EXCLUDED_PATHS = new Set(["/about", "/accounts", "/projects"]);
 
 function normalizeSiteUrl(siteUrl: string): string {
   return siteUrl.replace(/\/$/, "");
@@ -19,9 +20,7 @@ function toAbsoluteUrl(siteUrl: string, pathname: string): string {
 }
 
 function shouldExcludePath(pathname: string): boolean {
-  if (EXCLUDED_PATHS.has(pathname)) return true;
-  if (pathname.startsWith("/articles/")) return true;
-  return false;
+  return EXCLUDED_PATHS.has(pathname);
 }
 
 function mapApiPathname(pathname: string): string | null {
@@ -29,6 +28,14 @@ function mapApiPathname(pathname: string): string | null {
 
   if (pathname.startsWith("/projects/")) {
     return pathname.replace(/^\/projects\//, "/works/");
+  }
+
+  if (pathname === "/articles") {
+    return "/blog";
+  }
+
+  if (pathname.startsWith("/articles/")) {
+    return pathname.replace(/^\/articles\//, "/blog/");
   }
 
   return pathname;

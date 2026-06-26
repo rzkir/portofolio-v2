@@ -8,7 +8,7 @@ const locale = getLocale(Astro);
 const m = getMessages(locale);
 ---
 
-<div data-works-archive data-view="list" class="works-archive">
+<div data-works-archive data-archive-view data-view="list" class="works-archive">
   <div
     class="works-archive__toolbar mb-8 flex flex-wrap items-center justify-between gap-4"
   >
@@ -26,6 +26,7 @@ const m = getMessages(locale);
       <button
         type="button"
         data-works-view-btn="grid"
+        data-archive-view-btn="grid"
         aria-pressed="false"
         data-cursor="focus"
         data-cursor-label="Grid"
@@ -36,6 +37,7 @@ const m = getMessages(locale);
       <button
         type="button"
         data-works-view-btn="list"
+        data-archive-view-btn="list"
         aria-pressed="true"
         data-cursor="focus"
         data-cursor-label="List"

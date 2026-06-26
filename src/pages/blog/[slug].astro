@@ -1,0 +1,265 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/layouts/Header.astro";
+import Footer from "@/layouts/Footer.astro";
+import FocusIn from "@/components/FocusIn.astro";
+import ArrowLeft from "@/components/svg/arrow-left.astro";
+import Typography from "@/components/ui/typography.astro";
+import { cn } from "@/lib/utiles";
+import { getLocale, getMessages } from "@/lib/i18n";
+import {
+  formatBlogDate,
+  getArticleCategory,
+  getBlogBySlug,
+  getRelatedArticles,
+} from "@/service/blogs.service";
+
+const locale = getLocale(Astro);
+const m = getMessages(locale);
+
+const { slug } = Astro.params;
+
+if (!slug) {
+  return Astro.redirect("/blog");
+}
+
+let article: ArticleDetails;
+
+try {
+  article = await getBlogBySlug(slug);
+} catch {
+  return Astro.redirect("/blog");
+}
+
+const category = getArticleCategory(article);
+const published = formatBlogDate(article.createdAt, locale);
+const updated = formatBlogDate(article.updatedAt, locale);
+const showUpdated = article.updatedAt !== article.createdAt;
+const related = await getRelatedArticles(slug);
+---
+
+<Layout
+  title={`${article.title} — Rizki Ramadhan`}
+  description={article.description}
+  ogImage={article.thumbnail}
+  ogType="article"
+  breadcrumbCurrent={article.title}
+>
+  <Header />
+
+  <main class="min-h-screen bg-background pt-28 text-foreground">
+    <article>
+      <header
+        class="mx-auto container border-b border-border px-4 pb-10 md:px-6 md:pb-14"
+      >
+        <FocusIn>
+          <div
+            class="flex flex-wrap items-baseline justify-between gap-4 border-b border-border pb-4"
+          >
+            <p
+              class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
+            >
+              {m.blogPage.mastheadEyebrow}
+            </p>
+            <time
+              datetime={article.createdAt}
+              class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground"
+            >
+              {published}
+            </time>
+          </div>
+
+          <p
+            class="mt-6 font-mono text-[11px] uppercase tracking-[0.24em] text-accent"
+          >
+            {category}
+          </p>
+
+          <h1
+            class="mt-4 max-w-4xl font-display text-4xl leading-[1.04] tracking-tight md:text-5xl lg:text-6xl"
+          >
+            {article.title}
+          </h1>
+
+          <p
+            class="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg md:leading-8"
+          >
+            {article.description}
+          </p>
+        </FocusIn>
+      </header>
+
+      <FocusIn delay={80}>
+        <figure class="mx-auto container px-4 py-10 md:px-6 md:py-12">
+          <div class="overflow-hidden border border-border bg-surface">
+            <img
+              src={article.thumbnail}
+              alt={article.title}
+              loading="eager"
+              decoding="async"
+              class="aspect-21/9 w-full object-cover grayscale-[0.12] md:aspect-2/1"
+            />
+          </div>
+        </figure>
+      </FocusIn>
+
+      <div class="mx-auto container px-4 pb-16 md:px-6 md:pb-24">
+        <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+          <aside
+            class="lg:col-span-3 lg:sticky lg:top-28 lg:self-start"
+            aria-label={m.blogDetail.metaAria}
+          >
+            <dl
+              class="space-y-6 border-t border-border pt-8 lg:border-t-0 lg:pt-0"
+            >
+              <div>
+                <dt
+                  class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+                >
+                  {m.blogDetail.category}
+                </dt>
+                <dd class="mt-2 text-sm">{category}</dd>
+              </div>
+              <div>
+                <dt
+                  class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+                >
+                  {m.blogDetail.published}
+                </dt>
+                <dd class="mt-2 text-sm">
+                  <time datetime={article.createdAt}>{published}</time>
+                </dd>
+              </div>
+              {
+                showUpdated && (
+                  <div>
+                    <dt class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                      {m.blogDetail.updated}
+                    </dt>
+                    <dd class="mt-2 text-sm">
+                      <time datetime={article.updatedAt}>{updated}</time>
+                    </dd>
+                  </div>
+                )
+              }
+            </dl>
+          </aside>
+
+          <div class="lg:col-span-8 lg:col-start-5">
+            <Typography content={article.content} />
+          </div>
+        </div>
+      </div>
+
+      {
+        related.length > 0 && (
+          <section
+            class="border-t border-border bg-surface/35"
+            aria-label={m.blogDetail.relatedAria}
+          >
+            <div class="mx-auto container px-4 py-12 md:px-6 md:py-16">
+              <div class="flex items-baseline justify-between gap-6 border-b border-border pb-4">
+                <h2 class="font-display text-2xl italic md:text-3xl">
+                  {m.blogDetail.relatedTitle}
+                </h2>
+                <p class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
+                  {m.blogPage.indexNo}
+                </p>
+              </div>
+
+              <ul class="mt-8 divide-y divide-border">
+                {related.map((entry, index) => (
+                  <li>
+                    <a
+                      href={`/blog/${entry.slug}`}
+                      data-cursor="focus"
+                      data-cursor-label="Read"
+                      class={cn(
+                        "group grid grid-cols-1 items-center gap-6 py-6 transition-colors hover:bg-background/50 md:grid-cols-12",
+                      )}
+                    >
+                      <span class="font-mono text-xs text-muted-foreground md:col-span-1">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <div class="overflow-hidden md:col-span-3">
+                        <img
+                          src={entry.thumbnail}
+                          alt=""
+                          loading="lazy"
+                          decoding="async"
+                          class="aspect-4/3 w-full object-cover grayscale-[0.2] transition-all duration-700 ease-cinematic group-hover:scale-[1.03] group-hover:grayscale-0"
+                        />
+                      </div>
+                      <div class="md:col-span-6">
+                        <p class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
+                          {getArticleCategory(entry)}
+                        </p>
+                        <h3 class="mt-2 font-display text-xl leading-tight transition-colors group-hover:text-accent md:text-2xl">
+                          {entry.title}
+                        </h3>
+                      </div>
+                      <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors group-hover:text-accent md:col-span-2 md:text-right">
+                        {m.blogPage.read}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )
+      }
+
+      <footer class="border-t border-border">
+        <div
+          class="mx-auto flex max-w-6xl flex-col items-baseline justify-between gap-4 px-4 py-10 md:flex-row md:px-6"
+        >
+          <a
+            href="/blog"
+            data-cursor="focus"
+            data-cursor-label="Back"
+            class="group inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-accent"
+          >
+            <ArrowLeft
+              size={14}
+              class="transition-transform group-hover:-translate-x-0.5"
+            />
+            {m.blogDetail.backLink}
+          </a>
+          <p class="font-display text-lg italic text-muted-foreground">
+            {m.blogDetail.colophon}
+          </p>
+        </div>
+      </footer>
+    </article>
+  </main>
+
+  <a
+    id="blog-back-fab"
+    href="/blog"
+    data-visible="false"
+    data-cursor="focus"
+    data-cursor-label="Back"
+    aria-hidden="true"
+    class={cn(
+      "fixed bottom-6 left-1/2 z-40 inline-flex -translate-x-1/2 items-center gap-2 rounded-full border border-border bg-background/92 px-5 py-3 font-mono text-xs uppercase tracking-[0.18em] text-foreground shadow-[0_10px_40px_color-mix(in_oklch,var(--foreground)_10%,transparent)] backdrop-blur-md max-md:bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))]",
+      "translate-y-10 opacity-0 pointer-events-none transition-[transform,opacity] duration-500 ease-cinematic",
+      "hover:border-accent hover:text-accent",
+      "data-[visible=true]:translate-y-0 data-[visible=true]:opacity-100 data-[visible=true]:pointer-events-auto",
+    )}
+  >
+    <ArrowLeft size={14} />
+    {m.blogDetail.backFab}
+  </a>
+
+  <Footer />
+</Layout>
+
+<script>
+  import { bindBackFab } from "@/service/back-fab.service";
+
+  bindBackFab("blog-back-fab");
+  document.addEventListener("astro:page-load", () =>
+    bindBackFab("blog-back-fab"),
+  );
+</script>

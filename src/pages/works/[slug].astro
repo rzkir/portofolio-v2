@@ -302,27 +302,8 @@ const category = work.categoryDetail?.name ?? work.category;
 </Layout>
 
 <script>
-  function bindWorkBackFab() {
-    const fab = document.getElementById("work-back-fab");
-    if (!fab || fab.dataset.bound === "true") return;
-    fab.dataset.bound = "true";
+  import { bindBackFab } from "@/service/back-fab.service";
 
-    const threshold = 160;
-    let visible = false;
-
-    const update = () => {
-      const shouldShow = window.scrollY > threshold;
-      if (shouldShow === visible) return;
-
-      visible = shouldShow;
-      fab.dataset.visible = shouldShow ? "true" : "false";
-      fab.setAttribute("aria-hidden", shouldShow ? "false" : "true");
-    };
-
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-  }
-
-  bindWorkBackFab();
-  document.addEventListener("astro:page-load", bindWorkBackFab);
+  bindBackFab("work-back-fab");
+  document.addEventListener("astro:page-load", () => bindBackFab("work-back-fab"));
 </script>

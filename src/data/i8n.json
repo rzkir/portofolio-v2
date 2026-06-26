@@ -12,7 +12,9 @@
       "achievementsTitle": "Kredensial — Rizki Ramadhan",
       "achievementsDescription": "Arsip sertifikasi dan kredensial Rizki Ramadhan: Dicoding, Dibimbing, MySkills, JavaArch, dan lainnya.",
       "guestNotesTitle": "Buku Tamu — Tinggalkan catatan",
-      "guestNotesDescription": "Ruang tenang untuk meninggalkan catatan singkat."
+      "guestNotesDescription": "Ruang tenang untuk meninggalkan catatan singkat.",
+      "blogTitle": "Blog — Rizki Ramadhan",
+      "blogDescription": "Catatan, esai, dan tutorial tentang pengembangan web modern — Next.js, React, Vite, Laravel, dan lainnya."
     },
     "lang": {
       "label": "Bahasa",
@@ -24,11 +26,13 @@
       "mobile": "Navigasi mobile",
       "home": "Beranda",
       "works": "Karya",
+      "blog": "Blog",
       "services": "Layanan",
       "achievements": "Kredensial",
       "guestNotes": "Buku Tamu",
       "shortHome": "Home",
       "shortWorks": "Karya",
+      "shortBlog": "Blog",
       "shortServices": "Layanan",
       "shortAchievements": "Sertif",
       "shortGuestNotes": "Notes"
@@ -273,6 +277,35 @@
       "viewList": "Daftar",
       "viewAria": "Tampilan arsip"
     },
+    "blogPage": {
+      "mastheadEyebrow": "Jurnal · Vol. I",
+      "entries": "{count} Entri",
+      "titleLine1": "Catatan dari",
+      "titleLine2": "masa panjang.",
+      "subtitle": "Esai, tutorial, dan observasi tenang tentang membangun untuk web — dikumpulkan perlahan, ditulis dengan saksama.",
+      "filterAll": "Semua",
+      "featured": "Unggulan",
+      "read": "Baca →",
+      "moreEntries": "Entri lainnya",
+      "indexNo": "Indeks № 02",
+      "empty": "Belum ada entri di kategori ini.",
+      "filterAria": "Filter kategori blog",
+      "listAria": "Daftar artikel",
+      "viewGrid": "Grid",
+      "viewList": "Daftar",
+      "viewAria": "Tampilan arsip blog"
+    },
+    "blogDetail": {
+      "backLink": "Kembali ke jurnal",
+      "backFab": "Kembali ke jurnal",
+      "metaAria": "Metadata artikel",
+      "category": "Kategori",
+      "published": "Diterbitkan",
+      "updated": "Diperbarui",
+      "relatedTitle": "Lanjutkan membaca",
+      "relatedAria": "Artikel terkait",
+      "colophon": "R. Ramadhan — Jurnal"
+    },
     "achievementsPage": {
       "eyebrow": "Arsip Kredensial / Achievements",
       "title": "Sertifikasi & kredensial.",
@@ -325,7 +358,7 @@
       "role": "Fullstack Developer · Bogor, Indonesia",
       "updated": "Updated",
       "profile": "01 — Profil",
-      "profileBody": "Fullstack developer dengan 2+ tahun pengalaman membangun aplikasi web dan mobile dari konsep hingga production. Fokus pada performa, responsivitas, dan pengalaman pengguna yang halus. Terbiasa debugging, optimasi aplikasi, dan menerjemahkan kebutuhan klien menjadi solusi digital yang efisien.",
+      "profileBody": "Fullstack developer dengan 3+ tahun pengalaman membangun aplikasi web dan mobile dari konsep hingga production. Fokus pada performa, responsivitas, dan pengalaman pengguna yang halus. Terbiasa debugging, optimasi aplikasi, dan menerjemahkan kebutuhan klien menjadi solusi digital yang efisien.",
       "experience": "02 — Pengalaman",
       "skills": "03 — Keahlian",
       "certifications": "04 — Sertifikasi",
@@ -353,7 +386,9 @@
       "achievementsTitle": "Credentials — Rizki Ramadhan",
       "achievementsDescription": "Certification and credential archive: Dicoding, Dibimbing, MySkills, JavaArch, and more.",
       "guestNotesTitle": "Guest Book — Leave a note",
-      "guestNotesDescription": "A quiet space to leave a short message."
+      "guestNotesDescription": "A quiet space to leave a short message.",
+      "blogTitle": "Blog — Rizki Ramadhan",
+      "blogDescription": "Notes, essays, and tutorials on modern web development — Next.js, React, Vite, Laravel, and more."
     },
     "lang": {
       "label": "Language",
@@ -365,11 +400,13 @@
       "mobile": "Mobile navigation",
       "home": "Home",
       "works": "Works",
+      "blog": "Blog",
       "services": "Services",
       "achievements": "Credentials",
       "guestNotes": "Guest Notes",
       "shortHome": "Home",
       "shortWorks": "Works",
+      "shortBlog": "Blog",
       "shortServices": "Services",
       "shortAchievements": "Certs",
       "shortGuestNotes": "Notes"
@@ -614,6 +651,35 @@
       "viewList": "List",
       "viewAria": "Archive view"
     },
+    "blogPage": {
+      "mastheadEyebrow": "The Journal · Vol. I",
+      "entries": "{count} Entries",
+      "titleLine1": "Notes from the",
+      "titleLine2": "long now.",
+      "subtitle": "Essays, tutorials, and quiet observations on building for the web — collected slowly, written carefully.",
+      "filterAll": "All",
+      "featured": "Featured",
+      "read": "Read →",
+      "moreEntries": "More entries",
+      "indexNo": "Index № 02",
+      "empty": "No entries in this category — yet.",
+      "filterAria": "Blog category filter",
+      "listAria": "Article list",
+      "viewGrid": "Grid",
+      "viewList": "List",
+      "viewAria": "Blog archive view"
+    },
+    "blogDetail": {
+      "backLink": "Back to journal",
+      "backFab": "Back to journal",
+      "metaAria": "Article metadata",
+      "category": "Category",
+      "published": "Published",
+      "updated": "Updated",
+      "relatedTitle": "Continue reading",
+      "relatedAria": "Related articles",
+      "colophon": "R. Ramadhan — Journal"
+    },
     "achievementsPage": {
       "eyebrow": "Credentials Archive",
       "title": "Certifications & credentials.",
@@ -666,7 +732,7 @@
       "role": "Fullstack Developer · Bogor, Indonesia",
       "updated": "Updated",
       "profile": "01 — Profile",
-      "profileBody": "Fullstack developer with 2+ years of experience building web and mobile applications from concept to production. Focused on performance, responsiveness, and smooth user experience. Experienced in debugging, optimization, and translating client needs into efficient digital solutions.",
+      "profileBody": "Fullstack developer with 3+ years of experience building web and mobile applications from concept to production. Focused on performance, responsiveness, and smooth user experience. Experienced in debugging, optimization, and translating client needs into efficient digital solutions.",
       "experience": "02 — Experience",
       "skills": "03 — Skills",
       "certifications": "04 — Certifications",
