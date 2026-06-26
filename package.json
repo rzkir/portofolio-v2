@@ -16,6 +16,7 @@
   "dependencies": {
     "@astroanimate/core": "^0.1.2",
     "@astrojs/cloudflare": "^13.7.0",
+    "@astrojs/sitemap": "^3.7.3",
     "@tailwindcss/vite": "^4.3.1",
     "astro": "^6.4.7",
     "clsx": "^2.1.1",

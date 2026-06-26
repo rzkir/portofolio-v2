@@ -3,15 +3,25 @@ import { defineConfig, envField } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import { fileURLToPath } from "node:url";
 
+import sitemap from "@astrojs/sitemap";
+
+import { buildAstroSitemapData } from "./src/service/sitemap.service";
+
 const apiUrl = process.env.API_URL ?? "https://api.rizkiramadhan.biz.id";
+const siteUrl = "https://rizkiramadhan.biz.id";
+
+const { customPages, metadata: sitemapMetadata } =
+  await buildAstroSitemapData(siteUrl);
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://rizkiramadhan.biz.id",
+  site: siteUrl,
   output: "server",
+
   adapter: cloudflare({
     imageService: "compile",
   }),
+
   env: {
     schema: {
       API_URL: envField.string({
@@ -45,6 +55,7 @@ export default defineConfig({
       }),
     },
   },
+
   vite: {
     plugins: [tailwindcss()],
     server: {
@@ -62,4 +73,27 @@ export default defineConfig({
       },
     },
   },
+
+  integrations: [
+    sitemap({
+      customPages,
+      filter: (page) => sitemapMetadata.has(page),
+      namespaces: {
+        news: false,
+        xhtml: false,
+        image: false,
+        video: false,
+      },
+      serialize(item) {
+        const meta = sitemapMetadata.get(item.url);
+        if (!meta) return item;
+
+        if (meta.lastmod) item.lastmod = meta.lastmod;
+        if (meta.changefreq) item.changefreq = meta.changefreq;
+        if (meta.priority != null) item.priority = meta.priority;
+
+        return item;
+      },
+    }),
+  ],
 });
