@@ -225,6 +225,21 @@ html.splash-pending .animate-focus {
   transform-origin: top center;
   transform: scaleY(0);
   transition: transform 0.9s var(--ease-cinematic);
+  z-index: 0;
+}
+
+.experience-timeline__track {
+  position: relative;
+  z-index: 2;
+}
+
+.experience-timeline__index {
+  position: relative;
+  z-index: 2;
+  min-width: 1.75rem;
+  text-align: center;
+  background: var(--background);
+  padding: 0 0.125rem;
 }
 
 .experience-timeline__item[data-astro-fade-in-text]:not([data-ready]),
