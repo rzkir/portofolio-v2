@@ -2,6 +2,7 @@ import {
   fetchAchievementsContents,
   fetchAchievementsPage,
 } from "@/utils/FetchArchivments";
+import { countPaginatedItems } from "@/utils/paginated.shared";
 
 function parseAchievementTitle(title: string): { issuer: string; name: string } {
   const sep = title.indexOf(" - ");
@@ -43,10 +44,17 @@ function mapAchievements(items: AchievementsContentProps[]): Credential[] {
   return items.map(mapAchievement);
 }
 
+export function mapAchievementItems(
+  items: AchievementsContentProps[],
+): Credential[] {
+  return mapAchievements(items);
+}
+
 /** Jumlah total sertifikasi dari API. */
 export async function getCredentialsCount(): Promise<number> {
-  const items = await fetchAchievementsContents();
-  return items.length;
+  return countPaginatedItems((page, pageItem) =>
+    fetchAchievementsPage({ page, pageItem }),
+  );
 }
 
 /** Kredensial halaman pertama — untuk section landing. */

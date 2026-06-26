@@ -1,0 +1,107 @@
+---
+import UiDialog from "@/components/ui/dialog.astro";
+import AlertDialog from "@/components/ui/alert-dialog.astro";
+import Input from "@/components/ui/input.astro";
+import Select from "@/components/ui/select.astro";
+import Textarea from "@/components/ui/textarea.astro";
+import { GUEST_NOTE_PROVIDERS } from "@/lib/guest-note-providers";
+import { getLocale, getMessages } from "@/lib/i18n";
+
+const locale = getLocale(Astro);
+const m = getMessages(locale);
+const p = m.guestNotesPage;
+
+const fieldClass =
+  "font-display text-xl text-foreground placeholder:text-muted-foreground/50";
+const editDialogId = "noted-edit-dialog";
+const deleteDialogId = "guest-note-delete-dialog";
+---
+
+<UiDialog id={editDialogId} class="max-w-lg overflow-y-auto">
+  <article class="px-6 py-8 sm:px-10 sm:py-10">
+    <header class="mb-8 border-b border-border pb-6">
+      <p class="mb-2 font-mono text-[10px] tracking-[0.2em] text-accent uppercase">
+        {p.editDialogEyebrow}
+      </p>
+      <h2 class="font-display text-3xl tracking-tight">
+        {p.editDialogTitle}
+      </h2>
+    </header>
+
+    <form id="noted-edit-form" class="space-y-8">
+      <input type="hidden" id="noted-edit-id" name="id" value="" />
+
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <Input
+          id="noted-edit-name"
+          name="name"
+          label={p.nameLabel}
+          maxlength={60}
+          required
+          placeholder={p.namePlaceholder}
+          inputClass={fieldClass}
+        />
+        <Select
+          id="noted-edit-provider"
+          name="provider"
+          label={p.fromLabel}
+          options={[...GUEST_NOTE_PROVIDERS]}
+          required
+          selectClass={`cursor-pointer ${fieldClass}`}
+        />
+      </div>
+
+      <Textarea
+        id="noted-edit-message"
+        name="message"
+        label={p.messageLabel}
+        maxlength={280}
+        required
+        rows={4}
+        placeholder={p.messagePlaceholder}
+        textareaClass={`resize-none leading-snug ${fieldClass}`}
+      >
+        <span
+          slot="label-extra"
+          id="noted-edit-message-count"
+          class="font-mono text-[11px] text-muted-foreground"
+        >
+          0/280
+        </span>
+      </Textarea>
+
+      <p
+        id="noted-edit-error"
+        class="hidden font-mono text-xs text-destructive"
+      >
+      </p>
+
+      <div class="flex justify-end gap-6">
+        <button
+          type="button"
+          data-dialog-close
+          class="font-mono text-xs tracking-[0.2em] text-muted-foreground uppercase transition-colors hover:text-foreground"
+        >
+          {p.editDialogCancel}
+        </button>
+        <button
+          type="submit"
+          id="noted-edit-submit"
+          class="group inline-flex items-center gap-3 font-mono text-xs tracking-[0.24em] text-foreground uppercase transition-colors hover:text-accent disabled:opacity-50"
+        >
+          {p.editDialogSubmit}
+          <span class="transition-transform group-hover:translate-x-1">→</span>
+        </button>
+      </div>
+    </form>
+  </article>
+</UiDialog>
+
+<AlertDialog
+  id={deleteDialogId}
+  title={p.deleteDialogTitle}
+  description={p.deleteDialogDescription}
+  confirmLabel={p.deleteDialogConfirm}
+  cancelLabel={p.deleteDialogCancel}
+  loadingLabel={p.deleteDialogLoading}
+/>

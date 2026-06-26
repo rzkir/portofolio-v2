@@ -2,67 +2,77 @@ import {
   getProviderLabel,
   MESSAGE_PROVIDERS,
 } from "@/lib/guest-note-providers";
+import {
+  clearOwnedNoteId,
+  createNotedMessageClient,
+  deleteNotedMessageClient,
+  fetchNotedMessagesClient,
+  getOwnedNoteId,
+  mapNotedMessage,
+  setOwnedNoteId,
+  sortNotedMessages,
+  updateNotedMessageClient,
+} from "@/utils/FetchNoted.client";
 
-const GUEST_NOTES_PATH = "/api/guest-notes";
+const EDIT_DIALOG_ID = "noted-edit-dialog";
+const DELETE_DIALOG_ID = "guest-note-delete-dialog";
+const GUEST_NOTES_LIST_ID = "guest-notes-list";
 
 let notes: GuestNote[] = [];
+let pageLoadBound = false;
+let refreshInFlight: Promise<void> | null = null;
+let labels: GuestNotesLabels = {
+  notesCount: "{count} catatan",
+  archiveNo: "N° {count}",
+  edit: "Edit",
+  delete: "Hapus",
+};
 
-function mapNotedMessage(item: NotedMessageProps): GuestNote {
-  return {
-    id: item._id,
-    name: item.name,
-    message: item.description,
-    provider: item.provider,
-    createdAt: item.createdAt,
-  };
+type GuestNotesLabels = {
+  notesCount: string;
+  archiveNo: string;
+  edit: string;
+  delete: string;
+};
+
+function openDialog(id: string) {
+  const dialog = document.getElementById(id);
+  if (dialog instanceof HTMLDialogElement && !dialog.open) {
+    dialog.showModal();
+    document.documentElement.classList.add("dialog-open");
+  }
 }
 
-async function fetchGuestNotes(): Promise<GuestNote[]> {
-  try {
-    const response = await fetch(GUEST_NOTES_PATH, { cache: "no-store" });
-    if (!response.ok) return [];
-
-    const data = (await response.json()) as NotedMessageProps[];
-    if (!Array.isArray(data)) return [];
-
-    return data
-      .sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      )
-      .map(mapNotedMessage);
-  } catch {
-    return [];
+function closeDialog(id: string) {
+  const dialog = document.getElementById(id);
+  if (dialog instanceof HTMLDialogElement && dialog.open) {
+    dialog.close();
   }
+}
+
+function isGuestNotesPage() {
+  return Boolean(document.getElementById(GUEST_NOTES_LIST_ID));
 }
 
 async function refreshGuestNotes() {
-  notes = await fetchGuestNotes();
-  renderNotes();
-}
+  if (!isGuestNotesPage()) return;
 
-async function createMessage(
-  payload: CreateNotedPayload,
-): Promise<GuestNote> {
-  const response = await fetch(GUEST_NOTES_PATH, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-
-  if (!response.ok) {
-    let message = "Gagal mengirim catatan. Coba lagi.";
-    try {
-      const body = (await response.json()) as NotedApiError;
-      if (body.error) message = body.error;
-    } catch {
-      // ignore parse errors
-    }
-    throw new Error(message);
+  if (refreshInFlight) {
+    await refreshInFlight;
+    return;
   }
 
-  const created = (await response.json()) as NotedMessageProps;
-  return mapNotedMessage(created);
+  refreshInFlight = (async () => {
+    const messages = sortNotedMessages(await fetchNotedMessagesClient());
+    notes = messages.map(mapNotedMessage);
+    renderNotes();
+  })();
+
+  try {
+    await refreshInFlight;
+  } finally {
+    refreshInFlight = null;
+  }
 }
 
 function formatDateFull(iso: string) {
@@ -86,9 +96,39 @@ function updateCounts() {
   const heroIndex = document.getElementById("guest-notes-hero-index");
   const archiveCount = document.getElementById("guest-notes-archive-count");
 
-  if (countEl) countEl.textContent = `${notes.length} catatan`;
+  if (countEl) {
+    countEl.textContent = labels.notesCount.replace("{count}", String(notes.length));
+  }
   if (heroIndex) heroIndex.textContent = pad2(notes.length);
-  if (archiveCount) archiveCount.textContent = `N° ${pad3(notes.length)}`;
+  if (archiveCount) {
+    archiveCount.textContent = labels.archiveNo.replace("{count}", pad3(notes.length));
+  }
+}
+
+function renderNoteActions(note: GuestNote) {
+  const ownedId = getOwnedNoteId();
+  if (!ownedId || ownedId !== note.id) return "";
+
+  return `
+    <div class="mt-4 flex flex-wrap gap-4">
+      <button
+        type="button"
+        data-note-action="edit"
+        data-note-id="${escapeHtml(note.id)}"
+        class="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase transition-colors hover:text-foreground"
+      >
+        ${escapeHtml(labels.edit)}
+      </button>
+      <button
+        type="button"
+        data-note-action="delete"
+        data-note-id="${escapeHtml(note.id)}"
+        class="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase transition-colors hover:text-destructive"
+      >
+        ${escapeHtml(labels.delete)}
+      </button>
+    </div>
+  `;
 }
 
 function renderNotes() {
@@ -110,7 +150,7 @@ function renderNotes() {
   list.innerHTML = notes
     .map(
       (note, index) => `
-        <li class="grid grid-cols-12 gap-6 py-10 transition-colors hover:bg-background/60">
+        <li class="grid grid-cols-12 gap-6 py-10 transition-colors hover:bg-background/60" data-note-id="${escapeHtml(note.id)}">
           <div class="col-span-12 md:col-span-1">
             <span class="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase">
               ${pad2(index + 1)}
@@ -125,6 +165,7 @@ function renderNotes() {
               <span aria-hidden="true">·</span>
               <span>${escapeHtml(getProviderLabel(note.provider))}</span>
             </footer>
+            ${renderNoteActions(note)}
           </blockquote>
           <div class="col-span-12 md:col-span-3 md:text-right">
             <time class="font-mono text-[11px] tracking-[0.18em] text-muted-foreground uppercase">
@@ -145,31 +186,208 @@ function escapeHtml(value: string) {
     .replaceAll('"', "&quot;");
 }
 
-function readBootstrap(): GuestNote[] {
+function readBootstrap(): { notes: GuestNote[]; labels: GuestNotesLabels } {
   const bootstrap = document.getElementById("guest-notes-bootstrap");
-  let notes: GuestNote[] = [];
+  let parsedNotes: GuestNote[] = [];
+  let parsedLabels = labels;
 
   if (bootstrap?.textContent) {
     try {
-      const parsed = JSON.parse(bootstrap.textContent) as GuestNote[];
-      notes = Array.isArray(parsed) ? parsed : [];
+      const parsed = JSON.parse(bootstrap.textContent) as {
+        notes?: GuestNote[];
+        labels?: GuestNotesLabels;
+      };
+
+      parsedNotes = Array.isArray(parsed.notes) ? parsed.notes : [];
+      if (parsed.labels) parsedLabels = parsed.labels;
     } catch {
-      notes = [];
+      parsedNotes = [];
     }
   }
 
-  return notes;
+  return { notes: parsedNotes, labels: parsedLabels };
+}
+
+function populateEditDialog(note: GuestNote) {
+  const idInput = document.getElementById("noted-edit-id") as HTMLInputElement | null;
+  const nameInput = document.getElementById("noted-edit-name") as HTMLInputElement | null;
+  const providerInput = document.getElementById("noted-edit-provider") as HTMLSelectElement | null;
+  const messageInput = document.getElementById("noted-edit-message") as HTMLTextAreaElement | null;
+  const countEl = document.getElementById("noted-edit-message-count");
+  const errorEl = document.getElementById("noted-edit-error");
+
+  if (!idInput || !nameInput || !providerInput || !messageInput) return;
+
+  idInput.value = note.id;
+  nameInput.value = note.name;
+  providerInput.value = note.provider;
+  messageInput.value = note.message;
+  if (countEl) countEl.textContent = `${note.message.length}/280`;
+  if (errorEl) {
+    errorEl.textContent = "";
+    errorEl.classList.add("hidden");
+  }
+}
+
+function bindEditDialog() {
+  const form = document.getElementById("noted-edit-form");
+  if (!form || form.dataset.bound === "true") return;
+
+  const messageInput = document.getElementById("noted-edit-message") as HTMLTextAreaElement | null;
+  const countEl = document.getElementById("noted-edit-message-count");
+  const errorEl = document.getElementById("noted-edit-error");
+  const submitBtn = document.getElementById("noted-edit-submit") as HTMLButtonElement | null;
+
+  form.dataset.bound = "true";
+
+  messageInput?.addEventListener("input", () => {
+    if (countEl && messageInput) {
+      countEl.textContent = `${messageInput.value.length}/280`;
+    }
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const idInput = document.getElementById("noted-edit-id") as HTMLInputElement | null;
+    const nameInput = document.getElementById("noted-edit-name") as HTMLInputElement | null;
+    const providerInput = document.getElementById("noted-edit-provider") as HTMLSelectElement | null;
+
+    if (!idInput || !nameInput || !providerInput || !messageInput || !errorEl) return;
+
+    const id = idInput.value.trim();
+    const name = nameInput.value.trim();
+    const provider = providerInput.value as MessageProvider;
+    const message = messageInput.value.trim();
+
+    errorEl.classList.add("hidden");
+    errorEl.textContent = "";
+
+    if (!name) {
+      errorEl.textContent = "Nama wajib diisi";
+      errorEl.classList.remove("hidden");
+      return;
+    }
+    if (!message) {
+      errorEl.textContent = "Pesan wajib diisi";
+      errorEl.classList.remove("hidden");
+      return;
+    }
+    if (!MESSAGE_PROVIDERS.includes(provider)) {
+      errorEl.textContent = "Pilih sumber yang valid";
+      errorEl.classList.remove("hidden");
+      return;
+    }
+
+    if (submitBtn) submitBtn.disabled = true;
+
+    try {
+      const updated = await updateNotedMessageClient({
+        _id: id,
+        name,
+        description: message,
+        provider,
+      });
+      const mapped = mapNotedMessage(updated);
+
+      notes = notes.map((note) => (note.id === mapped.id ? mapped : note));
+      renderNotes();
+      closeDialog(EDIT_DIALOG_ID);
+      void refreshGuestNotes();
+    } catch (error) {
+      errorEl.textContent =
+        error instanceof Error ? error.message : "Gagal memperbarui catatan. Coba lagi.";
+      errorEl.classList.remove("hidden");
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+    }
+  });
+}
+
+function bindNoteActions() {
+  const list = document.getElementById("guest-notes-list");
+  if (!list || list.dataset.actionsBound === "true") return;
+
+  list.dataset.actionsBound = "true";
+
+  list.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+
+    const button = target.closest<HTMLButtonElement>("[data-note-action]");
+    if (!button) return;
+
+    const noteId = button.dataset.noteId;
+    const action = button.dataset.noteAction;
+    const note = notes.find((item) => item.id === noteId);
+    if (!note) return;
+
+    if (action === "edit") {
+      populateEditDialog(note);
+      openDialog(EDIT_DIALOG_ID);
+      return;
+    }
+
+    if (action === "delete") {
+      document.dispatchEvent(
+        new CustomEvent("alert-dialog:open", {
+          detail: {
+            id: DELETE_DIALOG_ID,
+            onConfirm: async () => {
+              try {
+                await deleteNotedMessageClient(note.id);
+                notes = notes.filter((item) => item.id !== note.id);
+                clearOwnedNoteId();
+                renderNotes();
+                void refreshGuestNotes();
+              } catch (error) {
+                const errorEl = document.getElementById("guest-notes-error");
+                if (errorEl) {
+                  errorEl.textContent =
+                    error instanceof Error
+                      ? error.message
+                      : "Gagal menghapus catatan. Coba lagi.";
+                  errorEl.classList.remove("hidden");
+                }
+                throw error;
+              }
+            },
+          },
+        }),
+      );
+    }
+  });
 }
 
 export function bootGuestNotes() {
-  initGuestNotes(readBootstrap());
+  if (!isGuestNotesPage()) return;
+
+  const bootstrap = readBootstrap();
+  initGuestNotes(bootstrap.notes, bootstrap.labels);
 }
 
-export function initGuestNotes(initialNotes: GuestNote[] = []) {
+export function registerGuestNotesBoot() {
+  if (!pageLoadBound) {
+    pageLoadBound = true;
+    document.addEventListener("astro:page-load", bootGuestNotes);
+  }
+
+  bootGuestNotes();
+}
+
+export function initGuestNotes(
+  initialNotes: GuestNote[] = [],
+  initialLabels: GuestNotesLabels = labels,
+) {
   const form = document.getElementById("guest-notes-form");
 
+  labels = initialLabels;
+  bindEditDialog();
+  bindNoteActions();
+
   if (!form || form.dataset.bound === "true") {
-    void refreshGuestNotes();
+    if (notes.length === 0) notes = initialNotes;
+    renderNotes();
     return;
   }
 
@@ -218,13 +436,15 @@ export function initGuestNotes(initialNotes: GuestNote[] = []) {
     if (submitBtn) submitBtn.disabled = true;
 
     try {
-      const created = await createMessage({
+      const created = await createNotedMessageClient({
         name,
         description: message,
         provider,
       });
+      const mapped = mapNotedMessage(created);
 
-      notes = [created, ...notes];
+      setOwnedNoteId(mapped.id);
+      notes = [mapped, ...notes];
       nameInput.value = "";
       providerInput.value = "website";
       messageInput.value = "";
@@ -241,5 +461,4 @@ export function initGuestNotes(initialNotes: GuestNote[] = []) {
   });
 
   renderNotes();
-  void refreshGuestNotes();
 }

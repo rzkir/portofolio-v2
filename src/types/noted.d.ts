@@ -32,6 +32,13 @@ interface CreateNotedPayload {
   provider: MessageProvider;
 }
 
+interface UpdateNotedPayload {
+  _id: string;
+  name?: string;
+  description?: string;
+  provider?: MessageProvider;
+}
+
 type GuestNote = {
   id: string;
   name: string;

@@ -42,6 +42,24 @@ async function fetchGuestNotesFromApi(env: Env): Promise<string> {
   return response.text();
 }
 
+function buildProxyHeaders(request: Request): HeadersInit {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  const cfIp = request.headers.get("cf-connecting-ip");
+  const forwardedFor = request.headers.get("x-forwarded-for");
+
+  if (cfIp) headers["cf-connecting-ip"] = cfIp;
+  if (forwardedFor) {
+    headers["x-forwarded-for"] = forwardedFor;
+  } else if (cfIp) {
+    headers["x-forwarded-for"] = cfIp;
+  }
+
+  return headers;
+}
+
 async function getGuestNotesBody(
   env: Env,
   force = false,
@@ -125,7 +143,7 @@ async function handleGuestNotesPost(
 
     const response = await fetch(`${env.API_URL}/api/v1/messages`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: buildProxyHeaders(request),
       body: JSON.stringify(payload),
     });
 
@@ -145,6 +163,72 @@ async function handleGuestNotesPost(
   }
 }
 
+async function handleGuestNotesPatch(
+  request: Request,
+  env: Env,
+): Promise<Response> {
+  try {
+    const payload = await request.json();
+
+    const response = await fetch(`${env.API_URL}/api/v1/messages`, {
+      method: "PATCH",
+      headers: buildProxyHeaders(request),
+      body: JSON.stringify(payload),
+    });
+
+    if (response.ok) {
+      guestNotesCache = null;
+    }
+
+    return new Response(await response.text(), {
+      status: response.status,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch {
+    return new Response(JSON.stringify({ error: "Gagal memperbarui catatan" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}
+
+async function handleGuestNotesDelete(
+  request: Request,
+  env: Env,
+): Promise<Response> {
+  try {
+    const id = new URL(request.url).searchParams.get("id");
+    if (!id) {
+      return new Response(JSON.stringify({ error: "ID catatan wajib diisi" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const response = await fetch(
+      `${env.API_URL}/api/v1/messages?id=${encodeURIComponent(id)}`,
+      {
+        method: "DELETE",
+        headers: buildProxyHeaders(request),
+      },
+    );
+
+    if (response.ok) {
+      guestNotesCache = null;
+    }
+
+    return new Response(await response.text(), {
+      status: response.status,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch {
+    return new Response(JSON.stringify({ error: "Gagal menghapus catatan" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}
+
 export default {
   async fetch(
     request: Request,
@@ -156,6 +240,8 @@ export default {
     if (url.pathname === "/api/guest-notes") {
       if (request.method === "GET") return handleGuestNotesGet(env);
       if (request.method === "POST") return handleGuestNotesPost(request, env);
+      if (request.method === "PATCH") return handleGuestNotesPatch(request, env);
+      if (request.method === "DELETE") return handleGuestNotesDelete(request, env);
     }
 
     return handle(request, env, ctx);

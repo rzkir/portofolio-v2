@@ -1,14 +1,8 @@
-import { fetchNotedMessages } from "@/utils/FetchNoted";
-
-function mapNotedMessage(item: NotedMessageProps): GuestNote {
-  return {
-    id: item._id,
-    name: item.name,
-    message: item.description,
-    provider: item.provider,
-    createdAt: item.createdAt,
-  };
-}
+import {
+  fetchNotedMessages,
+  mapNotedMessage,
+  sortNotedMessages,
+} from "@/utils/FetchNoted";
 
 export function formatGuestNoteDateFull(iso: string): string {
   return new Date(iso).toLocaleDateString("id-ID", {
@@ -22,10 +16,7 @@ export function formatGuestNoteDateFull(iso: string): string {
 export async function getGuestNotes(): Promise<GuestNote[]> {
   const messages = await fetchNotedMessages();
 
-  return messages
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    )
-    .map(mapNotedMessage);
+  return sortNotedMessages(messages).map(mapNotedMessage);
 }
+
+export { mapNotedMessage };

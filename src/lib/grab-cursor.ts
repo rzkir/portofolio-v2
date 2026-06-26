@@ -80,9 +80,17 @@ type PopoverCursor = HTMLElement & {
   matches: (selectors: string) => boolean;
 };
 
+const DIALOG_SELECTOR = "dialog[data-dialog], dialog[data-alert-dialog]";
+const OPEN_DIALOG_SELECTOR = "dialog[data-dialog][open], dialog[data-alert-dialog][open]";
+
+function getOpenDialog(): HTMLDialogElement | null {
+  const node = document.querySelector(OPEN_DIALOG_SELECTOR);
+  return node instanceof HTMLDialogElement ? node : null;
+}
+
 function bindDialogCursorLayer(cursor: HTMLElement, reveal: () => void) {
   const elevate = () => {
-    const openDialog = document.querySelector("dialog[data-dialog][open]");
+    const openDialog = getOpenDialog();
 
     if ("showPopover" in cursor) {
       const popover = cursor as PopoverCursor;
@@ -115,7 +123,7 @@ function bindDialogCursorLayer(cursor: HTMLElement, reveal: () => void) {
     if (cursor.parentElement !== document.body) document.body.appendChild(cursor);
   };
 
-  document.querySelectorAll("dialog[data-dialog]").forEach((node) => {
+  document.querySelectorAll(DIALOG_SELECTOR).forEach((node) => {
     if (!(node instanceof HTMLDialogElement)) return;
     if (node.dataset.cursorLayerBound === "true") return;
     node.dataset.cursorLayerBound = "true";
@@ -245,7 +253,7 @@ export function initGrabCursor() {
   }
 
   function hide() {
-    if (document.querySelector("dialog[data-dialog][open]")) return;
+    if (getOpenDialog()) return;
     visible = false;
     cursor.classList.remove("is-visible");
     cancelAnimationFrame(rafId);

@@ -7,6 +7,7 @@ import {
   fetchProjectsContents,
   fetchProjectsPage,
 } from "@/utils/FetchProjects";
+import { countPaginatedItems } from "@/utils/paginated.shared";
 
 import type { ProjectsContentProps } from "@/types/projects";
 
@@ -52,8 +53,9 @@ async function mapProjectsToArchive<T extends ArchiveWork>(
 
 /** Jumlah total karya dari API. */
 export async function getWorksCount(): Promise<number> {
-  const items = await fetchProjectsContents();
-  return items.length;
+  return countPaginatedItems((page, pageItem) =>
+    fetchProjectsPage({ page, pageItem }),
+  );
 }
 
 /** Karya arsip dari API — di-fetch saat SSR/build. */

@@ -1,6 +1,9 @@
 import { apiFetch, CACHE_TTL } from "@/lib/apiFetch";
+import { mapNotedMessage, sortNotedMessages } from "@/utils/noted.shared";
 
-const MESSAGES_PATH = "/api/v1/messages";
+export const MESSAGES_PATH = "/api/v1/messages";
+
+export { mapNotedMessage, sortNotedMessages };
 
 export async function fetchNotedMessages(): Promise<NotedMessageProps[]> {
   try {

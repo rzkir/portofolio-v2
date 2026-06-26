@@ -1,0 +1,27 @@
+---
+import { cn } from "@/lib/utiles";
+
+interface Props {
+  size?: "sm" | "md" | "lg";
+  class?: string;
+  label?: string;
+}
+
+const { size = "md", class: className, label = "Loading" } = Astro.props;
+
+const sizeClass = {
+  sm: "size-4 border",
+  md: "size-5 border-2",
+  lg: "size-8 border-2",
+}[size];
+---
+
+<span
+  role="status"
+  aria-label={label}
+  class={cn(
+    "inline-block shrink-0 animate-spin rounded-full border-muted-foreground/20 border-t-accent",
+    sizeClass,
+    className,
+  )}
+/>

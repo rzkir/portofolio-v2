@@ -328,7 +328,18 @@
       "submit": "Kirim catatan",
       "archiveTitle": "Arsip catatan",
       "archiveNo": "N° {count}",
-      "empty": "Belum ada catatan — jadilah yang pertama."
+      "empty": "Belum ada catatan — jadilah yang pertama.",
+      "edit": "Edit",
+      "delete": "Hapus",
+      "editDialogEyebrow": "// EDIT_NOTE",
+      "editDialogTitle": "Edit catatan",
+      "editDialogSubmit": "Simpan perubahan",
+      "editDialogCancel": "Batal",
+      "deleteDialogTitle": "Hapus catatan?",
+      "deleteDialogDescription": "Catatan ini akan dihapus permanen. Anda bisa mengirim catatan baru setelahnya.",
+      "deleteDialogConfirm": "Hapus",
+      "deleteDialogCancel": "Batal",
+      "deleteDialogLoading": "Menghapus…"
     },
     "workDetail": {
       "category": "Kategori",
@@ -702,7 +713,18 @@
       "submit": "Send note",
       "archiveTitle": "Note archive",
       "archiveNo": "N° {count}",
-      "empty": "No notes yet — be the first."
+      "empty": "No notes yet — be the first.",
+      "edit": "Edit",
+      "delete": "Delete",
+      "editDialogEyebrow": "// EDIT_NOTE",
+      "editDialogTitle": "Edit note",
+      "editDialogSubmit": "Save changes",
+      "editDialogCancel": "Cancel",
+      "deleteDialogTitle": "Delete note?",
+      "deleteDialogDescription": "This note will be permanently removed. You can send a new note afterward.",
+      "deleteDialogConfirm": "Delete",
+      "deleteDialogCancel": "Cancel",
+      "deleteDialogLoading": "Deleting…"
     },
     "workDetail": {
       "category": "Category",

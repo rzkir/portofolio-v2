@@ -5,6 +5,7 @@ import Footer from "@/layouts/Footer.astro";
 import Input from "@/components/ui/input.astro";
 import Select from "@/components/ui/select.astro";
 import Textarea from "@/components/ui/textarea.astro";
+import DialogNoted from "@/components/dialog/dialog.noted.astro";
 import {
   GUEST_NOTE_PROVIDERS,
   getProviderLabel,
@@ -24,6 +25,16 @@ const archiveCount = String(notes.length).padStart(3, "0");
 
 const fieldClass =
   "font-display text-xl text-foreground placeholder:text-muted-foreground/50";
+
+const bootstrap = {
+  notes,
+  labels: {
+    notesCount: m.guestNotesPage.notesCount,
+    archiveNo: m.guestNotesPage.archiveNo,
+    edit: m.guestNotesPage.edit,
+    delete: m.guestNotesPage.delete,
+  },
+};
 ---
 
 <Layout
@@ -201,16 +212,17 @@ const fieldClass =
 
   <Footer />
 
+  <DialogNoted />
+
   <script
     id="guest-notes-bootstrap"
     type="application/json"
-    set:html={JSON.stringify(notes)}
+    set:html={JSON.stringify(bootstrap)}
   />
 
   <script>
-    import { bootGuestNotes } from "@/lib/guest-notes";
+    import { registerGuestNotesBoot } from "@/lib/guest-notes";
 
-    bootGuestNotes();
-    document.addEventListener("astro:page-load", bootGuestNotes);
+    registerGuestNotesBoot();
   </script>
 </Layout>
