@@ -1,0 +1,560 @@
+{
+  "id": {
+    "meta": {
+      "siteTitle": "R. Ramadhan — Freelance Fullstack Developer",
+      "siteDescription": "Crafting human-centric code in a machine world. Portfolio Rizki Ramadhan, freelance fullstack developer dari Bogor, Indonesia.",
+      "homeTitle": "R. Ramadhan — Freelance Fullstack Developer",
+      "homeDescription": "Crafting human-centric code in a machine world. Portfolio Rizki Ramadhan, freelance fullstack developer dari Bogor, Indonesia.",
+      "worksTitle": "Karya — R. Ramadhan",
+      "worksDescription": "Arsip proyek pilihan Rizki Ramadhan: web app, dashboard, e-commerce, dan PWA — dari konsep hingga production.",
+      "layananTitle": "Layanan — R. Ramadhan",
+      "layananDescription": "Layanan freelance fullstack: product engineering, web design, performance audit, headless CMS — plus proses kerja dan FAQ.",
+      "achievementsTitle": "Kredensial — R. Ramadhan",
+      "achievementsDescription": "Arsip sertifikasi dan kredensial Rizki Ramadhan: Dicoding, Dibimbing, MySkills, JavaArch, dan lainnya.",
+      "guestNotesTitle": "Buku Tamu — Tinggalkan catatan",
+      "guestNotesDescription": "Ruang tenang untuk meninggalkan catatan singkat."
+    },
+    "lang": {
+      "label": "Bahasa",
+      "id": "ID",
+      "en": "EN"
+    },
+    "nav": {
+      "main": "Navigasi utama",
+      "mobile": "Navigasi mobile",
+      "home": "Beranda",
+      "works": "Karya",
+      "services": "Layanan",
+      "achievements": "Kredensial",
+      "guestNotes": "Guest Notes",
+      "shortHome": "Home",
+      "shortWorks": "Karya",
+      "shortServices": "Layanan",
+      "shortAchievements": "Sertif",
+      "shortGuestNotes": "Notes"
+    },
+    "brand": {
+      "tagline": "Fullstack · Bogor · 2026"
+    },
+    "common": {
+      "viewCv": "Lihat CV →",
+      "startProject": "Mulai proyek →",
+      "openGuestBook": "Buka buku tamu →",
+      "viewAllWorks": "Lihat semua karya →",
+      "viewArchive": "Lihat arsip lengkap →",
+      "detail": "Detail",
+      "collaboration": "Kolaborasi / Next",
+      "statusOpen": "Open",
+      "yearsShort": "3+ thn",
+      "entries": "{count} entri",
+      "positions": "{count} Posisi",
+      "portraitAlt": "R. Ramadhan — Studio, 2026"
+    },
+    "home": {
+      "badge": "Available for 2026 projects",
+      "title": "Fullstack Developer",
+      "introLabel": "Introduction",
+      "intro": "Building clean code and intuitive interfaces, with a strong focus on performance, responsiveness, and user experience.",
+      "aboutLabel": "Who am I?",
+      "aboutTitle": "Crafting human-centric code in a machine world.",
+      "aboutBody": "Fullstack Developer with more than 3 years of experience in developing web and mobile applications. Experienced in building websites and applications from concept to deployment, with a strong focus on performance, responsiveness, and user experience. Skilled in debugging, application optimization, and delivering efficient digital solutions tailored to client needs.",
+      "statExperience": "Pengalaman",
+      "statProjects": "Proyek selesai",
+      "statCerts": "Sertifikasi",
+      "statStatus": "Status",
+      "testimonialsSection": "Suara Klien / 05",
+      "testimonialsTitle": "Apa kata mereka yang pernah berkolaborasi.",
+      "testimonialsAria": "Testimoni klien",
+      "testimonials": [
+        {
+          "quote": "Hasilnya bukan cuma cepat — terasa dipikirkan. Setiap detail kelihatan sengaja.",
+          "author": "Aulia P.",
+          "role": "Founder, Studio Mahkota"
+        },
+        {
+          "quote": "Komunikasi rapi, deadline jalan, dan kodenya bisa kami lanjutkan tanpa drama.",
+          "author": "M. Rifqi",
+          "role": "CTO, Lumina"
+        },
+        {
+          "quote": "Susah cari developer yang ngerti desain. Rizki salah satunya.",
+          "author": "Tania W.",
+          "role": "Design Lead"
+        }
+      ]
+    },
+    "worksScroll": {
+      "aria": "Karya pilihan",
+      "eyebrow": "Karya terbaru",
+      "title": "Karya pilihan",
+      "scrollHint": "Gulir untuk jelajahi",
+      "viewAll": "Lihat semua karya →",
+      "workNo": "Karya {no}",
+      "detail": "Detail"
+    },
+    "career": {
+      "eyebrow": "Pengalaman / 06",
+      "positions": "{count} Posisi",
+      "title": "Jejak karier yang terukur — dari magang hingga klien independen."
+    },
+    "achievementsSection": {
+      "eyebrow": "Kredensial / 07",
+      "entries": "{count} Entri",
+      "title": "Pendidikan berkelanjutan — dari fundamental sampai spesialisasi."
+    },
+    "codingStats": {
+      "eyebrow": "Coding Stats / 10",
+      "title": "Metrik yang terukur.",
+      "workspace": "Workspace ·",
+      "privateRepos": "· {count} repo private",
+      "wakatimeProfile": "Profil WakaTime",
+      "contributionWeeks": "Kontribusi {count} Minggu",
+      "languages": "Bahasa",
+      "streaks": "Streak",
+      "leetcode": "LeetCode",
+      "trophies": "Trofi",
+      "recentCommits": "Commit terbaru",
+      "viewAll": "Lihat semua →"
+    },
+    "guestNotesTeaser": {
+      "aria": "Buku tamu",
+      "eyebrow": "Buku Tamu / {count}",
+      "title": "Tinggalkan catatan.",
+      "body": "Sapaan, kritik, atau sekadar say hi — ruang tenang untuk pesan singkat dari kamu."
+    },
+    "footer": {
+      "eyebrow": "Kontak / 09",
+      "title": "Mari berkolaborasi di tahun 2026.",
+      "social": "Sosial",
+      "location": "Lokasi",
+      "status": "Status",
+      "statusValue": "Open for work",
+      "copyright": "© 2026 Rizki Ramadhan — All rights reserved",
+      "crafted": "Set in Cormorant Garamond & Inter · Crafted with intention"
+    },
+    "layanan": {
+      "eyebrow": "Layanan / Services",
+      "title": "Apa yang bisa saya kerjakan.",
+      "subtitle": "Scope, proses, dan jawaban atas pertanyaan yang sering muncul — sebelum kita mulai berkolaborasi.",
+      "servicesEyebrow": "Layanan / 01",
+      "servicesTitle": "Apa yang bisa saya kerjakan",
+      "processEyebrow": "Proses / 02",
+      "processTitle": "Empat langkah, tanpa drama.",
+      "faqEyebrow": "FAQ / 03",
+      "faqTitle": "Pertanyaan umum.",
+      "ctaTitle": "Siap mulai? Ceritakan scope proyekmu — saya balas dalam 24 jam.",
+      "ctaAria": "Ajakan kolaborasi",
+      "services": [
+        {
+          "n": "S/01",
+          "t": "Product Engineering",
+          "d": "Dari ide ke production: arsitektur, build, deploy, monitor."
+        },
+        {
+          "n": "S/02",
+          "t": "Web Design & UI",
+          "d": "Antarmuka editorial yang terasa hidup, bukan template generik."
+        },
+        {
+          "n": "S/03",
+          "t": "Performance Audit",
+          "d": "Lighthouse 90+, Core Web Vitals, real-user metrics."
+        },
+        {
+          "n": "S/04",
+          "t": "Headless CMS",
+          "d": "Sanity, Strapi, Payload — workflow konten yang nyaman."
+        }
+      ],
+      "process": [
+        {
+          "n": "01",
+          "t": "Discovery",
+          "d": "Sesi singkat 45 menit, peta masalah dan ekspektasi."
+        },
+        {
+          "n": "02",
+          "t": "Sketch & Spec",
+          "d": "Wireframe, moodboard, dan technical spec yang jelas."
+        },
+        {
+          "n": "03",
+          "t": "Build",
+          "d": "Sprint 1-3 minggu dengan preview link harian."
+        },
+        {
+          "n": "04",
+          "t": "Ship & Handover",
+          "d": "Deploy production, dokumentasi, sesi training."
+        }
+      ],
+      "faq": [
+        {
+          "q": "Berapa lama satu proyek?",
+          "a": "Landing page 1-2 minggu, web app 3-8 minggu. Dipecah ke sprint kecil dengan deliverable yang bisa kamu lihat."
+        },
+        {
+          "q": "Apakah saya dapat source code?",
+          "a": "Selalu. Repo lengkap dengan dokumentasi handover dan sesi training singkat."
+        },
+        {
+          "q": "Stack apa yang biasa dipakai?",
+          "a": "React/Next.js/Astro/TanStack, Tailwind, TypeScript, Postgres/Supabase. Saya juga ikut stack tim kalau diperlukan."
+        },
+        {
+          "q": "Tersedia untuk kontrak jangka panjang?",
+          "a": "Ya — slot terbatas untuk retainer bulanan. Hubungi via email untuk detail."
+        }
+      ]
+    },
+    "worksPage": {
+      "eyebrow": "Arsip Karya / Works",
+      "title": "Arsip karya.",
+      "subtitle": "Beralih antara tampilan grid atau daftar — pilihanmu tersimpan otomatis.",
+      "listAria": "Daftar karya",
+      "ctaTitle": "Punya proyek serupa? Mari diskusikan scope dan timeline-nya.",
+      "viewGrid": "Grid",
+      "viewList": "Daftar",
+      "viewAria": "Tampilan arsip"
+    },
+    "achievementsPage": {
+      "eyebrow": "Arsip Kredensial / Achievements",
+      "title": "Sertifikasi & kredensial.",
+      "subtitle": "{count} entri — dari fundamental web development hingga spesialisasi AI dan data.",
+      "listAria": "Daftar kredensial",
+      "ctaTitle": "Siap menerapkan skill ini ke proyek berikutnya."
+    },
+    "guestNotesPage": {
+      "eyebrow": "Buku Tamu",
+      "titleLine1": "Tinggalkan",
+      "titleLine2": "catatan.",
+      "notesCount": "{count} catatan",
+      "formEyebrow": "// LEAVE_A_NOTE",
+      "formIntro": "Sapaan, kritik, atau sekedar say hi — semua diterima.",
+      "nameLabel": "Nama",
+      "namePlaceholder": "Siapa kamu?",
+      "fromLabel": "Dari",
+      "messageLabel": "Pesan",
+      "messagePlaceholder": "Tulis sesuatu yang ringan…",
+      "submit": "Kirim catatan",
+      "archiveTitle": "Arsip catatan",
+      "archiveNo": "N° {count}",
+      "empty": "Belum ada catatan — jadilah yang pertama."
+    },
+    "workDetail": {
+      "category": "Kategori",
+      "published": "Diterbitkan",
+      "updated": "Diperbarui",
+      "live": "Live",
+      "visit": "Kunjungi",
+      "stack": "Stack",
+      "project": "Proyek",
+      "type": "Tipe",
+      "year": "Tahun",
+      "status": "Status",
+      "statusLive": "Live",
+      "viewProject": "Lihat Proyek",
+      "gallery": "Galeri",
+      "frames": "{count} frames",
+      "fig": "Fig. {no}",
+      "nextEyebrow": "Selanjutnya",
+      "nextTitle": "Punya proyek serupa?",
+      "backFab": "Kembali ke arsip"
+    },
+    "cv": {
+      "trigger": "Lihat CV",
+      "title": "Curriculum Vitae — Rizki Ramadhan",
+      "description": "Ringkasan CV: profil, pengalaman, keahlian, sertifikasi, dan kontak.",
+      "eyebrow": "Curriculum Vitae",
+      "role": "Fullstack Developer · Bogor, Indonesia",
+      "updated": "Updated",
+      "profile": "01 — Profil",
+      "profileBody": "Freelance fullstack developer dengan 2+ tahun pengalaman membangun aplikasi web dan mobile dari konsep hingga production. Fokus pada performa, responsivitas, dan pengalaman pengguna yang halus. Terbiasa debugging, optimasi aplikasi, dan menerjemahkan kebutuhan klien menjadi solusi digital yang efisien.",
+      "experience": "02 — Pengalaman",
+      "skills": "03 — Keahlian",
+      "certifications": "04 — Sertifikasi",
+      "moreCerts": "+ {count} sertifikasi lainnya",
+      "contact": "05 — Kontak",
+      "download": "Unduh PDF"
+    }
+  },
+  "en": {
+    "meta": {
+      "siteTitle": "R. Ramadhan — Freelance Fullstack Developer",
+      "siteDescription": "Crafting human-centric code in a machine world. Portfolio of Rizki Ramadhan, freelance fullstack developer based in Bogor, Indonesia.",
+      "homeTitle": "R. Ramadhan — Freelance Fullstack Developer",
+      "homeDescription": "Crafting human-centric code in a machine world. Portfolio of Rizki Ramadhan, freelance fullstack developer based in Bogor, Indonesia.",
+      "worksTitle": "Works — R. Ramadhan",
+      "worksDescription": "Selected project archive by Rizki Ramadhan: web apps, dashboards, e-commerce, and PWAs — from concept to production.",
+      "layananTitle": "Services — R. Ramadhan",
+      "layananDescription": "Freelance fullstack services: product engineering, web design, performance audit, headless CMS — plus process and FAQ.",
+      "achievementsTitle": "Credentials — R. Ramadhan",
+      "achievementsDescription": "Certification and credential archive: Dicoding, Dibimbing, MySkills, JavaArch, and more.",
+      "guestNotesTitle": "Guest Book — Leave a note",
+      "guestNotesDescription": "A quiet space to leave a short message."
+    },
+    "lang": {
+      "label": "Language",
+      "id": "ID",
+      "en": "EN"
+    },
+    "nav": {
+      "main": "Main navigation",
+      "mobile": "Mobile navigation",
+      "home": "Home",
+      "works": "Works",
+      "services": "Services",
+      "achievements": "Credentials",
+      "guestNotes": "Guest Notes",
+      "shortHome": "Home",
+      "shortWorks": "Works",
+      "shortServices": "Services",
+      "shortAchievements": "Certs",
+      "shortGuestNotes": "Notes"
+    },
+    "brand": {
+      "tagline": "Fullstack · Bogor · 2026"
+    },
+    "common": {
+      "viewCv": "View CV →",
+      "startProject": "Start a project →",
+      "openGuestBook": "Open guest book →",
+      "viewAllWorks": "View all works →",
+      "viewArchive": "View full archive →",
+      "detail": "Detail",
+      "collaboration": "Collaboration / Next",
+      "statusOpen": "Open",
+      "yearsShort": "3+ yrs",
+      "entries": "{count} entries",
+      "positions": "{count} Roles",
+      "portraitAlt": "R. Ramadhan — Studio, 2026"
+    },
+    "home": {
+      "badge": "Available for 2026 projects",
+      "title": "Fullstack Developer",
+      "introLabel": "Introduction",
+      "intro": "Building clean code and intuitive interfaces, with a strong focus on performance, responsiveness, and user experience.",
+      "aboutLabel": "Who am I?",
+      "aboutTitle": "Crafting human-centric code in a machine world.",
+      "aboutBody": "Fullstack Developer with more than 3 years of experience building web and mobile applications. Experienced in taking websites and apps from concept to deployment, with a strong focus on performance, responsiveness, and user experience. Skilled in debugging, optimization, and delivering efficient digital solutions tailored to client needs.",
+      "statExperience": "Experience",
+      "statProjects": "Projects delivered",
+      "statCerts": "Certifications",
+      "statStatus": "Status",
+      "testimonialsSection": "Client Voices / 05",
+      "testimonialsTitle": "What collaborators say about working together.",
+      "testimonialsAria": "Client testimonials",
+      "testimonials": [
+        {
+          "quote": "The result wasn't just fast — it felt intentional. Every detail looked deliberate.",
+          "author": "Aulia P.",
+          "role": "Founder, Studio Mahkota"
+        },
+        {
+          "quote": "Clear communication, deadlines met, and code our team could continue without drama.",
+          "author": "M. Rifqi",
+          "role": "CTO, Lumina"
+        },
+        {
+          "quote": "Hard to find a developer who understands design. Rizki is one of them.",
+          "author": "Tania W.",
+          "role": "Design Lead"
+        }
+      ]
+    },
+    "worksScroll": {
+      "aria": "Featured works",
+      "eyebrow": "Latest works",
+      "title": "Featured works",
+      "scrollHint": "Scroll to explore",
+      "viewAll": "View all works →",
+      "workNo": "Work {no}",
+      "detail": "Detail"
+    },
+    "career": {
+      "eyebrow": "Experience / 06",
+      "positions": "{count} Roles",
+      "title": "A measured career path — from internship to independent clients."
+    },
+    "achievementsSection": {
+      "eyebrow": "Credentials / 07",
+      "entries": "{count} Entries",
+      "title": "Continuous learning — from fundamentals to specialization."
+    },
+    "codingStats": {
+      "eyebrow": "Coding Stats / 10",
+      "title": "Metrics that matter.",
+      "workspace": "Workspace ·",
+      "privateRepos": "· {count} private repos",
+      "wakatimeProfile": "WakaTime profile",
+      "contributionWeeks": "{count}-Week Contribution",
+      "languages": "Languages",
+      "streaks": "Streaks",
+      "leetcode": "LeetCode",
+      "trophies": "Trophies",
+      "recentCommits": "Recent commits",
+      "viewAll": "View all →"
+    },
+    "guestNotesTeaser": {
+      "aria": "Guest book",
+      "eyebrow": "Guest Book / {count}",
+      "title": "Leave a note.",
+      "body": "A greeting, feedback, or just say hi — a quiet space for a short message from you."
+    },
+    "footer": {
+      "eyebrow": "Contact / 09",
+      "title": "Let's collaborate in 2026.",
+      "social": "Social",
+      "location": "Location",
+      "status": "Status",
+      "statusValue": "Open for work",
+      "copyright": "© 2026 Rizki Ramadhan — All rights reserved",
+      "crafted": "Set in Cormorant Garamond & Inter · Crafted with intention"
+    },
+    "layanan": {
+      "eyebrow": "Services",
+      "title": "What I can build for you.",
+      "subtitle": "Scope, process, and answers to common questions — before we start collaborating.",
+      "servicesEyebrow": "Services / 01",
+      "servicesTitle": "What I can build for you",
+      "processEyebrow": "Process / 02",
+      "processTitle": "Four steps, no drama.",
+      "faqEyebrow": "FAQ / 03",
+      "faqTitle": "Common questions.",
+      "ctaTitle": "Ready to start? Tell me about your project scope — I'll reply within 24 hours.",
+      "ctaAria": "Collaboration call to action",
+      "services": [
+        {
+          "n": "S/01",
+          "t": "Product Engineering",
+          "d": "From idea to production: architecture, build, deploy, monitor."
+        },
+        {
+          "n": "S/02",
+          "t": "Web Design & UI",
+          "d": "Editorial interfaces that feel alive — not generic templates."
+        },
+        {
+          "n": "S/03",
+          "t": "Performance Audit",
+          "d": "Lighthouse 90+, Core Web Vitals, real-user metrics."
+        },
+        {
+          "n": "S/04",
+          "t": "Headless CMS",
+          "d": "Sanity, Strapi, Payload — comfortable content workflows."
+        }
+      ],
+      "process": [
+        {
+          "n": "01",
+          "t": "Discovery",
+          "d": "A focused 45-minute session to map problems and expectations."
+        },
+        {
+          "n": "02",
+          "t": "Sketch & Spec",
+          "d": "Wireframes, moodboards, and a clear technical spec."
+        },
+        {
+          "n": "03",
+          "t": "Build",
+          "d": "1–3 week sprints with daily preview links."
+        },
+        {
+          "n": "04",
+          "t": "Ship & Handover",
+          "d": "Production deploy, documentation, and a training session."
+        }
+      ],
+      "faq": [
+        {
+          "q": "How long does a project take?",
+          "a": "Landing pages take 1–2 weeks, web apps 3–8 weeks. Broken into small sprints with visible deliverables."
+        },
+        {
+          "q": "Do I get the source code?",
+          "a": "Always. Full repo with handover documentation and a short training session."
+        },
+        {
+          "q": "What stack do you usually use?",
+          "a": "React/Next.js/Astro/TanStack, Tailwind, TypeScript, Postgres/Supabase. I can also align with your team's stack."
+        },
+        {
+          "q": "Available for long-term contracts?",
+          "a": "Yes — limited slots for monthly retainers. Email me for details."
+        }
+      ]
+    },
+    "worksPage": {
+      "eyebrow": "Works Archive",
+      "title": "Project archive.",
+      "subtitle": "Switch between grid or list view — your preference is saved automatically.",
+      "listAria": "Works list",
+      "ctaTitle": "Have a similar project? Let's discuss scope and timeline.",
+      "viewGrid": "Grid",
+      "viewList": "List",
+      "viewAria": "Archive view"
+    },
+    "achievementsPage": {
+      "eyebrow": "Credentials Archive",
+      "title": "Certifications & credentials.",
+      "subtitle": "{count} entries — from web fundamentals to AI and data specialization.",
+      "listAria": "Credentials list",
+      "ctaTitle": "Ready to apply these skills to your next project."
+    },
+    "guestNotesPage": {
+      "eyebrow": "Guest Book",
+      "titleLine1": "Leave a",
+      "titleLine2": "note.",
+      "notesCount": "{count} notes",
+      "formEyebrow": "// LEAVE_A_NOTE",
+      "formIntro": "A greeting, feedback, or just say hi — all welcome.",
+      "nameLabel": "Name",
+      "namePlaceholder": "Who are you?",
+      "fromLabel": "From",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Write something light…",
+      "submit": "Send note",
+      "archiveTitle": "Note archive",
+      "archiveNo": "N° {count}",
+      "empty": "No notes yet — be the first."
+    },
+    "workDetail": {
+      "category": "Category",
+      "published": "Published",
+      "updated": "Updated",
+      "live": "Live",
+      "visit": "Visit",
+      "stack": "Stack",
+      "project": "Project",
+      "type": "Type",
+      "year": "Year",
+      "status": "Status",
+      "statusLive": "Live",
+      "viewProject": "View Project",
+      "gallery": "Gallery",
+      "frames": "{count} frames",
+      "fig": "Fig. {no}",
+      "nextEyebrow": "Next",
+      "nextTitle": "Have a similar project?",
+      "backFab": "Back to archive"
+    },
+    "cv": {
+      "trigger": "View CV",
+      "title": "Curriculum Vitae — Rizki Ramadhan",
+      "description": "CV summary: profile, experience, skills, certifications, and contact.",
+      "eyebrow": "Curriculum Vitae",
+      "role": "Fullstack Developer · Bogor, Indonesia",
+      "updated": "Updated",
+      "profile": "01 — Profile",
+      "profileBody": "Freelance fullstack developer with 2+ years of experience building web and mobile applications from concept to production. Focused on performance, responsiveness, and smooth user experience. Experienced in debugging, optimization, and translating client needs into efficient digital solutions.",
+      "experience": "02 — Experience",
+      "skills": "03 — Skills",
+      "certifications": "04 — Certifications",
+      "moreCerts": "+ {count} more certifications",
+      "contact": "05 — Contact",
+      "download": "Download PDF"
+    }
+  }
+}

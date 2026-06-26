@@ -9,10 +9,14 @@ import {
   GUEST_NOTE_PROVIDERS,
   getProviderLabel,
 } from "@/lib/guest-note-providers";
+import { getLocale, getMessages } from "@/lib/i18n";
 import {
   getGuestNotes,
   formatGuestNoteDateFull,
 } from "@/service/noted.service";
+
+const locale = getLocale(Astro);
+const m = getMessages(locale);
 
 const notes = await getGuestNotes();
 const noteCount = String(notes.length).padStart(2, "0");
@@ -23,8 +27,8 @@ const fieldClass =
 ---
 
 <Layout
-  title="Buku Tamu — Tinggalkan catatan"
-  description="Ruang tenang untuk meninggalkan catatan singkat."
+  title={m.meta.guestNotesTitle}
+  description={m.meta.guestNotesDescription}
 >
   <Header />
 
@@ -37,21 +41,21 @@ const fieldClass =
           <p
             class="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase"
           >
-            Buku Tamu / <span id="guest-notes-hero-index">{noteCount}</span>
+            {m.guestNotesPage.eyebrow} / <span id="guest-notes-hero-index">{noteCount}</span>
           </p>
           <h1
             class="mt-6 font-display text-5xl leading-[1.05] tracking-tight md:text-7xl"
           >
-            Tinggalkan
+            {m.guestNotesPage.titleLine1}
             <br />
-            catatan.
+            {m.guestNotesPage.titleLine2}
           </h1>
         </div>
         <div
           id="guest-notes-count"
           class="font-mono text-[11px] tracking-[0.18em] text-muted-foreground uppercase"
         >
-          {notes.length} catatan
+          {m.guestNotesPage.notesCount.replace("{count}", String(notes.length))}
         </div>
       </div>
     </section>
@@ -64,33 +68,30 @@ const fieldClass =
           <p
             class="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase"
           >
-            // LEAVE_A_NOTE
+            {m.guestNotesPage.formEyebrow}
           </p>
           <p
             class="mt-4 max-w-sm font-display text-2xl leading-snug text-foreground/80 italic"
           >
-            Sapaan, kritik, atau sekedar say hi — semua diterima.
+            {m.guestNotesPage.formIntro}
           </p>
         </div>
 
-        <form
-          id="guest-notes-form"
-          class="space-y-8 md:col-span-8"
-        >
+        <form id="guest-notes-form" class="space-y-8 md:col-span-8">
           <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
             <Input
               id="guest-name"
               name="name"
-              label="Nama"
+              label={m.guestNotesPage.nameLabel}
               maxlength={60}
               required
-              placeholder="Siapa kamu?"
+              placeholder={m.guestNotesPage.namePlaceholder}
               inputClass={fieldClass}
             />
             <Select
               id="guest-provider"
               name="provider"
-              label="Dari"
+              label={m.guestNotesPage.fromLabel}
               options={[...GUEST_NOTE_PROVIDERS]}
               required
               selectClass={`cursor-pointer ${fieldClass}`}
@@ -100,11 +101,11 @@ const fieldClass =
           <Textarea
             id="guest-message"
             name="message"
-            label="Pesan"
+            label={m.guestNotesPage.messageLabel}
             maxlength={280}
             required
             rows={4}
-            placeholder="Tulis sesuatu yang ringan…"
+            placeholder={m.guestNotesPage.messagePlaceholder}
             textareaClass={`resize-none leading-snug ${fieldClass}`}
           >
             <span
@@ -127,10 +128,8 @@ const fieldClass =
               type="submit"
               class="group inline-flex items-center gap-3 font-mono text-xs tracking-[0.24em] text-foreground uppercase transition-colors hover:text-accent disabled:opacity-50"
             >
-              Kirim catatan
-              <span class="transition-transform group-hover:translate-x-1"
-                >→</span
-              >
+              {m.guestNotesPage.submit}
+              <span class="transition-transform group-hover:translate-x-1">→</span>
             </button>
           </div>
         </form>
@@ -141,13 +140,13 @@ const fieldClass =
       <div class="mx-auto container px-4 py-20 md:px-6">
         <div class="mb-12 flex items-baseline justify-between">
           <h2 class="font-display text-3xl tracking-tight md:text-4xl">
-            Arsip catatan
+            {m.guestNotesPage.archiveTitle}
           </h2>
           <span
             id="guest-notes-archive-count"
             class="font-mono text-[11px] tracking-[0.24em] text-muted-foreground uppercase"
           >
-            N° {archiveCount}
+            {m.guestNotesPage.archiveNo.replace("{count}", archiveCount)}
           </span>
         </div>
 
@@ -158,15 +157,12 @@ const fieldClass =
             notes.length > 0 && "hidden",
           ]}
         >
-          Belum ada catatan — jadilah yang pertama.
+          {m.guestNotesPage.empty}
         </p>
 
         <ol
           id="guest-notes-list"
-          class:list={[
-            "divide-y divide-border",
-            notes.length === 0 && "hidden",
-          ]}
+          class:list={["divide-y divide-border", notes.length === 0 && "hidden"]}
         >
           {
             notes.map((note, index) => (

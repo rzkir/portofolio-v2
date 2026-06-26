@@ -5,15 +5,18 @@ import Footer from "@/layouts/Footer.astro";
 import FocusIn from "@/components/FocusIn.astro";
 import CredentialsGrid from "@/components/CredentialsGrid.astro";
 import { project1 } from "@/data/portfolio";
+import { getLocale, getMessages } from "@/lib/i18n";
 import { getCredentialsArchive } from "@/service/archivments.service";
 
+const locale = getLocale(Astro);
+const m = getMessages(locale);
 const ogImage = new URL(project1.src, Astro.site).href;
 const credentials = await getCredentialsArchive();
 ---
 
 <Layout
-  title="Kredensial — R. Ramadhan"
-  description="Arsip sertifikasi dan kredensial Rizki Ramadhan: Dicoding, Dibimbing, MySkills, JavaArch, dan lainnya."
+  title={m.meta.achievementsTitle}
+  description={m.meta.achievementsDescription}
   ogImage={ogImage}
 >
   <Header />
@@ -24,7 +27,7 @@ const credentials = await getCredentialsArchive();
         <p
           class="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
         >
-          Arsip Kredensial / Achievements
+          {m.achievementsPage.eyebrow}
         </p>
         <div
           class="flex flex-col gap-6 border-b border-border pb-10 md:flex-row md:items-end md:justify-between"
@@ -32,11 +35,13 @@ const credentials = await getCredentialsArchive();
           <h1
             class="max-w-2xl text-balance font-display text-4xl italic leading-[0.95] md:text-6xl"
           >
-            Sertifikasi & kredensial.
+            {m.achievementsPage.title}
           </h1>
           <p class="max-w-xs text-sm leading-relaxed text-muted-foreground">
-            {credentials.length} entri — dari fundamental web development hingga
-            spesialisasi AI dan data.
+            {m.achievementsPage.subtitle.replace(
+              "{count}",
+              String(credentials.length),
+            )}
           </p>
         </div>
       </FocusIn>
@@ -44,14 +49,14 @@ const credentials = await getCredentialsArchive();
 
     <section
       class="mx-auto container px-4 pb-20 md:px-6"
-      aria-label="Daftar kredensial"
+      aria-label={m.achievementsPage.listAria}
     >
       <CredentialsGrid credentials={credentials} idPrefix="archive-credential" />
     </section>
 
     <section
       class="border-t border-border bg-surface/40 px-4 py-10 md:px-6"
-      aria-label="Ajakan kolaborasi"
+      aria-label={m.layanan.ctaAria}
     >
       <div class="mx-auto container px-4 md:px-6">
         <FocusIn class="grid items-end gap-12 md:grid-cols-12">
@@ -59,10 +64,10 @@ const credentials = await getCredentialsArchive();
             <p
               class="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
             >
-              Kolaborasi / Next
+              {m.common.collaboration}
             </p>
             <h2 class="font-display text-4xl italic leading-tight md:text-5xl">
-              Siap menerapkan skill ini ke proyek berikutnya.
+              {m.achievementsPage.ctaTitle}
             </h2>
           </div>
           <div class="flex flex-wrap gap-3 md:col-span-5 md:justify-end">
@@ -72,7 +77,7 @@ const credentials = await getCredentialsArchive();
               data-cursor-label="Email"
               class="rounded-full bg-foreground px-8 py-4 text-sm font-medium text-background transition-colors hover:bg-accent"
             >
-              Mulai proyek →
+              {m.common.startProject}
             </a>
           </div>
         </FocusIn>

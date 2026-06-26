@@ -5,15 +5,18 @@ import Footer from "@/layouts/Footer.astro";
 import FocusIn from "@/components/FocusIn.astro";
 import WorksGrid from "@/components/WorksGrid.astro";
 import { project1 } from "@/data/portfolio";
+import { getLocale, getMessages } from "@/lib/i18n";
 import { getWorksArchive } from "@/service/works-archive.service";
 
+const locale = getLocale(Astro);
+const m = getMessages(locale);
 const ogImage = new URL(project1.src, Astro.site).href;
 const works = await getWorksArchive();
 ---
 
 <Layout
-  title="Karya — R. Ramadhan"
-  description="Arsip proyek pilihan Rizki Ramadhan: web app, dashboard, e-commerce, dan PWA — dari konsep hingga production."
+  title={m.meta.worksTitle}
+  description={m.meta.worksDescription}
   ogImage={ogImage}
 >
   <Header />
@@ -24,7 +27,7 @@ const works = await getWorksArchive();
         <p
           class="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
         >
-          Arsip Karya / Works
+          {m.worksPage.eyebrow}
         </p>
         <div
           class="flex flex-col gap-6 border-b border-border pb-10 md:flex-row md:items-end md:justify-between"
@@ -32,34 +35,30 @@ const works = await getWorksArchive();
           <h1
             class="max-w-2xl text-balance font-display text-4xl italic leading-[0.95] md:text-6xl"
           >
-            Arsip karya.
+            {m.worksPage.title}
           </h1>
           <p class="max-w-xs text-sm leading-relaxed text-muted-foreground">
-            Beralih antara tampilan grid atau daftar — pilihanmu tersimpan
-            otomatis.
+            {m.worksPage.subtitle}
           </p>
         </div>
       </FocusIn>
     </section>
 
-    <section class="mx-auto container px-4 md:px-6" aria-label="Daftar karya">
+    <section class="mx-auto container px-4 md:px-6" aria-label={m.worksPage.listAria}>
       <WorksGrid works={works} />
     </section>
 
-    <section
-      class="bg-surface/40 px-4 py-10 md:px-6"
-      aria-label="Ajakan kolaborasi"
-    >
+    <section class="bg-surface/40 px-4 py-10 md:px-6" aria-label={m.layanan.ctaAria}>
       <div class="mx-auto container px-4 md:px-6">
         <FocusIn class="grid items-end gap-12 md:grid-cols-12">
           <div class="md:col-span-7">
             <p
               class="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
             >
-              Kolaborasi / Next
+              {m.common.collaboration}
             </p>
             <h2 class="font-display text-4xl italic leading-tight md:text-5xl">
-              Punya proyek serupa? Mari diskusikan scope dan timeline-nya.
+              {m.worksPage.ctaTitle}
             </h2>
           </div>
           <div class="flex flex-wrap gap-3 md:col-span-5 md:justify-end">
@@ -69,7 +68,7 @@ const works = await getWorksArchive();
               data-cursor-label="Email"
               class="rounded-full bg-foreground px-8 py-4 text-sm font-medium text-background transition-colors hover:bg-accent"
             >
-              Mulai proyek →
+              {m.common.startProject}
             </a>
           </div>
         </FocusIn>

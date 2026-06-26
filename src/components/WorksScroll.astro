@@ -6,6 +6,10 @@ import FocusIn from "@/components/FocusIn.astro";
 import PreviewIcon from "@/components/svg/priview.astro";
 import { getFeaturedWorks } from "@/service/works-archive.service";
 import { getWorksScrollVh } from "@/service/works.service";
+import { getLocale, getMessages } from "@/lib/i18n";
+
+const locale = getLocale(Astro);
+const m = getMessages(locale);
 
 const works = await getFeaturedWorks();
 const scrollVh = getWorksScrollVh(works.length);
@@ -18,7 +22,7 @@ const inViewMargin = "-12%";
   data-works-scroll
   data-header-theme="inverse"
   class="works-scroll relative isolate bg-accent text-background"
-  aria-label="Karya pilihan"
+  aria-label={m.worksScroll.aria}
 >
   <div class="relative mx-auto container px-4 md:px-6">
     <div
@@ -38,15 +42,15 @@ const inViewMargin = "-12%";
             <p
               class="mb-4 font-mono text-sm tracking-widest text-gray-300 uppercase"
             >
-              Latest works
+              {m.worksScroll.eyebrow}
             </p>
-            <h2 class="font-display text-5xl italic">Featured Works</h2>
+            <h2 class="font-display text-5xl italic">{m.worksScroll.title}</h2>
           </div>
           <div class="hidden flex-col items-end gap-3 md:flex">
             <span
               class="font-mono text-sm tracking-widest text-gray-300 uppercase"
             >
-              Scroll to explore
+              {m.worksScroll.scrollHint}
             </span>
             <a
               href="/works"
@@ -54,7 +58,7 @@ const inViewMargin = "-12%";
               data-cursor-label="View"
               class="font-mono text-[10px] uppercase tracking-[0.2em] text-background/70 transition-colors hover:text-background"
             >
-              View all works →
+              {m.worksScroll.viewAll}
             </a>
           </div>
         </div>
@@ -130,7 +134,7 @@ const inViewMargin = "-12%";
                     >
                       {work.no}
                     </FadeInText>
-                    <span class="sr-only">Karya {work.no}</span>
+                    <span class="sr-only">{m.worksScroll.workNo.replace("{no}", work.no)}</span>
                     <FadeInText
                       enhance
                       once={false}
@@ -143,7 +147,7 @@ const inViewMargin = "-12%";
                       class={`mb-5 flex max-w-sm items-center justify-between gap-4 font-mono text-xs ${i % 2 === 1 ? "md:ml-auto" : ""}`}
                     >
                       <span class="text-background/90">{work.tag}</span>
-                      <span class="text-[10px] uppercase tracking-[0.2em] text-background/45">
+                      <span class="text-xs uppercase tracking-[0.18em] text-background/45">
                         {work.year}
                       </span>
                     </FadeInText>
@@ -170,7 +174,7 @@ const inViewMargin = "-12%";
                       yOffset={18}
                       easing={cinematic}
                       inViewMargin={inViewMargin}
-                      class="max-w-sm text-sm leading-relaxed text-background/60 md:text-base"
+                      class="max-w-lg text-base leading-relaxed text-background/60"
                     >
                       {work.desc}
                     </FadeInText>
@@ -192,7 +196,7 @@ const inViewMargin = "-12%";
                         aria-label={`Lihat ${work.title}`}
                         class="group/cta inline-flex items-center gap-2 border-b border-background/40 pb-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-background transition-colors hover:border-background"
                       >
-                        Detail
+                        {m.worksScroll.detail}
                         <PreviewIcon
                           size={14}
                           class="transition-transform group-hover/cta:translate-x-0.5 group-hover/cta:-translate-y-0.5"

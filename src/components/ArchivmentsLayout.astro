@@ -3,6 +3,10 @@ import FocusIn from "@/components/FocusIn.astro";
 import CredentialsGrid from "@/components/CredentialsGrid.astro";
 import { fetchAchievementsPage } from "@/utils/FetchArchivments";
 import { getFeaturedCredentials } from "@/service/archivments.service";
+import { getLocale, getMessages } from "@/lib/i18n";
+
+const locale = getLocale(Astro);
+const m = getMessages(locale);
 
 const [credentials, meta] = await Promise.all([
   getFeaturedCredentials(),
@@ -21,13 +25,16 @@ const hasMore = meta.nextPage;
       <p
         class="font-mono text-xs tracking-widest text-muted-foreground uppercase"
       >
-        Kredensial / 07
+        {m.achievementsSection.eyebrow}
       </p>
       <div class="flex flex-col items-end gap-2 text-right">
         <span
           class="font-mono text-xs tracking-widest text-muted-foreground uppercase"
         >
-          {credentials.length} Entri
+          {m.achievementsSection.entries.replace(
+            "{count}",
+            String(credentials.length),
+          )}
         </span>
         {
           hasMore && (
@@ -37,7 +44,7 @@ const hasMore = meta.nextPage;
               data-cursor-label="View"
               class="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase transition-colors hover:text-accent"
             >
-              Lihat arsip lengkap →
+              {m.common.viewArchive}
             </a>
           )
         }
@@ -48,7 +55,7 @@ const hasMore = meta.nextPage;
       delay={80}
       class="mb-16 max-w-2xl font-display text-3xl italic leading-tight"
     >
-      Pendidikan berkelanjutan — dari fundamental sampai spesialisasi.
+      {m.achievementsSection.title}
     </FocusIn>
 
     <CredentialsGrid credentials={credentials} />

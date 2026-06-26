@@ -13,7 +13,11 @@ import ArchivmentsLayout from "@/components/ArchivmentsLayout.astro";
 import CareerLayout from "@/components/CareerLayout.astro";
 import { getCredentialsCount } from "@/service/archivments.service";
 import { getWorksCount } from "@/service/works-archive.service";
-import { portrait, project1, stack, testimonials } from "@/data/portfolio";
+import { getLocale, getMessages } from "@/lib/i18n";
+import { portrait, project1, stack } from "@/data/portfolio";
+
+const locale = getLocale(Astro);
+const m = getMessages(locale);
 
 const ogImage = new URL(project1.src, Astro.site).href;
 
@@ -24,28 +28,27 @@ const [projectCount, certificationCount] = await Promise.all([
 ---
 
 <Layout
-  title="R. Ramadhan — Freelance Fullstack Developer"
-  description="Crafting human-centric code in a machine world. Portfolio Rizki Ramadhan, freelance fullstack developer dari Bogor, Indonesia."
+  title={m.meta.homeTitle}
+  description={m.meta.homeDescription}
   ogImage={ogImage}
 >
   <Header />
 
   <main class="pt-28">
-    <!-- HERO -->
     <section class="mx-auto container px-4 md:px-6">
       <div
         class="mb-8 inline-flex animate-focus items-center gap-2 rounded-full border border-accent/20 bg-accent/5 px-3 py-1"
       >
         <span class="size-1.5 pulse-soft rounded-full bg-accent"></span>
         <span class="font-mono text-xs tracking-widest text-accent uppercase"
-          >Available for 2026 projects</span
+          >{m.home.badge}</span
         >
       </div>
 
       <h1
         class="mb-6 animate-focus text-balance font-display text-6xl italic leading-[0.9] [animation-delay:100ms] md:text-8xl"
       >
-        Fullstack Developer
+        {m.home.title}
       </h1>
 
       <div
@@ -55,11 +58,10 @@ const [projectCount, certificationCount] = await Promise.all([
           <p
             class="mb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase"
           >
-            Introduction
+            {m.home.introLabel}
           </p>
           <p class="text-pretty text-lg leading-relaxed">
-            Building clean code and intuitive interfaces, with a strong focus on
-            performance, responsiveness, and user experience.
+            {m.home.intro}
           </p>
         </div>
         <div class="flex flex-wrap justify-end gap-3 md:col-span-7">
@@ -72,7 +74,7 @@ const [projectCount, certificationCount] = await Promise.all([
               data-cursor-label="View"
               class="rounded-full border border-border px-8 py-4 text-sm font-medium transition-colors hover:border-accent hover:text-accent"
             >
-              Lihat CV →
+              {m.common.viewCv}
             </button>
           </CvDialog>
           <a
@@ -81,21 +83,18 @@ const [projectCount, certificationCount] = await Promise.all([
             data-cursor-label="Email"
             class="rounded-full bg-foreground px-8 py-4 text-sm font-medium text-background transition-colors hover:bg-accent"
           >
-            Mulai proyek →
+            {m.common.startProject}
           </a>
         </div>
       </div>
     </section>
 
-    <!-- MARQUEE -->
     <Marquee duration="38s" class="mt-32 border-y border-border py-6">
       <div class="flex shrink-0 items-center gap-12 px-6">
         {
           stack.map((s) => (
             <>
-              <span class="font-display text-3xl italic opacity-40">
-                {s}
-              </span>
+              <span class="font-display text-3xl italic opacity-40">{s}</span>
               <span class="size-1.5 rounded-full bg-border" />
             </>
           ))
@@ -103,7 +102,6 @@ const [projectCount, certificationCount] = await Promise.all([
       </div>
     </Marquee>
 
-    <!-- ABOUT -->
     <section
       class="mx-auto container grid items-start gap-16 px-4 py-20 md:grid-cols-12 md:px-6"
     >
@@ -114,7 +112,7 @@ const [projectCount, certificationCount] = await Promise.all([
         >
           <Image
             src={portrait}
-            alt="R. Ramadhan — Studio, 2026"
+            alt={m.common.portraitAlt}
             class="aspect-4/5 w-full object-cover grayscale transition-[filter] duration-700 ease-cinematic group-hover:grayscale-0"
           />
         </figure>
@@ -124,20 +122,13 @@ const [projectCount, certificationCount] = await Promise.all([
         <p
           class="mb-6 font-mono text-xs tracking-widest text-muted-foreground uppercase"
         >
-          Who am I?
+          {m.home.aboutLabel}
         </p>
         <h2 class="mb-6 font-display text-5xl italic leading-tight">
-          Crafting human-centric code in a machine world.
+          {m.home.aboutTitle}
         </h2>
-        <p
-          class="mb-6 text-pretty text-base leading-relaxed text-muted-foreground"
-        >
-          Fullstack Developer with more than 2 years of experience in developing
-          web and mobile applications , Experienced in building websites and
-          applications from concept to deployment, with a strong focus on
-          performance, responsiveness, and user experience. Skilled in
-          debugging, application optimization, and delivering efficient digital
-          solutions tailored to client needs.
+        <p class="mb-6 text-pretty text-sm leading-relaxed">
+          {m.home.aboutBody}
         </p>
 
         <dl
@@ -147,15 +138,15 @@ const [projectCount, certificationCount] = await Promise.all([
             <dt
               class="mb-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
             >
-              Pengalaman
+              {m.home.statExperience}
             </dt>
-            <dd class="font-display text-3xl italic">2+ thn</dd>
+            <dd class="font-display text-3xl italic">{m.common.yearsShort}</dd>
           </div>
           <div>
             <dt
               class="mb-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
             >
-              Proyek selesai
+              {m.home.statProjects}
             </dt>
             <dd class="font-display text-3xl italic">{projectCount}</dd>
           </div>
@@ -163,7 +154,7 @@ const [projectCount, certificationCount] = await Promise.all([
             <dt
               class="mb-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
             >
-              Sertifikasi
+              {m.home.statCerts}
             </dt>
             <dd class="font-display text-3xl italic">{certificationCount}</dd>
           </div>
@@ -171,9 +162,11 @@ const [projectCount, certificationCount] = await Promise.all([
             <dt
               class="mb-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
             >
-              Status
+              {m.home.statStatus}
             </dt>
-            <dd class="font-display text-3xl italic text-accent">Open</dd>
+            <dd class="font-display text-3xl italic text-accent">
+              {m.common.statusOpen}
+            </dd>
           </div>
         </dl>
       </FocusIn>
@@ -181,10 +174,9 @@ const [projectCount, certificationCount] = await Promise.all([
 
     <WorksScroll />
 
-    <!-- TESTIMONI -->
     <section
       class="relative overflow-hidden border-y border-border bg-surface/40 py-20"
-      aria-label="Testimoni klien"
+      aria-label={m.home.testimonialsAria}
     >
       <div
         class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,color-mix(in_oklch,var(--accent)_8%,transparent),transparent)]"
@@ -197,10 +189,10 @@ const [projectCount, certificationCount] = await Promise.all([
           <p
             class="mb-4 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
           >
-            Suara Klien / 05
+            {m.home.testimonialsSection}
           </p>
           <h2 class="mb-16 max-w-3xl font-display text-5xl italic">
-            Apa kata mereka yang pernah berkolaborasi.
+            {m.home.testimonialsTitle}
           </h2>
         </FocusIn>
       </div>
@@ -208,7 +200,7 @@ const [projectCount, certificationCount] = await Promise.all([
       <Marquee duration="52s" fade class="relative mt-2">
         <div class="flex shrink-0 gap-6">
           {
-            testimonials.map((t, i) => (
+            m.home.testimonials.map((t, i) => (
               <figure
                 data-cursor="focus"
                 data-cursor-label="Read"
@@ -234,11 +226,8 @@ const [projectCount, certificationCount] = await Promise.all([
     </section>
 
     <CareerLayout />
-
     <ArchivmentsLayout />
-
     <CodingStats />
-
     <GuestNotesTeaser />
   </main>
   <Footer />

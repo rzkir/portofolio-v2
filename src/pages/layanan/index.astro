@@ -3,14 +3,17 @@ import Layout from "@/layouts/Layout.astro";
 import Header from "@/layouts/Header.astro";
 import Footer from "@/layouts/Footer.astro";
 import FocusIn from "@/components/FocusIn.astro";
-import { faq, process, project1, services } from "@/data/portfolio";
+import { project1 } from "@/data/portfolio";
+import { getLocale, getMessages } from "@/lib/i18n";
 
+const locale = getLocale(Astro);
+const m = getMessages(locale);
 const ogImage = new URL(project1.src, Astro.site).href;
 ---
 
 <Layout
-  title="Layanan — R. Ramadhan"
-  description="Layanan freelance fullstack: product engineering, web design, performance audit, headless CMS — plus proses kerja dan FAQ."
+  title={m.meta.layananTitle}
+  description={m.meta.layananDescription}
   ogImage={ogImage}
 >
   <Header />
@@ -21,7 +24,7 @@ const ogImage = new URL(project1.src, Astro.site).href;
         <p
           class="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
         >
-          Layanan / Services
+          {m.layanan.eyebrow}
         </p>
         <div
           class="flex flex-col gap-6 border-b border-border pb-10 md:flex-row md:items-end md:justify-between"
@@ -29,11 +32,10 @@ const ogImage = new URL(project1.src, Astro.site).href;
           <h1
             class="max-w-2xl text-balance font-display text-4xl italic leading-[0.95] md:text-6xl"
           >
-            Apa yang bisa saya kerjakan.
+            {m.layanan.title}
           </h1>
           <p class="max-w-sm text-sm leading-relaxed text-muted-foreground">
-            Scope, proses, dan jawaban atas pertanyaan yang sering muncul —
-            sebelum kita mulai berkolaborasi.
+            {m.layanan.subtitle}
           </p>
         </div>
       </FocusIn>
@@ -45,17 +47,17 @@ const ogImage = new URL(project1.src, Astro.site).href;
           <p
             class="mb-4 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
           >
-            Layanan / 01
+            {m.layanan.servicesEyebrow}
           </p>
           <h2 class="font-display text-5xl italic">
-            Apa yang bisa saya kerjakan
+            {m.layanan.servicesTitle}
           </h2>
         </div>
       </FocusIn>
 
       <ul class="grid grid-cols-1 gap-px bg-border sm:grid-cols-2">
         {
-          services.map((s, i) => (
+          m.layanan.services.map((s, i) => (
             <FocusIn
               as="li"
               delay={i * 80}
@@ -83,17 +85,17 @@ const ogImage = new URL(project1.src, Astro.site).href;
           <p
             class="mb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase"
           >
-            Proses / 02
+            {m.layanan.processEyebrow}
           </p>
           <h2
             class="mb-16 font-display text-5xl italic leading-tight md:max-w-2xl"
           >
-            Empat langkah, tanpa drama.
+            {m.layanan.processTitle}
           </h2>
         </FocusIn>
         <ol class="grid grid-cols-1 gap-12 md:grid-cols-4">
           {
-            process.map((p, i) => (
+            m.layanan.process.map((p, i) => (
               <FocusIn
                 as="li"
                 delay={i * 90}
@@ -118,13 +120,13 @@ const ogImage = new URL(project1.src, Astro.site).href;
         <p
           class="mb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase"
         >
-          FAQ / 03
+          {m.layanan.faqEyebrow}
         </p>
-        <h2 class="mb-16 font-display text-5xl italic">Pertanyaan umum.</h2>
+        <h2 class="mb-16 font-display text-5xl italic">{m.layanan.faqTitle}</h2>
       </FocusIn>
       <ul class="divide-y divide-border border-y border-border">
         {
-          faq.map((f, i) => (
+          m.layanan.faq.map((f, i) => (
             <FocusIn
               as="li"
               delay={i * 70}
@@ -142,20 +144,17 @@ const ogImage = new URL(project1.src, Astro.site).href;
       </ul>
     </section>
 
-    <section
-      class="bg-surface/40 px-4 py-10 md:px-6"
-      aria-label="Ajakan kolaborasi"
-    >
+    <section class="bg-surface/40 px-4 py-10 md:px-6" aria-label={m.layanan.ctaAria}>
       <div class="mx-auto container px-4 md:px-6">
         <FocusIn class="grid items-end gap-12 md:grid-cols-12">
           <div class="md:col-span-7">
             <p
               class="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
             >
-              Kolaborasi / Next
+              {m.common.collaboration}
             </p>
             <h2 class="font-display text-4xl italic leading-tight md:text-5xl">
-              Siap mulai? Ceritakan scope proyekmu — saya balas dalam 24 jam.
+              {m.layanan.ctaTitle}
             </h2>
           </div>
           <div class="flex flex-wrap gap-3 md:col-span-5 md:justify-end">
@@ -165,7 +164,7 @@ const ogImage = new URL(project1.src, Astro.site).href;
               data-cursor-label="Email"
               class="rounded-full bg-foreground px-8 py-4 text-sm font-medium text-background transition-colors hover:bg-accent"
             >
-              Mulai proyek →
+              {m.common.startProject}
             </a>
           </div>
         </FocusIn>

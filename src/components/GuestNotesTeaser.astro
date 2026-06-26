@@ -1,7 +1,11 @@
 ---
 import FocusIn from "@/components/FocusIn.astro";
 import { getProviderLabel } from "@/lib/guest-note-providers";
+import { getLocale, getMessages } from "@/lib/i18n";
 import { getGuestNotes } from "@/service/noted.service";
+
+const locale = getLocale(Astro);
+const m = getMessages(locale);
 
 const notes = await getGuestNotes();
 const preview = notes.slice(0, 2);
@@ -11,7 +15,7 @@ const noteCount = String(notes.length).padStart(2, "0");
 <section
   id="catatan"
   class="border-t border-border bg-surface/40 py-20"
-  aria-label="Buku tamu"
+  aria-label={m.guestNotesTeaser.aria}
 >
   <div class="mx-auto container px-4 md:px-6">
     <FocusIn class="grid items-end gap-12 md:grid-cols-12">
@@ -19,16 +23,15 @@ const noteCount = String(notes.length).padStart(2, "0");
         <p
           class="mb-4 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
         >
-          Buku Tamu / {noteCount}
+          {m.guestNotesTeaser.eyebrow.replace("{count}", noteCount)}
         </p>
         <h2
           class="mb-6 max-w-xl font-display text-4xl italic leading-tight md:text-5xl"
         >
-          Tinggalkan catatan.
+          {m.guestNotesTeaser.title}
         </h2>
         <p class="max-w-md text-pretty text-sm leading-relaxed text-muted-foreground">
-          Sapaan, kritik, atau sekadar say hi — ruang tenang untuk pesan singkat
-          dari kamu.
+          {m.guestNotesTeaser.body}
         </p>
       </div>
 
@@ -39,7 +42,7 @@ const noteCount = String(notes.length).padStart(2, "0");
           data-cursor-label="Open"
           class="rounded-full bg-foreground px-8 py-4 text-sm font-medium text-background transition-colors hover:bg-accent"
         >
-          Buka buku tamu →
+          {m.common.openGuestBook}
         </a>
       </div>
     </FocusIn>

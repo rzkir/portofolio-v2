@@ -8,17 +8,21 @@ interface Props {
 import GrabCursor from "@/components/GrabCursor.astro";
 import SplashScreen from "@/components/SplashScreen.astro";
 import { FORCE_MOTION_INLINE_SCRIPT } from "@/lib/force-motion";
+import { getLocale, getMessages } from "@/lib/i18n";
 import "@/styles/global.css";
 
+const locale = getLocale(Astro);
+const m = getMessages(locale);
+
 const {
-  title = "Rizki Ramadhan — Fullstack Developer Portfolio 2026",
-  description = "Freelance fullstack developer dengan 2+ tahun pengalaman membangun aplikasi web dan mobile. Karya, sertifikasi, dan kontak.",
+  title = m.meta.siteTitle,
+  description = m.meta.siteDescription,
   ogImage,
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="id">
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

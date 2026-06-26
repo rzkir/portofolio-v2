@@ -3,6 +3,10 @@ import CountUp from "@astroanimate/core/CountUp";
 import FocusIn from "@/components/FocusIn.astro";
 import CommitsRepoDialog from "@/components/dialog/dialog.commit.astro";
 import { getCodingStatsView } from "@/service/github-stats.service";
+import { getLocale, getMessages } from "@/lib/i18n";
+
+const locale = getLocale(Astro);
+const m = getMessages(locale);
 
 const stats = await getCodingStatsView();
 
@@ -35,12 +39,12 @@ function parseStatValue(raw: string) {
         <p
           class="mb-4 font-mono text-xs tracking-widest text-background/50 uppercase"
         >
-          Coding Stats / 10
+          {m.codingStats.eyebrow}
         </p>
         <h2
           class="font-display text-5xl leading-tight text-background italic md:text-6xl"
         >
-          Metrik yang terukur.
+          {m.codingStats.title}
         </h2>
       </div>
       <span
@@ -79,7 +83,7 @@ function parseStatValue(raw: string) {
         class="grid flex-1 gap-4 border-t border-background/15 pt-6 md:border-t-0 md:border-l md:pt-0 md:pl-8"
       >
         <p class="font-mono text-xs leading-relaxed text-background/75">
-          <span class="text-background/50">Workspace ·</span>
+          <span class="text-background/50">{m.codingStats.workspace}</span>
           {stats.profile.lastProject} ({stats.profile.lastBranch}) · {
             stats.profile.lastLanguage
           } · {stats.profile.lastEditor} · {stats.profile.timezone}
@@ -88,7 +92,12 @@ function parseStatValue(raw: string) {
           {stats.commitsMetaMessage}
           {
             stats.privateRepoCount > 0 && (
-              <span> · {stats.privateRepoCount} repo private</span>
+              <span>
+                {m.codingStats.privateRepos.replace(
+                  "{count}",
+                  String(stats.privateRepoCount),
+                )}
+              </span>
             )
           }
         </p>
@@ -98,7 +107,7 @@ function parseStatValue(raw: string) {
         target="_blank"
         rel="noopener noreferrer"
         class="hidden shrink-0 md:block"
-        aria-label="Profil WakaTime"
+        aria-label={m.codingStats.wakatimeProfile}
       >
         <img
           src={stats.profile.wakatimePhoto}
@@ -195,7 +204,10 @@ function parseStatValue(raw: string) {
             <p
               class="font-mono text-xs tracking-widest text-background/50 uppercase"
             >
-              Kontribusi {stats.heatmapWeekCount} Minggu
+              {m.codingStats.contributionWeeks.replace(
+                "{count}",
+                String(stats.heatmapWeekCount),
+              )}
             </p>
             <span
               class="font-mono text-xs tracking-widest text-background/50 uppercase"

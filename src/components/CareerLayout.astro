@@ -2,6 +2,10 @@
 import FocusIn from "@/components/FocusIn.astro";
 import { getCareers } from "@/service/career.service";
 import { formatExperienceIndex } from "@/service/experience.service";
+import { getLocale, getMessages } from "@/lib/i18n";
+
+const locale = getLocale(Astro);
+const m = getMessages(locale);
 
 const careers = await getCareers();
 ---
@@ -11,12 +15,12 @@ const careers = await getCareers();
     <p
       class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
     >
-      Pengalaman / 06
+      {m.career.eyebrow}
     </p>
     <span
       class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
     >
-      {careers.length} Posisi
+      {m.career.positions.replace("{count}", String(careers.length))}
     </span>
   </FocusIn>
   <FocusIn
@@ -24,7 +28,7 @@ const careers = await getCareers();
     delay={80}
     class="mb-16 max-w-2xl font-display text-3xl italic leading-tight"
   >
-    Jejak karier yang terukur — dari magang hingga klien independen.
+    {m.career.title}
   </FocusIn>
 
   <div

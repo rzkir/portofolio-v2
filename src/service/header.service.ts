@@ -1,12 +1,38 @@
 export const HEADER_CONFIG = {
   headerId: "site-header",
   inverseThemeSelector: "[data-header-theme='inverse']",
-  menuSelector: "[data-header-menu]",
-  menuToggleSelector: "[data-header-menu-toggle]",
-  menuLinkSelector: "[data-header-menu-link]",
+  navSelector: "[data-header-nav]",
+  navMobileSelector: "[data-header-nav-mobile]",
+  navLinkSelector: "[data-header-nav-link]",
+  navIndicatorSelector: "[data-header-nav-indicator]",
   scrollThreshold: 12,
   mobileBreakpoint: 768,
 } as const;
+
+export function updateNavIndicator(
+  nav: HTMLElement,
+  target?: HTMLElement | null,
+): void {
+  const indicator = nav.querySelector<HTMLElement>(
+    HEADER_CONFIG.navIndicatorSelector,
+  );
+  if (!indicator) return;
+
+  const active =
+    target ??
+    nav.querySelector<HTMLElement>(
+      `${HEADER_CONFIG.navLinkSelector}[aria-current="page"]`,
+    );
+
+  if (!active) return;
+
+  const navRect = nav.getBoundingClientRect();
+  const rect = active.getBoundingClientRect();
+
+  indicator.style.width = `${rect.width}px`;
+  indicator.style.height = `${rect.height}px`;
+  indicator.style.transform = `translate3d(${rect.left - navRect.left + nav.scrollLeft}px, ${rect.top - navRect.top}px, 0)`;
+}
 
 export function isHeaderInverse(
   header: HTMLElement,
@@ -24,29 +50,49 @@ export function isHeaderInverse(
   return false;
 }
 
-export function createSiteHeaderController(header: HTMLElement): () => void {
-  const menu = header.querySelector<HTMLElement>(HEADER_CONFIG.menuSelector);
-  const menuToggle = header.querySelector<HTMLButtonElement>(
-    HEADER_CONFIG.menuToggleSelector,
+function scrollActiveNavLinkIntoView(nav: HTMLElement): void {
+  if (nav.scrollWidth <= nav.clientWidth) return;
+
+  const active = nav.querySelector<HTMLElement>(
+    `${HEADER_CONFIG.navLinkSelector}[aria-current="page"]`,
   );
-  const menuLinks = header.querySelectorAll<HTMLAnchorElement>(
-    HEADER_CONFIG.menuLinkSelector,
+  if (!active) return;
+
+  active.scrollIntoView({
+    inline: "center",
+    block: "nearest",
+    behavior: "smooth",
+  });
+}
+
+export function createSiteHeaderController(header: HTMLElement): () => void {
+  const nav = header.querySelector<HTMLElement>(HEADER_CONFIG.navSelector);
+  const navMobile = header.querySelector<HTMLElement>(
+    HEADER_CONFIG.navMobileSelector,
   );
 
   const inverseSections = () =>
     document.querySelectorAll<HTMLElement>(HEADER_CONFIG.inverseThemeSelector);
 
   let ticking = false;
+  let indicatorTimer = 0;
 
-  const setMenuOpen = (open: boolean) => {
-    header.classList.toggle("is-menu-open", open);
-    menuToggle?.setAttribute("aria-expanded", String(open));
-    menu?.setAttribute("aria-hidden", String(!open));
-    document.documentElement.classList.toggle("overflow-hidden", open);
-    document.body.classList.toggle("overflow-hidden", open);
+  const activeNav = () =>
+    window.innerWidth < HEADER_CONFIG.mobileBreakpoint ? navMobile : nav;
+
+  const syncNavIndicator = () => {
+    const currentNav = activeNav();
+    if (!currentNav) return;
+    updateNavIndicator(currentNav);
   };
 
-  const closeMenu = () => setMenuOpen(false);
+  const revealIndicators = () => {
+    syncNavIndicator();
+    header
+      .querySelectorAll<HTMLElement>(HEADER_CONFIG.navIndicatorSelector)
+      .forEach((indicator) => indicator.classList.add("is-visible"));
+    if (navMobile) scrollActiveNavLinkIntoView(navMobile);
+  };
 
   const update = () => {
     ticking = false;
@@ -66,35 +112,33 @@ export function createSiteHeaderController(header: HTMLElement): () => void {
     requestAnimationFrame(update);
   };
 
-  const onMenuToggle = () => {
-    const open = !header.classList.contains("is-menu-open");
-    setMenuOpen(open);
-  };
-
   const onResize = () => {
-    if (window.innerWidth >= HEADER_CONFIG.mobileBreakpoint) closeMenu();
     requestUpdate();
+    syncNavIndicator();
+    if (navMobile && window.innerWidth < HEADER_CONFIG.mobileBreakpoint) {
+      scrollActiveNavLinkIntoView(navMobile);
+    }
   };
 
-  const onKeydown = (event: KeyboardEvent) => {
-    if (event.key === "Escape") closeMenu();
-  };
-
-  menuToggle?.addEventListener("click", onMenuToggle);
-  menuLinks.forEach((link) => link.addEventListener("click", closeMenu));
   window.addEventListener("scroll", requestUpdate, { passive: true });
   window.addEventListener("resize", onResize, { passive: true });
-  document.addEventListener("keydown", onKeydown);
+
+  const resizeObserver =
+    typeof ResizeObserver !== "undefined"
+      ? new ResizeObserver(() => syncNavIndicator())
+      : null;
+  if (nav) resizeObserver?.observe(nav);
+  if (navMobile) resizeObserver?.observe(navMobile);
 
   requestUpdate();
+  syncNavIndicator();
+  indicatorTimer = window.setTimeout(revealIndicators, 700);
 
   return () => {
+    window.clearTimeout(indicatorTimer);
+    resizeObserver?.disconnect();
     window.removeEventListener("scroll", requestUpdate);
     window.removeEventListener("resize", onResize);
-    document.removeEventListener("keydown", onKeydown);
-    menuToggle?.removeEventListener("click", onMenuToggle);
-    menuLinks.forEach((link) => link.removeEventListener("click", closeMenu));
-    closeMenu();
     header.dataset.bound = "false";
   };
 }
