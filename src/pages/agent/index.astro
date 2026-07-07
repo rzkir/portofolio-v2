@@ -1,0 +1,420 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Aside from "@/components/ui/aside.astro";
+import Canvas from "@/components/ui/canvas.astro";
+import Textarea from "@/components/ui/textarea.astro";
+import { DEFAULT_AGENT_CATEGORY } from "@/service/agent.service";
+---
+
+<Layout
+  title="AI Studio"
+  description="Precision engines for professional execution."
+  noIndex={true}
+>
+  <div class="agent-shell flex h-dvh w-full bg-background text-foreground">
+    <Aside />
+
+    <main
+      id="agent-main"
+      class="relative flex min-w-0 flex-1 flex-col overflow-hidden md:flex-row"
+    >
+      <div class="agent-chat-pane relative flex min-w-0 flex-1 flex-col overflow-hidden">
+        <div class="pointer-events-none absolute inset-0 overflow-hidden">
+          <div
+            class="absolute -top-[20%] -right-[10%] size-[50%] rounded-full bg-accent/5 blur-[120px]"
+          >
+          </div>
+          <div
+            class="absolute -bottom-[20%] -left-[10%] size-[50%] rounded-full bg-foreground/5 blur-[120px]"
+          >
+          </div>
+        </div>
+
+        <header
+          class="relative z-10 flex h-20 shrink-0 items-center justify-between border-b border-border bg-background/80 px-6 backdrop-blur-md md:px-12"
+        >
+          <div>
+            <h1 class="font-display text-3xl font-light tracking-wide italic">
+              Deep Intelegence
+              <span class="ml-2 font-bold text-accent not-italic">v4</span>
+            </h1>
+          </div>
+
+          <div class="flex items-center gap-6">
+            <div class="agent-glass flex items-center gap-2 rounded-full px-4 py-2">
+              <span class="size-2 rounded-full bg-accent pulse-soft"></span>
+              <span
+                class="font-mono text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase"
+              >
+                Neural Link Active
+              </span>
+            </div>
+
+            <button
+              type="button"
+              id="header-share-btn"
+              class="text-muted-foreground transition-colors hover:text-foreground"
+              aria-label="Share conversation"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-5"
+                aria-hidden="true"
+              >
+                <circle cx="18" cy="5" r="3" />
+                <circle cx="6" cy="12" r="3" />
+                <circle cx="18" cy="19" r="3" />
+                <line x1="8.59" x2="15.42" y1="13.51" y2="17.49" />
+                <line x1="15.41" x2="8.59" y1="6.51" y2="10.49" />
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <div
+          id="agent-messages"
+          class="agent-scrollbar relative min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-12 md:px-12"
+        >
+          <div id="agent-thread" class="mx-auto max-w-4xl space-y-16">
+            <div class="py-20 text-center" id="agent-empty-state">
+              <h2
+                class="mb-6 font-display text-5xl font-light opacity-80 italic md:text-6xl"
+              >
+                Let's create <br />
+                <span class="font-bold text-foreground not-italic"
+                  >the impossible.</span
+                >
+              </h2>
+              <p class="text-lg font-light text-muted-foreground">
+                Precision engines for professional execution.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="agent-prompt-dock shrink-0 px-6 pt-10 pb-6 md:px-12 md:pb-8">
+          <div class="mx-auto max-w-4xl">
+            <form id="agent-prompt-form">
+              <input
+                type="hidden"
+                name="category"
+                value={DEFAULT_AGENT_CATEGORY}
+              />
+              <Textarea
+                variant="prompt"
+                id="main-prompt-input"
+                name="message"
+                label="Type your prompt..."
+                maxlength={4000}
+                required
+              />
+            </form>
+            <p
+              id="agent-error"
+              class="mt-3 hidden text-center font-mono text-[10px] tracking-widest text-destructive uppercase"
+              role="alert"
+            >
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <Canvas />
+    </main>
+  </div>
+</Layout>
+
+<script>
+  import {
+    buildPromptHistory,
+    buildWebPreview,
+    formatAgentTime,
+    resolveAgentCategory,
+    sendAgentPrompt,
+    shouldShowCanvas,
+  } from "@/service/agent.service";
+
+  const form = document.getElementById("agent-prompt-form") as HTMLFormElement | null;
+  const input = document.getElementById("main-prompt-input") as HTMLInputElement | null;
+  const sendBtn = document.getElementById("main-prompt-input-send") as HTMLButtonElement | null;
+  const main = document.getElementById("agent-main");
+  const canvas = document.getElementById("agent-canvas");
+  const canvasFrame = document.getElementById(
+    "agent-canvas-frame",
+  ) as HTMLIFrameElement | null;
+  const canvasCode = document.getElementById("agent-canvas-code");
+  const canvasLang = document.getElementById("agent-canvas-language");
+  const canvasClose = document.getElementById("agent-canvas-close");
+  const canvasCopy = document.getElementById("agent-canvas-copy");
+  const canvasRefresh = document.getElementById("agent-canvas-refresh");
+  const canvasSource = document.getElementById("agent-canvas-source");
+  const canvasSourcePanel = document.getElementById("agent-canvas-source-panel");
+  const categoryInput = form?.elements.namedItem("category") as HTMLInputElement | null;
+  const thread = document.getElementById("agent-thread");
+  const messagesViewport = document.getElementById("agent-messages");
+  const emptyState = document.getElementById("agent-empty-state");
+  const errorEl = document.getElementById("agent-error");
+
+  const chatMessages: AgentChatMessage[] = [];
+  let isSubmitting = false;
+  let currentCanvasCode = "";
+  let currentPreviewDocument = "";
+
+  function escapeHtml(value: string): string {
+    return value
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+
+  function scrollToBottom() {
+    if (!messagesViewport) return;
+    messagesViewport.scrollTop = messagesViewport.scrollHeight;
+  }
+
+  function setLoading(loading: boolean) {
+    isSubmitting = loading;
+    if (input) input.disabled = loading;
+    if (sendBtn) sendBtn.disabled = loading;
+  }
+
+  function showError(message: string) {
+    if (!errorEl) return;
+    errorEl.textContent = message;
+    errorEl.classList.remove("hidden");
+  }
+
+  function clearError() {
+    if (!errorEl) return;
+    errorEl.textContent = "";
+    errorEl.classList.add("hidden");
+  }
+
+  function renderPreview(preview: AgentWebPreview) {
+    currentCanvasCode = preview.source;
+    currentPreviewDocument = preview.document;
+    if (canvasCode) canvasCode.textContent = preview.source;
+    if (canvasLang) canvasLang.textContent = preview.language || "live";
+    if (canvasFrame) canvasFrame.srcdoc = preview.document;
+  }
+
+  function openCanvas(preview: AgentWebPreview) {
+    renderPreview(preview);
+    canvasSourcePanel?.classList.remove("is-open");
+    canvasSource?.setAttribute("aria-expanded", "false");
+    canvas?.classList.add("is-open");
+    canvas?.setAttribute("aria-hidden", "false");
+    main?.classList.add("agent-main--with-canvas");
+  }
+
+  function closeCanvas() {
+    canvas?.classList.remove("is-open");
+    canvas?.setAttribute("aria-hidden", "true");
+    main?.classList.remove("agent-main--with-canvas");
+    canvasSourcePanel?.classList.remove("is-open");
+    canvasSource?.setAttribute("aria-expanded", "false");
+    if (canvasFrame) canvasFrame.srcdoc = "";
+    currentCanvasCode = "";
+    currentPreviewDocument = "";
+  }
+
+  canvasClose?.addEventListener("click", closeCanvas);
+
+  canvasRefresh?.addEventListener("click", () => {
+    if (!canvasFrame || !currentPreviewDocument) return;
+    canvasFrame.srcdoc = currentPreviewDocument;
+  });
+
+  canvasSource?.addEventListener("click", () => {
+    const isOpen = canvasSourcePanel?.classList.toggle("is-open") ?? false;
+    canvasSource?.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  });
+
+  canvasCopy?.addEventListener("click", async () => {
+    if (!currentCanvasCode) return;
+    try {
+      await navigator.clipboard.writeText(currentCanvasCode);
+    } catch {
+      // ignore clipboard errors
+    }
+  });
+
+  function renderUserMessage(message: AgentChatMessage) {
+    const block = document.createElement("div");
+    block.className = "agent-message-reveal flex flex-col items-end space-y-4";
+    block.dataset.messageRole = "user";
+    block.dataset.messageId = message.id;
+    block.innerHTML = `
+      <div class="agent-user-bubble max-w-2xl rounded-3xl rounded-tr-none p-6 leading-relaxed text-foreground/90 shadow-2xl">
+        <p class="whitespace-pre-wrap">${escapeHtml(message.content)}</p>
+      </div>
+      <div class="flex items-center gap-3 opacity-20">
+        <span class="font-mono text-[10px] font-bold tracking-widest uppercase">
+          Sent ${formatAgentTime(message.sentAt)}
+        </span>
+      </div>
+    `;
+    return block;
+  }
+
+  function renderAssistantMessage(message: AgentChatMessage) {
+    const block = document.createElement("div");
+    block.className = "agent-message-reveal flex flex-col items-start space-y-6";
+    block.dataset.messageRole = "assistant";
+    block.dataset.messageId = message.id;
+    block.innerHTML = `
+      <div class="flex items-center gap-4">
+        <div class="flex size-8 items-center justify-center rounded-xl bg-accent shadow-lg shadow-accent/20">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-4 text-accent-foreground" aria-hidden="true">
+            <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" />
+          </svg>
+        </div>
+        <span class="font-mono text-[10px] font-bold tracking-[0.3em] text-accent uppercase">
+          Inference Complete${message.model ? ` · ${escapeHtml(message.model)}` : ""}
+        </span>
+      </div>
+      <div class="agent-ai-bubble max-w-3xl rounded-[40px] rounded-tl-none p-8 shadow-2xl shadow-accent/20">
+        <p class="whitespace-pre-wrap text-lg leading-relaxed">${escapeHtml(message.content)}</p>
+      </div>
+      <div class="flex gap-6 px-4">
+        <button type="button" class="agent-copy-btn flex items-center gap-2 font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase opacity-30 transition-opacity hover:opacity-100">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-4" aria-hidden="true">
+            <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+          </svg>
+          Copy
+        </button>
+      </div>
+    `;
+
+    block.querySelector(".agent-copy-btn")?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(message.content);
+      } catch {
+        // ignore clipboard errors
+      }
+    });
+
+    return block;
+  }
+
+  function renderLoading() {
+    const block = document.createElement("div");
+    block.id = "agent-loading";
+    block.className = "agent-message-reveal flex flex-col items-start space-y-4";
+    block.innerHTML = `
+      <div class="flex items-center gap-4">
+        <div class="flex size-8 items-center justify-center rounded-xl bg-accent shadow-lg shadow-accent/20">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-4 animate-spin text-accent-foreground" aria-hidden="true">
+            <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+          </svg>
+        </div>
+        <span class="font-mono text-[10px] font-bold tracking-[0.3em] text-accent uppercase">
+          Processing
+        </span>
+      </div>
+    `;
+    return block;
+  }
+
+  function appendDivider() {
+    if (!thread) return null;
+    const divider = document.createElement("div");
+    divider.className = "agent-gradient-divider";
+    divider.dataset.messageDivider = "true";
+    thread.appendChild(divider);
+    return divider;
+  }
+
+  function appendMessageNode(node: HTMLElement) {
+    if (!thread) return;
+    emptyState?.classList.add("hidden");
+    thread.appendChild(node);
+    scrollToBottom();
+  }
+
+  function removeLoading() {
+    document.getElementById("agent-loading")?.remove();
+  }
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (isSubmitting || !input?.value.trim() || !thread) return;
+
+    clearError();
+
+    const message = input.value.trim();
+    const category = resolveAgentCategory(message);
+    if (categoryInput) categoryInput.value = category;
+
+    const userMessage: AgentChatMessage = {
+      id: crypto.randomUUID(),
+      role: "user",
+      content: message,
+      sentAt: new Date().toISOString(),
+    };
+
+    chatMessages.push(userMessage);
+    const userNode = renderUserMessage(userMessage);
+    appendMessageNode(userNode);
+    const divider = appendDivider();
+    const loadingNode = renderLoading();
+    appendMessageNode(loadingNode);
+
+    input.value = "";
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    setLoading(true);
+
+    try {
+      const history = buildPromptHistory(chatMessages.slice(0, -1));
+      const response = await sendAgentPrompt({
+        message,
+        category: category as AgentPromptCategory,
+        history: history.length > 0 ? history : undefined,
+      });
+
+      removeLoading();
+
+      const assistantMessage: AgentChatMessage = {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content: response.reply,
+        sentAt: new Date().toISOString(),
+        model: response.model,
+        category: response.category,
+      };
+
+      chatMessages.push(assistantMessage);
+      appendMessageNode(renderAssistantMessage(assistantMessage));
+
+      if (shouldShowCanvas(message, response.category, response.reply)) {
+        const preview = buildWebPreview(response.reply);
+        if (preview) openCanvas(preview);
+      }
+    } catch (error) {
+      removeLoading();
+      chatMessages.pop();
+      userNode.remove();
+      divider?.remove();
+      if (chatMessages.length === 0) {
+        emptyState?.classList.remove("hidden");
+      }
+      showError(
+        error instanceof Error
+          ? error.message
+          : "Gagal memproses prompt. Coba lagi.",
+      );
+    } finally {
+      setLoading(false);
+      input.focus();
+    }
+  });
+</script>

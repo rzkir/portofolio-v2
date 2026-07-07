@@ -192,6 +192,31 @@ async function handleGuestNotesPatch(
   }
 }
 
+async function handleAgentPromptPost(
+  request: Request,
+  env: Env,
+): Promise<Response> {
+  try {
+    const payload = await request.json();
+
+    const response = await fetch(`${env.API_URL}/api/v1/prompt`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    return new Response(await response.text(), {
+      status: response.status,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch {
+    return new Response(JSON.stringify({ error: "Gagal memproses prompt" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}
+
 async function handleGuestNotesDelete(
   request: Request,
   env: Env,
@@ -242,6 +267,10 @@ export default {
       if (request.method === "POST") return handleGuestNotesPost(request, env);
       if (request.method === "PATCH") return handleGuestNotesPatch(request, env);
       if (request.method === "DELETE") return handleGuestNotesDelete(request, env);
+    }
+
+    if (url.pathname === "/api/agent/prompt" && request.method === "POST") {
+      return handleAgentPromptPost(request, env);
     }
 
     return handle(request, env, ctx);

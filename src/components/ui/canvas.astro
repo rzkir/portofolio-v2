@@ -1,0 +1,154 @@
+---
+import { cn } from "@/lib/utiles";
+
+interface Props {
+  id?: string;
+  class?: string;
+}
+
+const { id = "agent-canvas", class: className } = Astro.props;
+---
+
+<aside
+  id={id}
+  class={cn(
+    "agent-canvas hidden h-full w-full shrink-0 flex-col border-border bg-surface md:w-[42%] md:border-l",
+    className,
+  )}
+  aria-label="Web preview canvas"
+  aria-hidden="true"
+>
+  <header
+    class="flex h-20 shrink-0 items-center justify-between border-b border-border px-6"
+  >
+    <div>
+      <p class="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
+        Canvas
+      </p>
+      <h2 class="font-display text-xl italic">Web preview</h2>
+    </div>
+    <button
+      type="button"
+      id={`${id}-close`}
+      class="flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-foreground/5 hover:text-foreground"
+      aria-label="Close canvas"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="size-5"
+        aria-hidden="true"
+      >
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
+      </svg>
+    </button>
+  </header>
+
+  <div
+    class="flex shrink-0 items-center justify-between gap-3 border-b border-border px-6 py-3"
+  >
+    <span
+      id={`${id}-language`}
+      class="rounded-full border border-border px-3 py-1 font-mono text-[10px] tracking-widest text-accent uppercase"
+    >
+      live
+    </span>
+
+    <div class="flex items-center gap-4">
+      <button
+        type="button"
+        id={`${id}-refresh`}
+        class="flex items-center gap-2 font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase transition-colors hover:text-foreground"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="size-4"
+          aria-hidden="true"
+        >
+          <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+          <path d="M3 3v5h5" />
+          <path d="M12 7v5l4 2" />
+        </svg>
+        Refresh
+      </button>
+
+      <button
+        type="button"
+        id={`${id}-source`}
+        class="flex items-center gap-2 font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase transition-colors hover:text-foreground"
+        aria-expanded="false"
+        aria-controls={`${id}-source-panel`}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="size-4"
+          aria-hidden="true"
+        >
+          <polyline points="16 18 22 12 16 6" />
+          <polyline points="8 6 2 12 8 18" />
+        </svg>
+        Source
+      </button>
+
+      <button
+        type="button"
+        id={`${id}-copy`}
+        class="flex items-center gap-2 font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase transition-colors hover:text-foreground"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="size-4"
+          aria-hidden="true"
+        >
+          <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+          <path
+            d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+          />
+        </svg>
+        Copy
+      </button>
+    </div>
+  </div>
+
+  <div class="agent-canvas__viewport min-h-0 flex-1 p-4">
+    <iframe
+      id={`${id}-frame`}
+      class="agent-canvas__frame size-full rounded-xl border border-border bg-white"
+      title="Live web preview"
+      sandbox="allow-scripts allow-modals allow-forms"
+    ></iframe>
+  </div>
+
+  <div
+    id={`${id}-source-panel`}
+    class="agent-canvas__source max-h-56 shrink-0 overflow-auto border-t border-border"
+  >
+    <pre
+      class="agent-canvas__pre m-0 p-4 font-mono text-xs leading-relaxed text-foreground/90"
+    ><code id={`${id}-code`} class="block whitespace-pre-wrap"></code></pre>
+  </div>
+</aside>

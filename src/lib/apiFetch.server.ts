@@ -1,8 +1,6 @@
-const DEFAULT_API_URL = "https://api.rizkiramadhan.biz.id";
-
 function getServerEnv() {
   return {
-    API_URL: process.env.API_URL ?? DEFAULT_API_URL,
+    API_URL: process.env.API_URL,
     API_SECRET: process.env.API_SECRET ?? "",
   };
 }

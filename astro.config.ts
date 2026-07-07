@@ -65,6 +65,11 @@ export default defineConfig({
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api\/guest-notes/, "/api/v1/messages"),
         },
+        "/api/agent/prompt": {
+          target: apiUrl,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/agent\/prompt/, "/api/v1/prompt"),
+        },
       },
     },
     resolve: {

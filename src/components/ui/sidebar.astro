@@ -1,0 +1,164 @@
+---
+import { cn } from "@/lib/utiles";
+import { portrait } from "@/data/portfolio";
+
+export interface SidebarNavItem {
+  id: string;
+  href: string;
+  label: string;
+  icon: "chat" | "history" | "folder" | "settings";
+  active?: boolean;
+}
+
+interface Props {
+  class?: string;
+  items?: SidebarNavItem[];
+  homeHref?: string;
+}
+
+const {
+  class: className,
+  homeHref = "/agent",
+  items = [
+    {
+      id: "chat",
+      href: "/agent",
+      label: "Chat",
+      icon: "chat",
+      active: true,
+    },
+    {
+      id: "history",
+      href: "#",
+      label: "History",
+      icon: "history",
+    },
+    {
+      id: "folder",
+      href: "#",
+      label: "Folders",
+      icon: "folder",
+    },
+    {
+      id: "settings",
+      href: "#",
+      label: "Settings",
+      icon: "settings",
+    },
+  ],
+} = Astro.props;
+
+const iconClass = "size-6";
+---
+
+<div class={cn("flex h-full flex-col items-center", className)}>
+  <a
+    href={homeHref}
+    class="group mb-12 cursor-pointer"
+    aria-label="Home"
+  >
+    <div
+      class="flex size-12 items-center justify-center rounded-2xl bg-foreground transition-transform group-hover:rotate-12"
+    >
+      <span class="font-display text-2xl font-bold text-background">R</span>
+    </div>
+  </a>
+
+  <nav class="flex flex-1 flex-col gap-8" aria-label="Agent navigation">
+    {
+      items.map((item) => (
+        <a
+          href={item.href}
+          id={`nav-${item.id}-link`}
+          class={cn(
+            "transition-colors",
+            item.active
+              ? "text-foreground"
+              : "text-muted-foreground hover:text-foreground",
+          )}
+          aria-label={item.label}
+          aria-current={item.active ? "page" : undefined}
+        >
+          {item.icon === "chat" && (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class={iconClass}
+              aria-hidden="true"
+            >
+              <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+            </svg>
+          )}
+          {item.icon === "history" && (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class={iconClass}
+              aria-hidden="true"
+            >
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+              <path d="M12 7v5l4 2" />
+            </svg>
+          )}
+          {item.icon === "folder" && (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class={iconClass}
+              aria-hidden="true"
+            >
+              <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
+              <path d="M2 10h20" />
+            </svg>
+          )}
+          {item.icon === "settings" && (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class={iconClass}
+              aria-hidden="true"
+            >
+              <path d="M14 17H5" />
+              <path d="M19 7h-9" />
+              <circle cx="17" cy="17" r="3" />
+              <circle cx="7" cy="7" r="3" />
+            </svg>
+          )}
+        </a>
+      ))
+    }
+  </nav>
+
+  <div class="mt-auto">
+    <div class="size-10 rounded-full border border-accent/50 p-0.5">
+      <img
+        src={portrait.src}
+        width={40}
+        height={40}
+        class="size-full rounded-full object-cover"
+        alt="User"
+      />
+    </div>
+  </div>
+</div>

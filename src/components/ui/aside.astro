@@ -1,0 +1,21 @@
+---
+import Sidebar from "@/components/ui/sidebar.astro";
+import { cn } from "@/lib/utiles";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<aside
+  class={cn(
+    "z-50 flex w-20 shrink-0 flex-col border-r border-border bg-surface py-8",
+    className,
+  )}
+>
+  <slot>
+    <Sidebar />
+  </slot>
+</aside>

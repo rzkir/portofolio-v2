@@ -835,3 +835,111 @@ html.splash-pending .animate-focus {
 .prose-editorial .ql-ui {
   display: none;
 }
+
+/* ── Agent chat ── */
+.agent-shell {
+  overflow: hidden;
+}
+
+.agent-glass {
+  background: color-mix(in oklch, var(--foreground) 3%, transparent);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+}
+
+.agent-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+
+.agent-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.agent-scrollbar::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--accent) 30%, transparent);
+  border-radius: 10px;
+}
+
+.agent-message-reveal {
+  animation: focus-reveal 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.agent-gradient-divider {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklch, var(--accent) 20%, transparent),
+    transparent
+  );
+}
+
+.agent-user-bubble {
+  background: color-mix(in oklch, var(--foreground) 8%, transparent);
+  border: 1px solid var(--border);
+}
+
+.agent-ai-bubble {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.agent-ai-step {
+  background: color-mix(in oklch, var(--background) 10%, transparent);
+}
+
+.agent-prompt-dock {
+  position: relative;
+  z-index: 10;
+  isolation: isolate;
+}
+
+.agent-main--with-canvas .agent-canvas.is-open {
+  display: flex;
+}
+
+@media (max-width: 767px) {
+  .agent-main--with-canvas .agent-chat-pane {
+    display: none;
+  }
+
+  .agent-main--with-canvas .agent-canvas.is-open {
+    position: absolute;
+    inset: 0;
+    z-index: 25;
+    width: 100%;
+    border-left: 0;
+  }
+}
+
+@media (min-width: 768px) {
+  .agent-main--with-canvas .agent-chat-pane {
+    width: 58%;
+  }
+}
+
+.agent-canvas.is-open {
+  display: flex;
+}
+
+.agent-canvas__viewport {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, var(--accent) 30%, transparent) transparent;
+}
+
+.agent-canvas__frame {
+  color-scheme: light;
+}
+
+.agent-canvas__source {
+  display: none;
+}
+
+.agent-canvas__source.is-open {
+  display: block;
+}
+
+.agent-canvas__pre {
+  tab-size: 2;
+}
