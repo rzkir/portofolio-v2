@@ -1,11 +1,50 @@
+import type { AgentCategoryCard } from "@/service/agent.service";
 import {
   buildPromptHistory,
-  buildWebPreview,
   formatAgentTime,
   sendAgentPrompt,
-  shouldShowCanvas,
 } from "@/service/agent.service";
-import { bindUiTabs, setUiTab } from "@/lib/ui-tabs";
+
+export const TECHNOLOGY_AGENT_CATEGORY: AgentPromptCategory = "technology";
+
+export const TECHNOLOGY_CATEGORY_CARDS: AgentCategoryCard[] = [
+  {
+    title: "Tech Trends",
+    categoryLabel: "Technology · Trends",
+    description:
+      "Pahami tren teknologi terkini dan dampaknya terhadap industri Anda.",
+    category: "technology",
+    prompt:
+      "Jelaskan tren teknologi terkini yang relevan untuk bisnis saya, beserta peluang dan risiko implementasinya.",
+  },
+  {
+    title: "Tool Comparison",
+    categoryLabel: "Technology · Tools",
+    description:
+      "Bandingkan framework, platform, dan tools untuk kebutuhan proyek Anda.",
+    category: "technology",
+    prompt:
+      "Bandingkan opsi teknologi untuk use case saya. Berikan pro/kontra, biaya, dan rekomendasi pilihan terbaik.",
+  },
+  {
+    title: "System Architecture",
+    categoryLabel: "Technology · Architecture",
+    description:
+      "Rancang arsitektur sistem yang scalable, aman, dan cost-effective.",
+    category: "technology",
+    prompt:
+      "Bantu saya merancang arsitektur sistem untuk aplikasi saya, termasuk komponen utama, data flow, dan pertimbangan skalabilitas.",
+  },
+  {
+    title: "Emerging Tech",
+    categoryLabel: "Technology · Innovation",
+    description:
+      "Pelajari AI, cloud, edge computing, dan inovasi teknologi lainnya.",
+    category: "technology",
+    prompt:
+      "Jelaskan teknologi emerging yang bisa saya adopsi untuk meningkatkan produktivitas dan daya saing bisnis.",
+  },
+];
 
 function escapeHtml(value: string): string {
   return value
@@ -16,26 +55,10 @@ function escapeHtml(value: string): string {
     .replaceAll("'", "&#39;");
 }
 
-export function createRoleplayAgentController(root: ParentNode): () => void {
+export function createTechnologyAgentController(root: ParentNode): () => void {
   const form = root.querySelector<HTMLFormElement>("#agent-prompt-form");
   const input = root.querySelector<HTMLInputElement>("#main-prompt-input");
   const sendBtn = root.querySelector<HTMLButtonElement>("#main-prompt-input-send");
-  const main = root.querySelector<HTMLElement>("#agent-main");
-  const canvas = root.querySelector<HTMLElement>("#agent-canvas");
-  const canvasFrame = root.querySelector<HTMLIFrameElement>("#agent-canvas-frame");
-  const canvasCodeTabs = root.querySelector<HTMLElement>("#agent-canvas-code-tabs");
-  const canvasLang = root.querySelector<HTMLElement>("#agent-canvas-language");
-  const canvasClose = root.querySelector<HTMLElement>("#agent-canvas-close");
-  const canvasCopy = root.querySelector<HTMLElement>("#agent-canvas-copy");
-  const canvasRefresh = root.querySelector<HTMLElement>("#agent-canvas-refresh");
-  const canvasTabs = root.querySelector<HTMLElement>("#agent-canvas-tabs");
-  const previewDialog = root.querySelector<HTMLDialogElement>("#agent-preview-dialog");
-  const previewDialogFrame = root.querySelector<HTMLIFrameElement>(
-    "#agent-preview-dialog-frame",
-  );
-  const previewDialogLang = root.querySelector<HTMLElement>(
-    "#agent-preview-dialog-language",
-  );
   const categoryInput = form?.elements.namedItem("category") as
     | HTMLInputElement
     | null;
@@ -46,71 +69,6 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
 
   const chatMessages: AgentChatMessage[] = [];
   let isSubmitting = false;
-  let sessionCategory: AgentPromptCategory | null = null;
-  let currentCanvasCode = "";
-  let currentPreviewDocument = "";
-  let currentFiles: AgentWebPreviewFiles = { html: "", css: "", js: "" };
-  let activeCodeFile: keyof AgentWebPreviewFiles = "html";
-
-  function renderCodePanel(panel: HTMLElement | null, code: string) {
-    if (!panel) return;
-
-    const codeEl = panel.querySelector("code");
-    const gutter = panel.querySelector(".agent-code-editor__gutter");
-    const value = code;
-
-    if (codeEl) codeEl.textContent = value || " ";
-    if (gutter) {
-      const lineCount = Math.max(1, value ? value.split("\n").length : 1);
-      gutter.textContent = Array.from({ length: lineCount }, (_, index) =>
-        String(index + 1),
-      ).join("\n");
-    }
-  }
-
-  function renderCodeFiles(files: AgentWebPreviewFiles) {
-    currentFiles = files;
-    if (!canvasCodeTabs) return;
-
-    const entries: Array<{
-      id: keyof AgentWebPreviewFiles;
-      content: string;
-    }> = [
-      { id: "html", content: files.html },
-      { id: "css", content: files.css },
-      { id: "js", content: files.js },
-    ];
-
-    let firstVisible: keyof AgentWebPreviewFiles | null = null;
-
-    entries.forEach(({ id, content }) => {
-      const trigger = canvasCodeTabs.querySelector<HTMLElement>(
-        `[data-tab-trigger="${id}"]`,
-      );
-      const panel = canvasCodeTabs.querySelector<HTMLElement>(
-        `[data-tab-panel="${id}"]`,
-      );
-      const hasContent = content.trim().length > 0;
-
-      trigger?.classList.toggle("is-hidden", !hasContent);
-
-      if (!hasContent) {
-        panel?.classList.add("ui-tabs__panel--hidden");
-        panel?.setAttribute("hidden", "");
-        return;
-      }
-
-      if (!firstVisible) firstVisible = id;
-      panel?.classList.remove("ui-tabs__panel--hidden");
-      panel?.removeAttribute("hidden");
-      renderCodePanel(panel, content);
-    });
-
-    if (firstVisible) {
-      setUiTab(canvasCodeTabs, firstVisible);
-      activeCodeFile = firstVisible;
-    }
-  }
 
   function scrollToBottom() {
     if (!messagesViewport) return;
@@ -135,9 +93,8 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     errorEl.classList.add("hidden");
   }
 
-  function applyCategoryPreset(category: AgentPromptCategory, prompt: string) {
-    sessionCategory = category;
-    if (categoryInput) categoryInput.value = category;
+  function applyCategoryPreset(prompt: string) {
+    if (categoryInput) categoryInput.value = TECHNOLOGY_AGENT_CATEGORY;
     if (!input) return;
 
     input.value = prompt;
@@ -150,92 +107,10 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     const trigger = event.currentTarget as HTMLButtonElement | null;
     if (!trigger) return;
 
-    const category = trigger.dataset.agentCategory as
-      | AgentPromptCategory
-      | undefined;
     const prompt = trigger.dataset.agentPrompt?.trim();
-    if (!category || !prompt) return;
+    if (!prompt) return;
 
-    applyCategoryPreset(category, prompt);
-  }
-
-  function syncPreviewFrames() {
-    if (canvasFrame && currentPreviewDocument) {
-      canvasFrame.srcdoc = currentPreviewDocument;
-    }
-    if (previewDialogFrame && currentPreviewDocument) {
-      previewDialogFrame.srcdoc = currentPreviewDocument;
-    }
-  }
-
-  function renderPreview(preview: AgentWebPreview) {
-    currentCanvasCode = preview.source;
-    currentPreviewDocument = preview.document;
-    renderCodeFiles(preview.files);
-    if (canvasLang) canvasLang.textContent = preview.language || "live";
-    if (previewDialogLang) {
-      previewDialogLang.textContent = preview.language || "live";
-    }
-    syncPreviewFrames();
-  }
-
-  function openCanvas(preview: AgentWebPreview) {
-    renderPreview(preview);
-    if (canvasTabs) setUiTab(canvasTabs, "preview");
-    canvas?.classList.add("is-open");
-    canvas?.setAttribute("aria-hidden", "false");
-    main?.classList.add("agent-main--with-canvas");
-  }
-
-  function closeCanvas() {
-    canvas?.classList.remove("is-open");
-    canvas?.setAttribute("aria-hidden", "true");
-    main?.classList.remove("agent-main--with-canvas");
-    if (canvasTabs) setUiTab(canvasTabs, "preview");
-    if (canvasFrame) canvasFrame.srcdoc = "";
-    if (previewDialogFrame) previewDialogFrame.srcdoc = "";
-    if (previewDialog?.open) previewDialog.close();
-    currentCanvasCode = "";
-    currentPreviewDocument = "";
-    currentFiles = { html: "", css: "", js: "" };
-    activeCodeFile = "html";
-  }
-
-  const onCanvasClose = () => closeCanvas();
-
-  function onCanvasRefresh() {
-    if (!currentPreviewDocument) return;
-    syncPreviewFrames();
-  }
-
-  function onPreviewDialogToggle() {
-    if (!previewDialog?.open || !currentPreviewDocument) return;
-    syncPreviewFrames();
-  }
-
-  async function onCanvasCopy() {
-    const content =
-      currentFiles[activeCodeFile]?.trim() ||
-      currentCanvasCode ||
-      currentPreviewDocument;
-    if (!content) return;
-    try {
-      await navigator.clipboard.writeText(content);
-    } catch {
-      // ignore clipboard errors
-    }
-  }
-
-  function onCodeTabClick(event: Event) {
-    const trigger = (event.target as HTMLElement | null)?.closest<HTMLElement>(
-      "[data-tab-trigger]",
-    );
-    if (!trigger || !canvasCodeTabs?.contains(trigger)) return;
-
-    const fileId = trigger.dataset.tabTrigger;
-    if (fileId === "html" || fileId === "css" || fileId === "js") {
-      activeCodeFile = fileId;
-    }
+    applyCategoryPreset(prompt);
   }
 
   function renderUserMessage(message: AgentChatMessage) {
@@ -343,15 +218,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     clearError();
 
     const message = input.value.trim();
-    const category = sessionCategory ?? (categoryInput?.value as AgentPromptCategory | "");
-
-    if (!category) {
-      showError("Pilih category terlebih dahulu sebelum mengirim prompt.");
-      input.focus();
-      return;
-    }
-
-    if (categoryInput) categoryInput.value = category;
+    if (categoryInput) categoryInput.value = TECHNOLOGY_AGENT_CATEGORY;
 
     const userMessage: AgentChatMessage = {
       id: crypto.randomUUID(),
@@ -375,7 +242,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
       const history = buildPromptHistory(chatMessages.slice(0, -1));
       const response = await sendAgentPrompt({
         message,
-        category,
+        category: TECHNOLOGY_AGENT_CATEGORY,
         history: history.length > 0 ? history : undefined,
       });
 
@@ -391,13 +258,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
       };
 
       chatMessages.push(assistantMessage);
-      sessionCategory = response.category;
       appendMessageNode(renderAssistantMessage(assistantMessage));
-
-      if (shouldShowCanvas(message, response.category, response.reply)) {
-        const preview = buildWebPreview(response.reply);
-        if (preview) openCanvas(preview);
-      }
     } catch (error) {
       removeLoading();
       chatMessages.pop();
@@ -419,8 +280,6 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     }
   }
 
-  const cleanupTabs = bindUiTabs(root);
-
   const categoryCards = root.querySelectorAll<HTMLButtonElement>(
     "[data-agent-category]",
   );
@@ -428,35 +287,23 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     card.addEventListener("click", onCategoryCardClick);
   });
 
-  canvasClose?.addEventListener("click", onCanvasClose);
-  canvasRefresh?.addEventListener("click", onCanvasRefresh);
-  canvasCopy?.addEventListener("click", onCanvasCopy);
-  canvasCodeTabs?.addEventListener("click", onCodeTabClick);
-  previewDialog?.addEventListener("toggle", onPreviewDialogToggle);
   form?.addEventListener("submit", onFormSubmit);
 
   return () => {
-    cleanupTabs();
     categoryCards.forEach((card) => {
       card.removeEventListener("click", onCategoryCardClick);
     });
-    canvasClose?.removeEventListener("click", onCanvasClose);
-    canvasRefresh?.removeEventListener("click", onCanvasRefresh);
-    canvasCopy?.removeEventListener("click", onCanvasCopy);
-    canvasCodeTabs?.removeEventListener("click", onCodeTabClick);
-    previewDialog?.removeEventListener("toggle", onPreviewDialogToggle);
     form?.removeEventListener("submit", onFormSubmit);
-    closeCanvas();
   };
 }
 
-function mountRoleplayAgent(root: ParentNode = document): void {
+function mountTechnologyAgent(root: ParentNode = document): void {
   const shell = root.querySelector<HTMLElement>(".agent-shell");
   if (!shell || shell.dataset.bound === "true") return;
 
   shell.dataset.bound = "true";
 
-  const cleanup = createRoleplayAgentController(root);
+  const cleanup = createTechnologyAgentController(root);
 
   document.addEventListener(
     "astro:before-preparation",
@@ -468,7 +315,7 @@ function mountRoleplayAgent(root: ParentNode = document): void {
   );
 }
 
-export function bindRoleplayAgent(root: ParentNode = document): void {
-  mountRoleplayAgent(root);
-  document.addEventListener("astro:page-load", () => mountRoleplayAgent(document));
+export function bindTechnologyAgent(root: ParentNode = document): void {
+  mountTechnologyAgent(root);
+  document.addEventListener("astro:page-load", () => mountTechnologyAgent(document));
 }

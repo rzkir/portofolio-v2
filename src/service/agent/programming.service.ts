@@ -1,3 +1,4 @@
+import type { AgentCategoryCard } from "@/service/agent.service";
 import {
   buildPromptHistory,
   buildWebPreview,
@@ -6,6 +7,47 @@ import {
   shouldShowCanvas,
 } from "@/service/agent.service";
 import { bindUiTabs, setUiTab } from "@/lib/ui-tabs";
+
+export const PROGRAMMING_AGENT_CATEGORY: AgentPromptCategory = "programming";
+
+export const PROGRAMMING_CATEGORY_CARDS: AgentCategoryCard[] = [
+  {
+    title: "Build Web Page",
+    categoryLabel: "Programming · Web",
+    description:
+      "Bangun halaman web HTML/CSS/JS dengan struktur bersih dan preview langsung.",
+    category: "programming",
+    prompt:
+      "Bantu saya membangun halaman web. Jelaskan struktur HTML/CSS/JS-nya dan berikan contoh kode lengkapnya.",
+  },
+  {
+    title: "Debug Code",
+    categoryLabel: "Programming · Debug",
+    description:
+      "Temukan dan perbaiki bug pada kode Anda dengan penjelasan langkah demi langkah.",
+    category: "programming",
+    prompt:
+      "Bantu saya debug kode berikut. Jelaskan penyebab error dan berikan solusi yang sudah diperbaiki.",
+  },
+  {
+    title: "API Integration",
+    categoryLabel: "Programming · API",
+    description:
+      "Integrasikan REST API, handle response, dan implementasi error handling yang solid.",
+    category: "programming",
+    prompt:
+      "Bantu saya mengintegrasikan REST API ke aplikasi saya, termasuk fetch data, error handling, dan contoh kode lengkap.",
+  },
+  {
+    title: "Refactor & Optimize",
+    categoryLabel: "Programming · Refactor",
+    description:
+      "Perbaiki struktur kode, tingkatkan performa, dan terapkan best practices.",
+    category: "programming",
+    prompt:
+      "Review dan refactor kode saya agar lebih bersih, maintainable, dan mengikuti best practices modern.",
+  },
+];
 
 function escapeHtml(value: string): string {
   return value
@@ -16,7 +58,7 @@ function escapeHtml(value: string): string {
     .replaceAll("'", "&#39;");
 }
 
-export function createRoleplayAgentController(root: ParentNode): () => void {
+export function createProgrammingAgentController(root: ParentNode): () => void {
   const form = root.querySelector<HTMLFormElement>("#agent-prompt-form");
   const input = root.querySelector<HTMLInputElement>("#main-prompt-input");
   const sendBtn = root.querySelector<HTMLButtonElement>("#main-prompt-input-send");
@@ -46,7 +88,6 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
 
   const chatMessages: AgentChatMessage[] = [];
   let isSubmitting = false;
-  let sessionCategory: AgentPromptCategory | null = null;
   let currentCanvasCode = "";
   let currentPreviewDocument = "";
   let currentFiles: AgentWebPreviewFiles = { html: "", css: "", js: "" };
@@ -135,9 +176,8 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     errorEl.classList.add("hidden");
   }
 
-  function applyCategoryPreset(category: AgentPromptCategory, prompt: string) {
-    sessionCategory = category;
-    if (categoryInput) categoryInput.value = category;
+  function applyCategoryPreset(prompt: string) {
+    if (categoryInput) categoryInput.value = PROGRAMMING_AGENT_CATEGORY;
     if (!input) return;
 
     input.value = prompt;
@@ -150,13 +190,10 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     const trigger = event.currentTarget as HTMLButtonElement | null;
     if (!trigger) return;
 
-    const category = trigger.dataset.agentCategory as
-      | AgentPromptCategory
-      | undefined;
     const prompt = trigger.dataset.agentPrompt?.trim();
-    if (!category || !prompt) return;
+    if (!prompt) return;
 
-    applyCategoryPreset(category, prompt);
+    applyCategoryPreset(prompt);
   }
 
   function syncPreviewFrames() {
@@ -343,15 +380,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     clearError();
 
     const message = input.value.trim();
-    const category = sessionCategory ?? (categoryInput?.value as AgentPromptCategory | "");
-
-    if (!category) {
-      showError("Pilih category terlebih dahulu sebelum mengirim prompt.");
-      input.focus();
-      return;
-    }
-
-    if (categoryInput) categoryInput.value = category;
+    if (categoryInput) categoryInput.value = PROGRAMMING_AGENT_CATEGORY;
 
     const userMessage: AgentChatMessage = {
       id: crypto.randomUUID(),
@@ -375,7 +404,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
       const history = buildPromptHistory(chatMessages.slice(0, -1));
       const response = await sendAgentPrompt({
         message,
-        category,
+        category: PROGRAMMING_AGENT_CATEGORY,
         history: history.length > 0 ? history : undefined,
       });
 
@@ -391,10 +420,11 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
       };
 
       chatMessages.push(assistantMessage);
-      sessionCategory = response.category;
       appendMessageNode(renderAssistantMessage(assistantMessage));
 
-      if (shouldShowCanvas(message, response.category, response.reply)) {
+      if (
+        shouldShowCanvas(message, PROGRAMMING_AGENT_CATEGORY, response.reply)
+      ) {
         const preview = buildWebPreview(response.reply);
         if (preview) openCanvas(preview);
       }
@@ -450,13 +480,13 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
   };
 }
 
-function mountRoleplayAgent(root: ParentNode = document): void {
+function mountProgrammingAgent(root: ParentNode = document): void {
   const shell = root.querySelector<HTMLElement>(".agent-shell");
   if (!shell || shell.dataset.bound === "true") return;
 
   shell.dataset.bound = "true";
 
-  const cleanup = createRoleplayAgentController(root);
+  const cleanup = createProgrammingAgentController(root);
 
   document.addEventListener(
     "astro:before-preparation",
@@ -468,7 +498,9 @@ function mountRoleplayAgent(root: ParentNode = document): void {
   );
 }
 
-export function bindRoleplayAgent(root: ParentNode = document): void {
-  mountRoleplayAgent(root);
-  document.addEventListener("astro:page-load", () => mountRoleplayAgent(document));
+export function bindProgrammingAgent(root: ParentNode = document): void {
+  mountProgrammingAgent(root);
+  document.addEventListener("astro:page-load", () =>
+    mountProgrammingAgent(document),
+  );
 }

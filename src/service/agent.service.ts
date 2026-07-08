@@ -1,9 +1,6 @@
 import {
   createAgentPromptClient,
-  DEFAULT_AGENT_CATEGORY,
 } from "@/utils/FetchAgent";
-
-export { DEFAULT_AGENT_CATEGORY };
 
 export type AgentCategoryCard = {
   title: string;
@@ -72,12 +69,6 @@ const WEB_PREVIEW_TOPIC_PATTERN =
 
 export function isWebBuildTopic(message: string): boolean {
   return WEB_PREVIEW_TOPIC_PATTERN.test(message);
-}
-
-export function resolveAgentCategory(message: string): AgentPromptCategory {
-  return isCodingTopic(message) || isWebBuildTopic(message)
-    ? "programming"
-    : DEFAULT_AGENT_CATEGORY;
 }
 
 export function extractCodeBlocks(content: string): AgentCodeBlock[] {
@@ -541,12 +532,12 @@ export function formatAgentTime(iso: string): string {
 export async function sendAgentPrompt(input: {
   message: string;
   history?: AgentHistoryItem[];
-  category?: AgentPromptCategory;
+  category: AgentPromptCategory;
   userId?: string;
 }): Promise<AgentPromptResponse> {
   const payload: AgentPromptRequest = {
     message: input.message,
-    category: input.category ?? DEFAULT_AGENT_CATEGORY,
+    category: input.category,
     history: input.history,
   };
 

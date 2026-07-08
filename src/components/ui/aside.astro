@@ -4,9 +4,10 @@ import { cn } from "@/lib/utiles";
 
 interface Props {
   class?: string;
+  homeHref?: string;
 }
 
-const { class: className } = Astro.props;
+const { class: className, homeHref } = Astro.props;
 ---
 
 <aside
@@ -16,6 +17,6 @@ const { class: className } = Astro.props;
   )}
 >
   <slot>
-    <Sidebar />
+    <Sidebar homeHref={homeHref} />
   </slot>
 </aside>

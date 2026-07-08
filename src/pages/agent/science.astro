@@ -1,21 +1,21 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import Aside from "@/components/ui/aside.astro";
-import Canvas from "@/components/ui/canvas.astro";
 import Card from "@/components/ui/card.astro";
 import ThemeSwitch from "@/components/ui/switch.astro";
 import Textarea from "@/components/ui/textarea.astro";
 import {
-  AGENT_CATEGORY_CARDS,
-} from "@/service/agent.service";
+  SCIENCE_AGENT_CATEGORY,
+  SCIENCE_CATEGORY_CARDS,
+} from "@/service/agent/science.service";
 ---
 
 <Layout
-  title="AI Studio"
-  description="Precision engines for professional execution."
+  title="AI Studio · Science"
+  description="Pelajari konsep sains, ringkas riset, dan analisis data dengan pendekatan ilmiah."
   noIndex={true}
 >
-  <Aside />
+  <Aside homeHref="/agent" />
 
   <main
     id="agent-main"
@@ -40,7 +40,7 @@ import {
       >
         <div>
           <h1 class="font-display text-3xl font-light tracking-wide italic">
-            Deep Intelegence
+            Science Engine
             <span class="ml-2 font-bold text-accent not-italic">v4</span>
           </h1>
         </div>
@@ -95,13 +95,14 @@ import {
             <h2
               class="mb-6 font-display text-5xl font-light opacity-80 italic md:text-6xl"
             >
-              Let's create <br />
+              Explore <br />
               <span class="font-bold text-foreground not-italic"
-                >the impossible.</span
+                >scientific insight.</span
               >
             </h2>
             <p class="text-lg font-light text-muted-foreground">
-              Precision engines for professional execution.
+              Pelajari konsep sains, ringkas riset, dan analisis data dengan
+              pendekatan ilmiah.
             </p>
 
             <div
@@ -110,7 +111,7 @@ import {
             >
               <ul class="agent-category-cards__list">
                 {
-                  AGENT_CATEGORY_CARDS.map((item) => (
+                  SCIENCE_CATEGORY_CARDS.map((item) => (
                     <li>
                       <Card
                         variant="select"
@@ -142,13 +143,13 @@ import {
             <input
               type="hidden"
               name="category"
-              value=""
+              value={SCIENCE_AGENT_CATEGORY}
             />
             <Textarea
               variant="prompt"
               id="main-prompt-input"
               name="message"
-              label="Type your prompt..."
+              label="Type your science prompt..."
               maxlength={4000}
               required
             />
@@ -157,14 +158,12 @@ import {
       </div>
     </div>
   </main>
-
-  <Canvas />
 </Layout>
 
 <script>
-  import { bindRoleplayAgent } from "@/service/agent/roleplay.service";
+  import { bindScienceAgent } from "@/service/agent/science.service";
 
-  bindRoleplayAgent();
+  bindScienceAgent();
 </script>
 
 <style>

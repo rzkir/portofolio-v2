@@ -1,6 +1,5 @@
 export const AGENT_PROMPT_PROXY = "/api/agent/prompt";
 export const PROMPT_PATH = "/api/v1/prompt";
-export const DEFAULT_AGENT_CATEGORY: AgentPromptCategory = "roleplay";
 
 async function parseAgentError(
   response: Response,

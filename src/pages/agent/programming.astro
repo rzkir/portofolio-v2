@@ -6,16 +6,17 @@ import Card from "@/components/ui/card.astro";
 import ThemeSwitch from "@/components/ui/switch.astro";
 import Textarea from "@/components/ui/textarea.astro";
 import {
-  AGENT_CATEGORY_CARDS,
-} from "@/service/agent.service";
+  PROGRAMMING_AGENT_CATEGORY,
+  PROGRAMMING_CATEGORY_CARDS,
+} from "@/service/agent/programming.service";
 ---
 
 <Layout
-  title="AI Studio"
-  description="Precision engines for professional execution."
+  title="AI Studio · Programming"
+  description="Tulis kode, debug error, bangun fitur, dan buat halaman web HTML/CSS/JS dengan preview langsung."
   noIndex={true}
 >
-  <Aside />
+  <Aside homeHref="/agent" />
 
   <main
     id="agent-main"
@@ -40,7 +41,7 @@ import {
       >
         <div>
           <h1 class="font-display text-3xl font-light tracking-wide italic">
-            Deep Intelegence
+            Programming Engine
             <span class="ml-2 font-bold text-accent not-italic">v4</span>
           </h1>
         </div>
@@ -95,13 +96,14 @@ import {
             <h2
               class="mb-6 font-display text-5xl font-light opacity-80 italic md:text-6xl"
             >
-              Let's create <br />
+              Ship code <br />
               <span class="font-bold text-foreground not-italic"
-                >the impossible.</span
+                >with confidence.</span
               >
             </h2>
             <p class="text-lg font-light text-muted-foreground">
-              Precision engines for professional execution.
+              Tulis kode, debug error, bangun fitur, dan buat halaman web
+              HTML/CSS/JS dengan preview langsung.
             </p>
 
             <div
@@ -110,7 +112,7 @@ import {
             >
               <ul class="agent-category-cards__list">
                 {
-                  AGENT_CATEGORY_CARDS.map((item) => (
+                  PROGRAMMING_CATEGORY_CARDS.map((item) => (
                     <li>
                       <Card
                         variant="select"
@@ -142,13 +144,13 @@ import {
             <input
               type="hidden"
               name="category"
-              value=""
+              value={PROGRAMMING_AGENT_CATEGORY}
             />
             <Textarea
               variant="prompt"
               id="main-prompt-input"
               name="message"
-              label="Type your prompt..."
+              label="Type your programming prompt..."
               maxlength={4000}
               required
             />
@@ -162,9 +164,9 @@ import {
 </Layout>
 
 <script>
-  import { bindRoleplayAgent } from "@/service/agent/roleplay.service";
+  import { bindProgrammingAgent } from "@/service/agent/programming.service";
 
-  bindRoleplayAgent();
+  bindProgrammingAgent();
 </script>
 
 <style>
