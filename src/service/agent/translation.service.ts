@@ -1,11 +1,46 @@
+import type { AgentCategoryCard } from "@/service/agent.service";
 import {
   buildPromptHistory,
-  buildWebPreview,
   formatAgentTime,
   sendAgentPrompt,
-  shouldShowCanvas,
 } from "@/service/agent.service";
-import { bindUiTabs, setUiTab } from "@/lib/ui-tabs";
+
+export const TRANSLATION_AGENT_CATEGORY: AgentPromptCategory = "translation";
+
+export const TRANSLATION_CATEGORY_CARDS: AgentCategoryCard[] = [
+  {
+    title: "Translate with Tone",
+    categoryLabel: "Translation · Tone",
+    description: "Terjemahkan sambil menjaga gaya bahasa dan nuansa.",
+    category: "translation",
+    prompt:
+      "Terjemahkan teks berikut ke Bahasa Indonesia dengan tetap menjaga tone (formal/relaxed) yang saya tentukan. Berikan hasil terjemahan yang natural.\n\nTeks:\n",
+  },
+  {
+    title: "Translate for Audience",
+    categoryLabel: "Translation · Audience",
+    description: "Pilih padanan kata yang cocok untuk audiens tertentu.",
+    category: "translation",
+    prompt:
+      "Terjemahkan teks berikut untuk audiens [pelanggan/developer/umum] dengan bahasa yang sesuai tingkatannya. Sertakan versi yang mudah dipahami.\n\nTeks:\n",
+  },
+  {
+    title: "Proofread & Improve",
+    categoryLabel: "Translation · Proofread",
+    description: "Periksa terjemahan dan perbaiki agar lebih akurat dan rapi.",
+    category: "translation",
+    prompt:
+      "Berikan terjemahan yang sudah diperbaiki untuk teks berikut. Fokus pada akurasi makna, grammar, dan keterbacaan.\n\nTeks:\n",
+  },
+  {
+    title: "Translate + Explanation",
+    categoryLabel: "Translation · Explain",
+    description: "Terjemahkan dan jelaskan pilihan kata penting.",
+    category: "translation",
+    prompt:
+      "Terjemahkan teks berikut ke Bahasa Indonesia, lalu jelaskan 3-5 pilihan kata/ungkapan penting yang paling menentukan nuansa makna.\n\nTeks:\n",
+  },
+];
 
 function escapeHtml(value: string): string {
   return value
@@ -16,27 +51,10 @@ function escapeHtml(value: string): string {
     .replaceAll("'", "&#39;");
 }
 
-export function createRoleplayAgentController(root: ParentNode): () => void {
-  const defaultCategory: AgentPromptCategory = "roleplay";
+export function createTranslationAgentController(root: ParentNode): () => void {
   const form = root.querySelector<HTMLFormElement>("#agent-prompt-form");
   const input = root.querySelector<HTMLInputElement>("#main-prompt-input");
   const sendBtn = root.querySelector<HTMLButtonElement>("#main-prompt-input-send");
-  const main = root.querySelector<HTMLElement>("#agent-main");
-  const canvas = root.querySelector<HTMLElement>("#agent-canvas");
-  const canvasFrame = root.querySelector<HTMLIFrameElement>("#agent-canvas-frame");
-  const canvasCodeTabs = root.querySelector<HTMLElement>("#agent-canvas-code-tabs");
-  const canvasLang = root.querySelector<HTMLElement>("#agent-canvas-language");
-  const canvasClose = root.querySelector<HTMLElement>("#agent-canvas-close");
-  const canvasCopy = root.querySelector<HTMLElement>("#agent-canvas-copy");
-  const canvasRefresh = root.querySelector<HTMLElement>("#agent-canvas-refresh");
-  const canvasTabs = root.querySelector<HTMLElement>("#agent-canvas-tabs");
-  const previewDialog = root.querySelector<HTMLDialogElement>("#agent-preview-dialog");
-  const previewDialogFrame = root.querySelector<HTMLIFrameElement>(
-    "#agent-preview-dialog-frame",
-  );
-  const previewDialogLang = root.querySelector<HTMLElement>(
-    "#agent-preview-dialog-language",
-  );
   const categoryInput = form?.elements.namedItem("category") as
     | HTMLInputElement
     | null;
@@ -47,72 +65,6 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
 
   const chatMessages: AgentChatMessage[] = [];
   let isSubmitting = false;
-  let sessionCategory: AgentPromptCategory | null =
-    (categoryInput?.value as AgentPromptCategory | "") || defaultCategory;
-  let currentCanvasCode = "";
-  let currentPreviewDocument = "";
-  let currentFiles: AgentWebPreviewFiles = { html: "", css: "", js: "" };
-  let activeCodeFile: keyof AgentWebPreviewFiles = "html";
-
-  function renderCodePanel(panel: HTMLElement | null, code: string) {
-    if (!panel) return;
-
-    const codeEl = panel.querySelector("code");
-    const gutter = panel.querySelector(".agent-code-editor__gutter");
-    const value = code;
-
-    if (codeEl) codeEl.textContent = value || " ";
-    if (gutter) {
-      const lineCount = Math.max(1, value ? value.split("\n").length : 1);
-      gutter.textContent = Array.from({ length: lineCount }, (_, index) =>
-        String(index + 1),
-      ).join("\n");
-    }
-  }
-
-  function renderCodeFiles(files: AgentWebPreviewFiles) {
-    currentFiles = files;
-    if (!canvasCodeTabs) return;
-
-    const entries: Array<{
-      id: keyof AgentWebPreviewFiles;
-      content: string;
-    }> = [
-      { id: "html", content: files.html },
-      { id: "css", content: files.css },
-      { id: "js", content: files.js },
-    ];
-
-    let firstVisible: keyof AgentWebPreviewFiles | null = null;
-
-    entries.forEach(({ id, content }) => {
-      const trigger = canvasCodeTabs.querySelector<HTMLElement>(
-        `[data-tab-trigger="${id}"]`,
-      );
-      const panel = canvasCodeTabs.querySelector<HTMLElement>(
-        `[data-tab-panel="${id}"]`,
-      );
-      const hasContent = content.trim().length > 0;
-
-      trigger?.classList.toggle("is-hidden", !hasContent);
-
-      if (!hasContent) {
-        panel?.classList.add("ui-tabs__panel--hidden");
-        panel?.setAttribute("hidden", "");
-        return;
-      }
-
-      if (!firstVisible) firstVisible = id;
-      panel?.classList.remove("ui-tabs__panel--hidden");
-      panel?.removeAttribute("hidden");
-      renderCodePanel(panel, content);
-    });
-
-    if (firstVisible) {
-      setUiTab(canvasCodeTabs, firstVisible);
-      activeCodeFile = firstVisible;
-    }
-  }
 
   function scrollToBottom() {
     if (!messagesViewport) return;
@@ -137,9 +89,8 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     errorEl.classList.add("hidden");
   }
 
-  function applyCategoryPreset(category: AgentPromptCategory, prompt: string) {
-    sessionCategory = category;
-    if (categoryInput) categoryInput.value = category;
+  function applyCategoryPreset(prompt: string) {
+    if (categoryInput) categoryInput.value = TRANSLATION_AGENT_CATEGORY;
     if (!input) return;
 
     input.value = prompt;
@@ -152,97 +103,16 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     const trigger = event.currentTarget as HTMLButtonElement | null;
     if (!trigger) return;
 
-    const category = trigger.dataset.agentCategory as
-      | AgentPromptCategory
-      | undefined;
     const prompt = trigger.dataset.agentPrompt?.trim();
-    if (!category || !prompt) return;
+    if (!prompt) return;
 
-    applyCategoryPreset(category, prompt);
-  }
-
-  function syncPreviewFrames() {
-    if (canvasFrame && currentPreviewDocument) {
-      canvasFrame.srcdoc = currentPreviewDocument;
-    }
-    if (previewDialogFrame && currentPreviewDocument) {
-      previewDialogFrame.srcdoc = currentPreviewDocument;
-    }
-  }
-
-  function renderPreview(preview: AgentWebPreview) {
-    currentCanvasCode = preview.source;
-    currentPreviewDocument = preview.document;
-    renderCodeFiles(preview.files);
-    if (canvasLang) canvasLang.textContent = preview.language || "live";
-    if (previewDialogLang) {
-      previewDialogLang.textContent = preview.language || "live";
-    }
-    syncPreviewFrames();
-  }
-
-  function openCanvas(preview: AgentWebPreview) {
-    renderPreview(preview);
-    if (canvasTabs) setUiTab(canvasTabs, "preview");
-    canvas?.classList.add("is-open");
-    canvas?.setAttribute("aria-hidden", "false");
-    main?.classList.add("agent-main--with-canvas");
-  }
-
-  function closeCanvas() {
-    canvas?.classList.remove("is-open");
-    canvas?.setAttribute("aria-hidden", "true");
-    main?.classList.remove("agent-main--with-canvas");
-    if (canvasTabs) setUiTab(canvasTabs, "preview");
-    if (canvasFrame) canvasFrame.srcdoc = "";
-    if (previewDialogFrame) previewDialogFrame.srcdoc = "";
-    if (previewDialog?.open) previewDialog.close();
-    currentCanvasCode = "";
-    currentPreviewDocument = "";
-    currentFiles = { html: "", css: "", js: "" };
-    activeCodeFile = "html";
-  }
-
-  const onCanvasClose = () => closeCanvas();
-
-  function onCanvasRefresh() {
-    if (!currentPreviewDocument) return;
-    syncPreviewFrames();
-  }
-
-  function onPreviewDialogToggle() {
-    if (!previewDialog?.open || !currentPreviewDocument) return;
-    syncPreviewFrames();
-  }
-
-  async function onCanvasCopy() {
-    const content =
-      currentFiles[activeCodeFile]?.trim() ||
-      currentCanvasCode ||
-      currentPreviewDocument;
-    if (!content) return;
-    try {
-      await navigator.clipboard.writeText(content);
-    } catch {
-      // ignore clipboard errors
-    }
-  }
-
-  function onCodeTabClick(event: Event) {
-    const trigger = (event.target as HTMLElement | null)?.closest<HTMLElement>(
-      "[data-tab-trigger]",
-    );
-    if (!trigger || !canvasCodeTabs?.contains(trigger)) return;
-
-    const fileId = trigger.dataset.tabTrigger;
-    if (fileId === "html" || fileId === "css" || fileId === "js") {
-      activeCodeFile = fileId;
-    }
+    applyCategoryPreset(prompt);
   }
 
   function renderUserMessage(message: AgentChatMessage) {
     const block = document.createElement("div");
-    block.className = "agent-message-reveal flex flex-col items-end space-y-4";
+    block.className =
+      "agent-message-reveal flex flex-col items-end space-y-4";
     block.dataset.messageRole = "user";
     block.dataset.messageId = message.id;
     block.innerHTML = `
@@ -260,7 +130,8 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
 
   function renderAssistantMessage(message: AgentChatMessage) {
     const block = document.createElement("div");
-    block.className = "agent-message-reveal flex flex-col items-start space-y-6";
+    block.className =
+      "agent-message-reveal flex flex-col items-start space-y-6";
     block.dataset.messageRole = "assistant";
     block.dataset.messageId = message.id;
     block.innerHTML = `
@@ -288,13 +159,16 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
       </div>
     `;
 
-    block.querySelector(".agent-copy-btn")?.addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText(message.content);
-      } catch {
-        // ignore clipboard errors
-      }
-    });
+    block.querySelector<HTMLButtonElement>(".agent-copy-btn")?.addEventListener(
+      "click",
+      async () => {
+        try {
+          await navigator.clipboard.writeText(message.content);
+        } catch {
+          // ignore clipboard errors
+        }
+      },
+    );
 
     return block;
   }
@@ -345,15 +219,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     clearError();
 
     const message = input.value.trim();
-    const category = sessionCategory ?? (categoryInput?.value as AgentPromptCategory | "");
-
-    if (!category) {
-      showError("Pilih category terlebih dahulu sebelum mengirim prompt.");
-      input.focus();
-      return;
-    }
-
-    if (categoryInput) categoryInput.value = category;
+    if (categoryInput) categoryInput.value = TRANSLATION_AGENT_CATEGORY;
 
     const userMessage: AgentChatMessage = {
       id: crypto.randomUUID(),
@@ -377,7 +243,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
       const history = buildPromptHistory(chatMessages.slice(0, -1));
       const response = await sendAgentPrompt({
         message,
-        category,
+        category: TRANSLATION_AGENT_CATEGORY,
         history: history.length > 0 ? history : undefined,
       });
 
@@ -393,13 +259,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
       };
 
       chatMessages.push(assistantMessage);
-      sessionCategory = response.category;
       appendMessageNode(renderAssistantMessage(assistantMessage));
-
-      if (shouldShowCanvas(message, response.category, response.reply)) {
-        const preview = buildWebPreview(response.reply);
-        if (preview) openCanvas(preview);
-      }
     } catch (error) {
       removeLoading();
       chatMessages.pop();
@@ -411,20 +271,12 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
         emptyState?.classList.remove("hidden");
       }
       showError(
-        error instanceof Error
-          ? error.message
-          : "Gagal memproses prompt. Coba lagi.",
+        error instanceof Error ? error.message : "Gagal memproses prompt. Coba lagi.",
       );
     } finally {
       setLoading(false);
       input.focus();
     }
-  }
-
-  const cleanupTabs = bindUiTabs(root);
-
-  if (categoryInput && !categoryInput.value) {
-    categoryInput.value = defaultCategory;
   }
 
   const categoryCards = root.querySelectorAll<HTMLButtonElement>(
@@ -434,35 +286,23 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     card.addEventListener("click", onCategoryCardClick);
   });
 
-  canvasClose?.addEventListener("click", onCanvasClose);
-  canvasRefresh?.addEventListener("click", onCanvasRefresh);
-  canvasCopy?.addEventListener("click", onCanvasCopy);
-  canvasCodeTabs?.addEventListener("click", onCodeTabClick);
-  previewDialog?.addEventListener("toggle", onPreviewDialogToggle);
   form?.addEventListener("submit", onFormSubmit);
 
   return () => {
-    cleanupTabs();
     categoryCards.forEach((card) => {
       card.removeEventListener("click", onCategoryCardClick);
     });
-    canvasClose?.removeEventListener("click", onCanvasClose);
-    canvasRefresh?.removeEventListener("click", onCanvasRefresh);
-    canvasCopy?.removeEventListener("click", onCanvasCopy);
-    canvasCodeTabs?.removeEventListener("click", onCodeTabClick);
-    previewDialog?.removeEventListener("toggle", onPreviewDialogToggle);
     form?.removeEventListener("submit", onFormSubmit);
-    closeCanvas();
   };
 }
 
-function mountRoleplayAgent(root: ParentNode = document): void {
+function mountTranslationAgent(root: ParentNode = document): void {
   const shell = root.querySelector<HTMLElement>(".agent-shell");
   if (!shell || shell.dataset.bound === "true") return;
 
   shell.dataset.bound = "true";
 
-  const cleanup = createRoleplayAgentController(root);
+  const cleanup = createTranslationAgentController(root);
 
   document.addEventListener(
     "astro:before-preparation",
@@ -474,7 +314,9 @@ function mountRoleplayAgent(root: ParentNode = document): void {
   );
 }
 
-export function bindRoleplayAgent(root: ParentNode = document): void {
-  mountRoleplayAgent(root);
-  document.addEventListener("astro:page-load", () => mountRoleplayAgent(document));
+export function bindTranslationAgent(root: ParentNode = document): void {
+  mountTranslationAgent(root);
+  document.addEventListener("astro:page-load", () =>
+    mountTranslationAgent(document),
+  );
 }

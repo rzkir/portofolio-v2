@@ -1,12 +1,24 @@
 ---
 import { cn } from "@/lib/utiles";
 import { portrait } from "@/data/portfolio";
+import HoverCard from "@/components/ui/hover-card.astro";
 
 export interface SidebarNavItem {
   id: string;
   href: string;
   label: string;
-  icon: "chat" | "history" | "folder" | "settings" | "seo" | "marketing" | "programming" | "technology";
+  icon:
+    | "chat"
+    | "history"
+    | "folder"
+    | "settings"
+    | "seo"
+    | "marketing"
+    | "programming"
+    | "technology"
+    | "science"
+    | "translation"
+    | "legal";
   active?: boolean;
 }
 
@@ -51,10 +63,22 @@ const {
       icon: "technology",
     },
     {
-      id: "folder",
-      href: "#",
-      label: "Folders",
-      icon: "folder",
+      id: "science",
+      href: "/agent/science",
+      label: "Science",
+      icon: "science",
+    },
+    {
+      id: "translation",
+      href: "/agent/translation",
+      label: "Translation",
+      icon: "translation",
+    },
+    {
+      id: "legal",
+      href: "/agent/legal",
+      label: "Legal",
+      icon: "legal",
     },
     {
       id: "settings",
@@ -93,7 +117,7 @@ const navItems = items.map((item) => ({
 const iconClass = "size-6";
 ---
 
-<div class={cn("flex h-full flex-col items-center", className)}>
+<div class={cn("relative z-60 flex h-full flex-col items-center overflow-visible", className)}>
   <a href={homeHref} class="group mb-12 cursor-pointer" aria-label="Home">
     <div
       class="flex size-12 items-center justify-center rounded-2xl bg-foreground transition-transform group-hover:rotate-12"
@@ -102,155 +126,218 @@ const iconClass = "size-6";
     </div>
   </a>
 
-  <nav class="flex flex-1 flex-col gap-8" aria-label="Agent navigation">
-    {
-      navItems.map((item) => (
-        <a
-          href={item.href}
-          id={`nav-${item.id}-link`}
-          class={cn(
-            "transition-colors",
-            item.active
-              ? "text-foreground"
-              : "text-muted-foreground hover:text-foreground",
-          )}
-          aria-label={item.label}
-          aria-current={item.active ? "page" : undefined}
-        >
-          {item.icon === "chat" && (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.75"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class={iconClass}
-              aria-hidden="true"
-            >
-              <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
-            </svg>
-          )}
-          {item.icon === "programming" && (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.75"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class={iconClass}
-              aria-hidden="true"
-            >
-              <path d="m16 18 6-6-6-6" />
-              <path d="m8 6-6 6 6 6" />
-            </svg>
-          )}
-          {item.icon === "seo" && (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.75"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class={iconClass}
-              aria-hidden="true"
-            >
-              <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z" />
-              <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-            </svg>
-          )}
-          {item.icon === "marketing" && (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.75"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class={iconClass}
-              aria-hidden="true"
-            >
-              <path d="M3 11 18-5v12L3 14v-3z" />
-              <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
-            </svg>
-          )}
-          {item.icon === "technology" && (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.75"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class={iconClass}
-              aria-hidden="true"
-            >
-              <path d="M12 2 2 7l10 5 10-5-10-5Z" />
-              <path d="m2 17 10 5 10-5" />
-              <path d="m2 12 10 5 10-5" />
-            </svg>
-          )}
-          {item.icon === "history" && (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.75"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class={iconClass}
-              aria-hidden="true"
-            >
-              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-              <path d="M3 3v5h5" />
-              <path d="M12 7v5l4 2" />
-            </svg>
-          )}
-          {item.icon === "folder" && (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.75"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class={iconClass}
-              aria-hidden="true"
-            >
-              <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
-              <path d="M2 10h20" />
-            </svg>
-          )}
-          {item.icon === "settings" && (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.75"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class={iconClass}
-              aria-hidden="true"
-            >
-              <path d="M14 17H5" />
-              <path d="M19 7h-9" />
-              <circle cx="17" cy="17" r="3" />
-              <circle cx="7" cy="7" r="3" />
-            </svg>
-          )}
-        </a>
-      ))
-    }
+  <nav
+    class="flex min-h-0 w-full flex-1 overflow-visible"
+    aria-label="Agent navigation"
+  >
+    <div
+      class="sidebar-nav-scroll flex min-h-0 w-full flex-1 flex-col items-center gap-8 overflow-y-auto overscroll-contain"
+    >
+      {
+        navItems.map((item) => (
+          <a
+            href={item.href}
+            id={`nav-${item.id}-link`}
+            class={cn(
+              "inline-flex w-full justify-center transition-colors",
+              item.active
+                ? "text-foreground"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+            aria-label={item.label}
+            aria-current={item.active ? "page" : undefined}
+          >
+            <HoverCard label={item.label}>
+              {item.icon === "chat" && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class={iconClass}
+                  aria-hidden="true"
+                >
+                  <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                </svg>
+              )}
+              {item.icon === "programming" && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class={iconClass}
+                  aria-hidden="true"
+                >
+                  <path d="m16 18 6-6-6-6" />
+                  <path d="m8 6-6 6 6 6" />
+                </svg>
+              )}
+              {item.icon === "seo" && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class={iconClass}
+                  aria-hidden="true"
+                >
+                  <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z" />
+                  <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                </svg>
+              )}
+              {item.icon === "marketing" && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class={iconClass}
+                  aria-hidden="true"
+                >
+                  <path d="M3 11 18-5v12L3 14v-3z" />
+                  <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+                </svg>
+              )}
+              {item.icon === "technology" && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class={iconClass}
+                  aria-hidden="true"
+                >
+                  <path d="M12 2 2 7l10 5 10-5-10-5Z" />
+                  <path d="m2 17 10 5 10-5" />
+                  <path d="m2 12 10 5 10-5" />
+                </svg>
+              )}
+              {item.icon === "science" && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class={iconClass}
+                  aria-hidden="true"
+                >
+                  <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z" />
+                  <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                </svg>
+              )}
+              {item.icon === "translation" && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class={iconClass}
+                  aria-hidden="true"
+                >
+                  <path d="M4 5h9" />
+                  <path d="M7 3v2a7 7 0 0 1-7 7" />
+                  <path d="M9 16l3-8 3 8" />
+                  <path d="M10.5 12h3" />
+                  <path d="M14 20h6" />
+                </svg>
+              )}
+              {item.icon === "legal" && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class={iconClass}
+                  aria-hidden="true"
+                >
+                  <path d="M16 16.5 12 20l-4-3.5" />
+                  <path d="M12 4v16" />
+                  <path d="M4 7h16" />
+                  <path d="M7 7a2.5 2.5 0 1 1-5 0" />
+                  <path d="M22 7a2.5 2.5 0 1 1-5 0" />
+                </svg>
+              )}
+              {item.icon === "history" && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class={iconClass}
+                  aria-hidden="true"
+                >
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                  <path d="M3 3v5h5" />
+                  <path d="M12 7v5l4 2" />
+                </svg>
+              )}
+              {item.icon === "folder" && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class={iconClass}
+                  aria-hidden="true"
+                >
+                  <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
+                  <path d="M2 10h20" />
+                </svg>
+              )}
+              {item.icon === "settings" && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class={iconClass}
+                  aria-hidden="true"
+                >
+                  <path d="M14 17H5" />
+                  <path d="M19 7h-9" />
+                  <circle cx="17" cy="17" r="3" />
+                  <circle cx="7" cy="7" r="3" />
+                </svg>
+              )}
+            </HoverCard>
+          </a>
+        ))
+      }
+    </div>
   </nav>
 
   <div class="mt-auto">
@@ -265,3 +352,14 @@ const iconClass = "size-6";
     </div>
   </div>
 </div>
+
+<style>
+  .sidebar-nav-scroll {
+    overflow-x: visible;
+    scrollbar-width: none;
+  }
+
+  .sidebar-nav-scroll::-webkit-scrollbar {
+    display: none;
+  }
+</style>

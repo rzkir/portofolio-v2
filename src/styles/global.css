@@ -868,7 +868,8 @@ html[data-theme-resolved="dark"] .grab-cursor[data-surface="invert"] .grab-curso
 
 /* ── Agent chat ── */
 .agent-shell {
-  overflow: hidden;
+  overflow-x: visible;
+  overflow-y: hidden;
 }
 
 .agent-glass {
