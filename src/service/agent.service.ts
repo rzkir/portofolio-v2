@@ -5,6 +5,12 @@ import {
 
 export { DEFAULT_AGENT_CATEGORY };
 
+/** Backend rejects history items longer than this (see /api/v1/prompt). */
+const MAX_HISTORY_CHARS_PER_ITEM = 4_000;
+const MAX_HISTORY_ITEMS = 20;
+const HISTORY_CODE_PLACEHOLDER =
+  "[Generated code omitted from history to keep follow-up prompts working]";
+
 const CODING_TOPIC_PATTERN =
   /\b(code|coding|program|programming|developer|javascript|typescript|python|react|vue|angular|api|function|bug|error|debug|serverless|html|css|sql|git|deploy|compile|syntax|algorithm|frontend|backend|fullstack|astro|node|npm|docker|database|query|component|class|interface|variable|loop|array|object|json|rest|graphql|webpack|vite|tailwind|cloudflare|worker|typescript|java|golang|rust|php|laravel|nextjs|nuxt|express|fastapi|django|flutter|kotlin|swift|regex|refactor|implementasi|optimasi|arsitektur)\b/i;
 
@@ -451,13 +457,29 @@ export function shouldShowCanvas(
   return isWebCodingTopic(message);
 }
 
+function compactHistoryContent(content: string): string {
+  let compact = content.replace(
+    CODE_BLOCK_PATTERN,
+    (_match, language: string) =>
+      `\`\`\`${language || "text"}\n${HISTORY_CODE_PLACEHOLDER}\n\`\`\``,
+  );
+
+  if (compact.length > MAX_HISTORY_CHARS_PER_ITEM) {
+    compact =
+      compact.slice(0, MAX_HISTORY_CHARS_PER_ITEM - 1).trimEnd() + "…";
+  }
+
+  return compact.trim();
+}
+
 export function buildPromptHistory(
   messages: AgentChatMessage[],
 ): AgentHistoryItem[] {
   return messages
+    .slice(-MAX_HISTORY_ITEMS)
     .map((message) => ({
       role: message.role,
-      content: message.content.trim(),
+      content: compactHistoryContent(message.content),
     }))
     .filter((message) => message.content.length > 0);
 }

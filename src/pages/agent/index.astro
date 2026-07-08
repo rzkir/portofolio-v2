@@ -106,6 +106,13 @@ import { DEFAULT_AGENT_CATEGORY } from "@/service/agent.service";
 
       <div class="agent-prompt-dock shrink-0 pb-4 px-6 pt-4 md:px-12">
         <div class="mx-auto max-w-4xl">
+          <p
+            id="agent-error"
+            class="mb-3 hidden rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+            role="alert"
+            aria-live="polite"
+          >
+          </p>
           <form id="agent-prompt-form">
             <input
               type="hidden"

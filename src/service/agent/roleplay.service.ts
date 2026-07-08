@@ -47,6 +47,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
 
   const chatMessages: AgentChatMessage[] = [];
   let isSubmitting = false;
+  let sessionCategory: AgentPromptCategory | null = null;
   let currentCanvasCode = "";
   let currentPreviewDocument = "";
   let currentFiles: AgentWebPreviewFiles = { html: "", css: "", js: "" };
@@ -319,7 +320,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     clearError();
 
     const message = input.value.trim();
-    const category = resolveAgentCategory(message);
+    const category = sessionCategory ?? resolveAgentCategory(message);
     if (categoryInput) categoryInput.value = category;
 
     const userMessage: AgentChatMessage = {
@@ -360,6 +361,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
       };
 
       chatMessages.push(assistantMessage);
+      sessionCategory = response.category;
       appendMessageNode(renderAssistantMessage(assistantMessage));
 
       if (shouldShowCanvas(message, response.category, response.reply)) {
@@ -371,6 +373,8 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
       chatMessages.pop();
       userNode.remove();
       divider?.remove();
+      input.value = message;
+      input.dispatchEvent(new Event("input", { bubbles: true }));
       if (chatMessages.length === 0) {
         emptyState?.classList.remove("hidden");
       }
@@ -406,7 +410,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
   };
 }
 
-export function bindRoleplayAgent(root: ParentNode = document): void {
+function mountRoleplayAgent(root: ParentNode = document): void {
   const shell = root.querySelector<HTMLElement>(".agent-shell");
   if (!shell || shell.dataset.bound === "true") return;
 
@@ -422,4 +426,9 @@ export function bindRoleplayAgent(root: ParentNode = document): void {
     },
     { once: true },
   );
+}
+
+export function bindRoleplayAgent(root: ParentNode = document): void {
+  mountRoleplayAgent(root);
+  document.addEventListener("astro:page-load", () => mountRoleplayAgent(document));
 }
