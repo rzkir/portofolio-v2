@@ -136,6 +136,30 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     errorEl.classList.add("hidden");
   }
 
+  function applyCategoryPreset(category: AgentPromptCategory, prompt: string) {
+    sessionCategory = category;
+    if (categoryInput) categoryInput.value = category;
+    if (!input) return;
+
+    input.value = prompt;
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.focus();
+    clearError();
+  }
+
+  function onCategoryCardClick(event: Event) {
+    const trigger = event.currentTarget as HTMLButtonElement | null;
+    if (!trigger) return;
+
+    const category = trigger.dataset.agentCategory as
+      | AgentPromptCategory
+      | undefined;
+    const prompt = trigger.dataset.agentPrompt?.trim();
+    if (!category || !prompt) return;
+
+    applyCategoryPreset(category, prompt);
+  }
+
   function syncPreviewFrames() {
     if (canvasFrame && currentPreviewDocument) {
       canvasFrame.srcdoc = currentPreviewDocument;
@@ -391,6 +415,13 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
 
   const cleanupTabs = bindUiTabs(root);
 
+  const categoryCards = root.querySelectorAll<HTMLButtonElement>(
+    "[data-agent-category]",
+  );
+  categoryCards.forEach((card) => {
+    card.addEventListener("click", onCategoryCardClick);
+  });
+
   canvasClose?.addEventListener("click", onCanvasClose);
   canvasRefresh?.addEventListener("click", onCanvasRefresh);
   canvasCopy?.addEventListener("click", onCanvasCopy);
@@ -400,6 +431,9 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
 
   return () => {
     cleanupTabs();
+    categoryCards.forEach((card) => {
+      card.removeEventListener("click", onCategoryCardClick);
+    });
     canvasClose?.removeEventListener("click", onCanvasClose);
     canvasRefresh?.removeEventListener("click", onCanvasRefresh);
     canvasCopy?.removeEventListener("click", onCanvasCopy);

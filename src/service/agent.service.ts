@@ -5,6 +5,53 @@ import {
 
 export { DEFAULT_AGENT_CATEGORY };
 
+export type AgentCategoryCard = {
+  title: string;
+  categoryLabel: string;
+  description: string;
+  category: AgentPromptCategory;
+  prompt: string;
+};
+
+export const AGENT_CATEGORY_CARDS: AgentCategoryCard[] = [
+  {
+    title: "Programming",
+    categoryLabel: "Programming · Build Web",
+    description:
+      "Tulis kode, debug error, bangun fitur, dan buat halaman web HTML/CSS/JS dengan preview langsung.",
+    category: "programming",
+    prompt:
+      "Bantu saya membangun halaman web. Jelaskan struktur HTML/CSS/JS-nya dan berikan contoh kode lengkapnya.",
+  },
+  {
+    title: "SEO",
+    categoryLabel: "SEO",
+    description:
+      "Rancang strategi ranking, keyword research, dan optimasi on-page untuk website Anda.",
+    category: "seo",
+    prompt:
+      "Buatkan strategi SEO untuk meningkatkan ranking halaman saya, termasuk keyword research dan optimasi on-page.",
+  },
+  {
+    title: "Marketing",
+    categoryLabel: "Marketing",
+    description:
+      "Ide kampanye digital, konten promosi, dan channel yang tepat untuk menjangkau audiens.",
+    category: "marketing",
+    prompt:
+      "Rancang kampanye marketing digital untuk produk saya, lengkap dengan ide konten dan channel promosi.",
+  },
+  {
+    title: "Health",
+    categoryLabel: "Health",
+    description:
+      "Saran gaya hidup sehat, nutrisi, dan kebiasaan harian yang mudah diterapkan.",
+    category: "health",
+    prompt:
+      "Berikan saran kesehatan dan gaya hidup sehat yang bisa saya terapkan sehari-hari.",
+  },
+];
+
 /** Backend rejects history items longer than this (see /api/v1/prompt). */
 const MAX_HISTORY_CHARS_PER_ITEM = 4_000;
 const MAX_HISTORY_ITEMS = 20;

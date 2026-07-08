@@ -2,9 +2,13 @@
 import Layout from "@/layouts/Layout.astro";
 import Aside from "@/components/ui/aside.astro";
 import Canvas from "@/components/ui/canvas.astro";
+import Card from "@/components/ui/card.astro";
 import ThemeSwitch from "@/components/ui/switch.astro";
 import Textarea from "@/components/ui/textarea.astro";
-import { DEFAULT_AGENT_CATEGORY } from "@/service/agent.service";
+import {
+  AGENT_CATEGORY_CARDS,
+  DEFAULT_AGENT_CATEGORY,
+} from "@/service/agent.service";
 ---
 
 <Layout
@@ -100,6 +104,28 @@ import { DEFAULT_AGENT_CATEGORY } from "@/service/agent.service";
             <p class="text-lg font-light text-muted-foreground">
               Precision engines for professional execution.
             </p>
+
+            <div
+              id="agent-category-cards"
+              class="agent-category-cards mx-auto mt-12 max-w-4xl text-left"
+            >
+              <ul class="agent-category-cards__list">
+                {
+                  AGENT_CATEGORY_CARDS.map((item) => (
+                    <li>
+                      <Card
+                        variant="select"
+                        title={item.title}
+                        categoryLabel={item.categoryLabel}
+                        description={item.description}
+                        category={item.category}
+                        prompt={item.prompt}
+                      />
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -141,3 +167,21 @@ import { DEFAULT_AGENT_CATEGORY } from "@/service/agent.service";
 
   bindRoleplayAgent();
 </script>
+
+<style>
+  .agent-category-cards__list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  @media (min-width: 640px) {
+    .agent-category-cards__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+  }
+</style>

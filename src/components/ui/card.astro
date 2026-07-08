@@ -5,13 +5,18 @@ import PreviewIcon from "@/components/svg/priview.astro";
 import { cn } from "@/lib/utiles";
 
 export interface CardProps {
-  no: string;
+  no?: string;
   title: string;
-  tag: string;
-  year: string;
-  image: ImageMetadata | string;
-  href: string;
+  tag?: string;
+  year?: string;
+  description?: string;
+  image?: ImageMetadata | string;
+  href?: string;
   external?: boolean;
+  variant?: "link" | "select";
+  category?: string;
+  categoryLabel?: string;
+  prompt?: string;
 }
 
 interface Props extends CardProps {
@@ -19,78 +24,151 @@ interface Props extends CardProps {
 }
 
 const {
-  no,
+  no = "",
   title,
-  tag,
-  year,
+  tag = "",
+  year = "",
+  description = "",
   image,
-  href,
+  href = "#",
   external = false,
+  variant = "link",
+  category,
+  categoryLabel = "",
+  prompt,
   class: className,
 } = Astro.props;
 const isRemoteImage = typeof image === "string";
+const isSelect = variant === "select";
+const sharedClass = cn(
+  "ui-card group",
+  isSelect && "ui-card--select",
+  className,
+);
+const sharedLabel = isSelect
+  ? `Pilih ${title}`
+  : `${external ? "Preview" : "Lihat"} ${title}`;
 ---
 
-<a
-  href={href}
-  {...external ? { target: "_blank", rel: "noopener noreferrer" } : {}}
-  data-cursor="focus"
-  data-cursor-label={external ? "Open" : "View"}
-  aria-label={`${external ? "Preview" : "Lihat"} ${title}`}
-  class={cn("ui-card group", className)}
->
-  <figure class="ui-card__thumb">
-    {
-      isRemoteImage ? (
-        <img
-          src={image}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          class="size-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-      ) : (
-        <Image
-          src={image}
-          alt=""
-          class="size-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-      )
-    }
-  </figure>
-
-  <div class="ui-card__body">
-    <div class="ui-card__meta">
-      <span
-        class="ui-card__no font-mono text-[10px] uppercase tracking-[0.2em] text-accent"
-      >
-        {no}
-      </span>
-      <span
-        class="ui-card__year font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
-      >
-        {year}
-      </span>
-    </div>
-
-    <h2 class="ui-card__title font-display italic leading-tight">
-      {title}
-    </h2>
-
-    <p
-      class="ui-card__tag font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground"
+{
+  isSelect ? (
+    <button
+      type="button"
+      data-agent-category={category}
+      data-agent-prompt={prompt}
+      data-cursor="focus"
+      data-cursor-label="Select"
+      aria-label={sharedLabel}
+      class={sharedClass}
     >
-      {tag}
-    </p>
+      <div class="ui-card__body">
+        {
+          categoryLabel ? (
+            <span class="ui-card__category font-mono text-[10px] font-bold tracking-[0.2em] text-accent uppercase">
+              {categoryLabel}
+            </span>
+          ) : null
+        }
+        <h2 class="ui-card__title font-display text-xl italic leading-tight">
+          {title}
+        </h2>
+        <p class="ui-card__description text-sm leading-relaxed text-muted-foreground">
+          {description}
+        </p>
+      </div>
+    </button>
+  ) : (
+    <a
+      href={href}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      data-cursor="focus"
+      data-cursor-label={external ? "Open" : "View"}
+      aria-label={sharedLabel}
+      class={sharedClass}
+    >
+      <figure class="ui-card__thumb">
+        {isRemoteImage ? (
+          <img
+            src={image}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            class="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <Image
+            src={image as ImageMetadata}
+            alt=""
+            class="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        )}
+      </figure>
 
-    <span class="ui-card__cta">
-      <PreviewIcon
-        size={14}
-        class="text-muted-foreground opacity-40 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent group-hover:opacity-100"
-      />
-    </span>
-  </div>
-</a>
+      <div class="ui-card__body">
+        <div class="ui-card__meta">
+          <span class="ui-card__no font-mono text-[10px] uppercase tracking-[0.2em] text-accent">
+            {no}
+          </span>
+          <span class="ui-card__year font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+            {year}
+          </span>
+        </div>
+
+        <h2 class="ui-card__title font-display italic leading-tight">
+          {title}
+        </h2>
+
+        <p class="ui-card__tag font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+          {tag}
+        </p>
+
+        <span class="ui-card__cta">
+          <PreviewIcon
+            size={14}
+            class="text-muted-foreground opacity-40 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent group-hover:opacity-100"
+          />
+        </span>
+      </div>
+    </a>
+  )
+}
+
+<style is:global>
+  button.ui-card {
+    width: 100%;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+  }
+
+  .ui-card--select {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background-color: color-mix(in oklch, var(--background) 80%, transparent);
+    transition:
+      border-color 0.25s var(--ease-cinematic),
+      background-color 0.25s var(--ease-cinematic),
+      transform 0.25s var(--ease-cinematic);
+  }
+
+  .ui-card--select:hover {
+    border-color: color-mix(in oklch, var(--accent) 35%, var(--border));
+    background-color: color-mix(in oklch, var(--surface) 50%, transparent);
+  }
+
+  .ui-card--select .ui-card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.25rem 1.5rem;
+  }
+</style>
 
 <style>
   /* —— List (flex column) —— */
