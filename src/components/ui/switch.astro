@@ -1,5 +1,6 @@
 ---
 import { cn } from "@/lib/utiles";
+import { getLocale, getMessages } from "@/lib/i18n";
 
 interface Props {
   class?: string;
@@ -7,136 +8,167 @@ interface Props {
 
 const { class: className } = Astro.props;
 
+const locale = getLocale(Astro);
+const m = getMessages(locale);
+
 const options = [
-  { value: "light", label: "Light mode" },
-  { value: "dark", label: "Dark mode" },
-  { value: "system", label: "System theme" },
+  { value: "light", label: m.theme.light },
+  { value: "dark", label: m.theme.dark },
+  { value: "system", label: m.theme.system },
 ] as const;
+
+const triggerClass = cn(
+  "theme-switch__trigger inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-border bg-surface/55 px-2.5 py-1.5 font-mono text-[0.5625rem] tracking-[0.14em] text-muted-foreground uppercase transition-colors duration-350 ease-[cubic-bezier(0.32,0.72,0,1)]",
+  "hover:text-foreground focus-visible:text-foreground",
+  "group-[.is-inverse]/site-header:border-background/18 group-[.is-inverse]/site-header:bg-background/8",
+  "group-[.is-inverse]/site-header:text-background/65 group-[.is-inverse]/site-header:hover:text-background",
+);
+
+const menuClass = cn(
+  "theme-switch__menu absolute top-[calc(100%+0.45rem)] right-0 z-50 hidden min-w-[9.5rem] rounded-xl border border-border bg-background/95 p-1 shadow-[0_10px_40px_color-mix(in_oklch,var(--foreground)_10%,transparent)] backdrop-blur-md",
+  "group-[.is-inverse]/site-header:border-background/18 group-[.is-inverse]/site-header:bg-background/92",
+);
+
+const optionClass = cn(
+  "theme-switch__option flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left font-mono text-[0.5625rem] tracking-[0.14em] text-muted-foreground uppercase transition-colors duration-350 ease-[cubic-bezier(0.32,0.72,0,1)]",
+  "hover:bg-foreground/6 hover:text-foreground",
+  "group-[.is-inverse]/site-header:text-background/65 group-[.is-inverse]/site-header:hover:bg-background/12 group-[.is-inverse]/site-header:hover:text-background",
+);
 ---
 
 <div
-  class={cn("theme-switch", className)}
-  role="group"
-  aria-label="Theme"
+  class={cn("theme-switch relative", className)}
+  data-theme-switch
 >
-  {
-    options.map((option, index) => (
-      <button
-        type="button"
-        class="theme-switch__btn"
-        data-theme-option={option.value}
-        aria-pressed={index === 2 ? "true" : "false"}
-        aria-label={option.label}
-        title={option.label}
+  <button
+    type="button"
+    class={triggerClass}
+    data-theme-trigger
+    aria-haspopup="listbox"
+    aria-expanded="false"
+    aria-label={m.theme.label}
+  >
+    <span class="theme-switch__trigger-icon flex size-4 items-center justify-center" aria-hidden="true">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="size-3.5"
       >
-        {option.value === "light" && (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.75"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="size-4"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="4" />
-            <path d="M12 2v2" />
-            <path d="M12 20v2" />
-            <path d="m4.93 4.93 1.41 1.41" />
-            <path d="m17.66 17.66 1.41 1.41" />
-            <path d="M2 12h2" />
-            <path d="M20 12h2" />
-            <path d="m6.34 17.66-1.41 1.41" />
-            <path d="m19.07 4.93-1.41 1.41" />
-          </svg>
-        )}
-        {option.value === "dark" && (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.75"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="size-4"
-            aria-hidden="true"
-          >
-            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-          </svg>
-        )}
-        {option.value === "system" && (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.75"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="size-4"
-            aria-hidden="true"
-          >
-            <rect width="20" height="14" x="2" y="3" rx="2" />
-            <path d="M8 21h8" />
-            <path d="M12 17v4" />
-          </svg>
-        )}
-        <span class="sr-only">{option.label}</span>
-      </button>
-    ))
-  }
+        <rect width="20" height="14" x="2" y="3" rx="2"></rect>
+        <path d="M8 21h8"></path>
+        <path d="M12 17v4"></path>
+      </svg>
+    </span>
+    <span class="theme-switch__trigger-label hidden sm:inline">{m.theme.system}</span>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="size-3 opacity-70"
+      aria-hidden="true"
+    >
+      <path d="m6 9 6 6 6-6"></path>
+    </svg>
+  </button>
+
+  <div class={menuClass} data-theme-menu role="listbox" aria-label={m.theme.label} hidden>
+    {
+      options.map((option) => (
+        <button
+          type="button"
+          class={optionClass}
+          role="option"
+          data-theme-option={option.value}
+          aria-selected={option.value === "system" ? "true" : "false"}
+        >
+          {option.value === "light" && (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-3.5 shrink-0"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2"></path>
+              <path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path>
+              <path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path>
+              <path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path>
+              <path d="m19.07 4.93-1.41 1.41"></path>
+            </svg>
+          )}
+          {option.value === "dark" && (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-3.5 shrink-0"
+              aria-hidden="true"
+            >
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+          )}
+          {option.value === "system" && (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-3.5 shrink-0"
+              aria-hidden="true"
+            >
+              <rect width="20" height="14" x="2" y="3" rx="2"></rect>
+              <path d="M8 21h8"></path>
+              <path d="M12 17v4"></path>
+            </svg>
+          )}
+          <span>{option.label}</span>
+        </button>
+      ))
+    }
+  </div>
 </div>
 
 <style>
-  .theme-switch {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.125rem;
-    padding: 0.2rem;
-    border-radius: 9999px;
-    border: 1px solid var(--border);
-    background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  .theme-switch__menu[hidden] {
+    display: none;
   }
 
-  .theme-switch__btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
+  .theme-switch__menu:not([hidden]) {
+    display: block;
+  }
+
+  .theme-switch__option {
     border: 0;
-    border-radius: 9999px;
-    color: var(--muted-foreground);
-    background: transparent;
     cursor: pointer;
-    transition:
-      color 0.2s ease,
-      background-color 0.2s ease,
-      box-shadow 0.2s ease;
+    background: transparent;
   }
 
-  .theme-switch__btn:hover {
-    color: var(--foreground);
-  }
-
-  .theme-switch__btn.is-active {
-    color: var(--accent-foreground);
-    background: var(--accent);
-    box-shadow: 0 6px 18px color-mix(in oklch, var(--accent) 25%, transparent);
-  }
-
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+  .theme-switch__option.is-active {
+    color: var(--accent);
+    background: color-mix(in oklch, var(--foreground) 6%, transparent);
   }
 </style>

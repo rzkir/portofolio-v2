@@ -21,6 +21,12 @@
       "id": "ID",
       "en": "EN"
     },
+    "theme": {
+      "label": "Tema",
+      "light": "Terang",
+      "dark": "Gelap",
+      "system": "Sistem"
+    },
     "nav": {
       "main": "Navigasi utama",
       "mobile": "Navigasi mobile",
@@ -39,6 +45,10 @@
     },
     "brand": {
       "tagline": "Fullstack · Bogor · 2026"
+    },
+    "announcement": {
+      "text": "AI Studio kini live — Deep Intelligence untuk eksekusi profesional",
+      "textMobile": "AI Studio kini live — Deep Intelligence"
     },
     "common": {
       "viewCv": "Lihat CV →",
@@ -406,6 +416,12 @@
       "id": "ID",
       "en": "EN"
     },
+    "theme": {
+      "label": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
     "nav": {
       "main": "Main navigation",
       "mobile": "Mobile navigation",
@@ -424,6 +440,10 @@
     },
     "brand": {
       "tagline": "Fullstack · Bogor · 2026"
+    },
+    "announcement": {
+      "text": "AI Studio is now live — Deep Intelligence for professional execution",
+      "textMobile": "AI Studio is now live — Deep Intelligence"
     },
     "common": {
       "viewCv": "View CV →",

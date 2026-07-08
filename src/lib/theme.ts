@@ -5,6 +5,12 @@ export type ThemeResolved = "light" | "dark";
 
 const PREFERENCES: ThemePreference[] = ["light", "dark", "system"];
 
+const THEME_ICONS: Record<ThemePreference, string> = {
+  light: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>`,
+  dark: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>`,
+  system: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><rect width="20" height="14" x="2" y="3" rx="2"></rect><path d="M8 21h8"></path><path d="M12 17v4"></path></svg>`,
+};
+
 let currentPreference: ThemePreference = "system";
 
 export function isThemePreference(
@@ -26,6 +32,35 @@ export function resolveTheme(preference: ThemePreference): ThemeResolved {
     : "light";
 }
 
+function closeThemeMenus(): void {
+  document.querySelectorAll<HTMLElement>("[data-theme-menu]").forEach((menu) => {
+    menu.hidden = true;
+    const trigger = menu
+      .closest("[data-theme-switch]")
+      ?.querySelector<HTMLElement>("[data-theme-trigger]");
+    trigger?.setAttribute("aria-expanded", "false");
+  });
+}
+
+function syncThemeSwitchUi(preference: ThemePreference): void {
+  document.querySelectorAll<HTMLElement>("[data-theme-option]").forEach((button) => {
+    const active = button.dataset.themeOption === preference;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-selected", active ? "true" : "false");
+  });
+
+  document.querySelectorAll<HTMLElement>("[data-theme-switch]").forEach((root) => {
+    const icon = root.querySelector<HTMLElement>(".theme-switch__trigger-icon");
+    const label = root.querySelector<HTMLElement>(".theme-switch__trigger-label");
+    const activeOption = root.querySelector<HTMLElement>(
+      `[data-theme-option="${preference}"] span:last-child`,
+    );
+
+    if (icon) icon.innerHTML = THEME_ICONS[preference];
+    if (label && activeOption) label.textContent = activeOption.textContent;
+  });
+}
+
 export function applyTheme(
   root: HTMLElement,
   preference: ThemePreference,
@@ -38,11 +73,7 @@ export function applyTheme(
   root.setAttribute("data-theme-resolved", resolved);
   root.style.colorScheme = resolved;
 
-  document.querySelectorAll<HTMLElement>("[data-theme-option]").forEach((button) => {
-    const active = button.dataset.themeOption === preference;
-    button.classList.toggle("is-active", active);
-    button.setAttribute("aria-pressed", active ? "true" : "false");
-  });
+  syncThemeSwitchUi(preference);
 
   return resolved;
 }
@@ -52,6 +83,7 @@ export function setTheme(
   preference: ThemePreference,
 ): void {
   applyTheme(root, preference);
+  closeThemeMenus();
   document.dispatchEvent(
     new CustomEvent(THEME_EVENT, { detail: { preference } }),
   );
@@ -66,23 +98,49 @@ function onSystemThemeChange(): void {
   applyTheme(document.documentElement, "system");
 }
 
-function onThemeSwitchClick(event: Event): void {
-  const button = (event.target as Element | null)?.closest<HTMLElement>(
-    "[data-theme-option]",
-  );
-  if (!button) return;
+function onDocumentClick(event: Event): void {
+  const target = event.target as Element | null;
+  if (!target) return;
 
-  const preference = button.dataset.themeOption;
-  if (!isThemePreference(preference)) return;
+  const trigger = target.closest<HTMLElement>("[data-theme-trigger]");
+  if (trigger) {
+    const menu = trigger
+      .closest("[data-theme-switch]")
+      ?.querySelector<HTMLElement>("[data-theme-menu]");
+    if (!menu) return;
 
-  setTheme(document.documentElement, preference);
+    const shouldOpen = menu.hidden;
+    closeThemeMenus();
+    menu.hidden = !shouldOpen;
+    trigger.setAttribute("aria-expanded", shouldOpen ? "true" : "false");
+    return;
+  }
+
+  const option = target.closest<HTMLElement>("[data-theme-option]");
+  if (option) {
+    const preference = option.dataset.themeOption;
+    if (!isThemePreference(preference)) return;
+    setTheme(document.documentElement, preference);
+    return;
+  }
+
+  if (!target.closest("[data-theme-switch]")) {
+    closeThemeMenus();
+  }
+}
+
+function onDocumentKeydown(event: KeyboardEvent): void {
+  if (event.key === "Escape") closeThemeMenus();
 }
 
 export function bindTheme(): void {
-  applyTheme(document.documentElement, currentPreference);
+  const stored = document.documentElement.getAttribute("data-theme");
+  const initial = isThemePreference(stored) ? stored : currentPreference;
+  applyTheme(document.documentElement, initial);
 
   if (!isBound) {
-    document.addEventListener("click", onThemeSwitchClick);
+    document.addEventListener("click", onDocumentClick);
+    document.addEventListener("keydown", onDocumentKeydown);
     isBound = true;
   }
 

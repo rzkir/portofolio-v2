@@ -1,5 +1,6 @@
 ---
 import GrabCursor from "@/components/GrabCursor.astro";
+import Announcement from "@/layouts/announcement.astro";
 import NotificationContext from "@/layouts/NotificationContext.astro";
 import SplashScreen from "@/components/SplashScreen.astro";
 import { FORCE_MOTION_INLINE_SCRIPT } from "@/lib/force-motion";
@@ -172,6 +173,7 @@ const isAgentRoute = Astro.url.pathname.startsWith("/agent");
     <SplashScreen />
     <GrabCursor />
     <NotificationContext />
+    {!isAgentRoute && <Announcement />}
     {
       isAgentRoute ? (
         <div class="agent-shell flex h-dvh w-full bg-background text-foreground">
