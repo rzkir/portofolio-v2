@@ -5,14 +5,14 @@ import Card from "@/components/ui/card.astro";
 import AgentHeader from "@/components/ui/agent-header.astro";
 import Textarea from "@/components/ui/textarea.astro";
 import {
-  FINANCE_AGENT_CATEGORY,
-  FINANCE_CATEGORY_CARDS,
-} from "@/service/agent/finance.service";
+  HEALTH_AGENT_CATEGORY,
+  HEALTH_CATEGORY_CARDS,
+} from "@/service/agent/health.service";
 ---
 
 <Layout
-  title="AI Studio · Finance"
-  description="Susun budget, audit cashflow, rencana investasi, dan strategi pelunasan utang dengan bantuan AI."
+  title="AI Studio · Health"
+  description="Atur pola hidup sehat, nutrisi, olahraga, dan pemulihan dengan rekomendasi AI yang praktis."
   noIndex={true}
 >
   <Aside homeHref="/agent" />
@@ -33,7 +33,7 @@ import {
         </div>
       </div>
 
-      <AgentHeader title="Finance Engine" />
+      <AgentHeader title="Health Engine" />
 
       <div
         id="agent-messages"
@@ -44,12 +44,12 @@ import {
             <h2
               class="mb-6 font-display text-5xl font-light opacity-80 italic md:text-6xl"
             >
-              Make money <br />
-              <span class="font-bold text-foreground not-italic">work for you.</span>
+              Build better <br />
+              <span class="font-bold text-foreground not-italic">daily health habits.</span>
             </h2>
             <p class="text-lg font-light text-muted-foreground">
-              Susun budget, audit cashflow, rencana investasi, dan strategi pelunasan
-              utang dengan bantuan AI.
+              Atur pola hidup sehat, nutrisi, olahraga, dan pemulihan dengan
+              rekomendasi AI yang praktis.
             </p>
 
             <div
@@ -58,7 +58,7 @@ import {
             >
               <ul class="agent-category-cards__list">
                 {
-                  FINANCE_CATEGORY_CARDS.map((item) => (
+                  HEALTH_CATEGORY_CARDS.map((item) => (
                     <li>
                       <Card
                         variant="select"
@@ -87,12 +87,12 @@ import {
           >
           </p>
           <form id="agent-prompt-form">
-            <input type="hidden" name="category" value={FINANCE_AGENT_CATEGORY} />
+            <input type="hidden" name="category" value={HEALTH_AGENT_CATEGORY} />
             <Textarea
               variant="prompt"
               id="main-prompt-input"
               name="message"
-              label="Type your finance prompt..."
+              label="Type your health prompt..."
               maxlength={4000}
               required
             />
@@ -104,9 +104,9 @@ import {
 </Layout>
 
 <script>
-  import { bindFinanceAgent } from "@/service/agent/finance.service";
+  import { bindHealthAgent } from "@/service/agent/health.service";
 
-  bindFinanceAgent();
+  bindHealthAgent();
 </script>
 
 <style>

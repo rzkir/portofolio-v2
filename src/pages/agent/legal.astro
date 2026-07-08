@@ -2,7 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import Aside from "@/components/ui/aside.astro";
 import Card from "@/components/ui/card.astro";
-import ThemeSwitch from "@/components/ui/switch.astro";
+import AgentHeader from "@/components/ui/agent-header.astro";
 import Textarea from "@/components/ui/textarea.astro";
 import {
   LEGAL_AGENT_CATEGORY,
@@ -33,54 +33,7 @@ import {
         ></div>
       </div>
 
-      <header
-        class="relative z-10 flex h-20 shrink-0 items-center justify-between border-b border-border bg-background/80 px-6 backdrop-blur-md md:px-12"
-      >
-        <div>
-          <h1 class="font-display text-3xl font-light tracking-wide italic">
-            Legal Engine
-            <span class="ml-2 font-bold text-accent not-italic">v4</span>
-          </h1>
-        </div>
-
-        <div class="flex items-center gap-4 md:gap-6">
-          <ThemeSwitch />
-
-          <div class="agent-glass flex items-center gap-2 rounded-full px-4 py-2">
-            <span class="size-2 rounded-full bg-accent pulse-soft"></span>
-            <span
-              class="font-mono text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase"
-            >
-              Neural Link Active
-            </span>
-          </div>
-
-          <button
-            type="button"
-            id="header-share-btn"
-            class="text-muted-foreground transition-colors hover:text-foreground"
-            aria-label="Share conversation"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.75"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="size-5"
-              aria-hidden="true"
-            >
-              <circle cx="18" cy="5" r="3"></circle>
-              <circle cx="6" cy="12" r="3"></circle>
-              <circle cx="18" cy="19" r="3"></circle>
-              <line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line>
-              <line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line>
-            </svg>
-          </button>
-        </div>
-      </header>
+      <AgentHeader title="Legal Engine" />
 
       <div
         id="agent-messages"

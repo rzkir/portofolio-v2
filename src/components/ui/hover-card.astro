@@ -6,12 +6,74 @@ interface Props {
 const { label } = Astro.props;
 ---
 
-<div class="hover-card group relative inline-flex items-center justify-center overflow-visible">
+<div class="hover-card relative inline-flex items-center justify-center">
   <slot />
   <span
-    class="pointer-events-none invisible absolute top-1/2 left-[calc(100%+0.5rem)] z-999 -translate-y-1/2 whitespace-nowrap rounded-md border border-border bg-background/95 px-2 py-1 text-xs text-foreground opacity-0 shadow-lg backdrop-blur-sm transition-all duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+    class="hover-card__tooltip pointer-events-none fixed z-999 invisible whitespace-nowrap rounded-md border border-border bg-background/95 px-2 py-1 text-xs text-foreground opacity-0 shadow-lg backdrop-blur-sm transition-opacity duration-150"
     role="tooltip"
   >
     {label}
   </span>
 </div>
+
+<script>
+  function positionHoverCardTooltip(card: HTMLElement): void {
+    const tooltip = card.querySelector<HTMLElement>(".hover-card__tooltip");
+    if (!tooltip) return;
+
+    const rect = card.getBoundingClientRect();
+    tooltip.style.top = `${rect.top + rect.height / 2}px`;
+    tooltip.style.left = `${rect.right + 8}px`;
+    tooltip.style.transform = "translateY(-50%)";
+  }
+
+  function showHoverCardTooltip(card: HTMLElement): void {
+    const tooltip = card.querySelector<HTMLElement>(".hover-card__tooltip");
+    if (!tooltip) return;
+
+    positionHoverCardTooltip(card);
+    tooltip.classList.remove("invisible", "opacity-0");
+    tooltip.classList.add("opacity-100");
+  }
+
+  function hideHoverCardTooltip(card: HTMLElement): void {
+    const tooltip = card.querySelector<HTMLElement>(".hover-card__tooltip");
+    if (!tooltip) return;
+
+    tooltip.classList.add("invisible", "opacity-0");
+    tooltip.classList.remove("opacity-100");
+  }
+
+  function bindHoverCards(root: ParentNode = document): void {
+    root.querySelectorAll<HTMLElement>(".hover-card").forEach((card) => {
+      if (card.dataset.bound === "true") return;
+      card.dataset.bound = "true";
+
+      const onShow = () => showHoverCardTooltip(card);
+      const onHide = () => hideHoverCardTooltip(card);
+      const scrollParent = card.closest(".sidebar-nav-scroll");
+
+      card.addEventListener("mouseenter", onShow);
+      card.addEventListener("mouseleave", onHide);
+      card.addEventListener("focusin", onShow);
+      card.addEventListener("focusout", onHide);
+      scrollParent?.addEventListener("scroll", onHide, { passive: true });
+
+      const cleanup = () => {
+        card.removeEventListener("mouseenter", onShow);
+        card.removeEventListener("mouseleave", onHide);
+        card.removeEventListener("focusin", onShow);
+        card.removeEventListener("focusout", onHide);
+        scrollParent?.removeEventListener("scroll", onHide);
+        card.dataset.bound = "false";
+      };
+
+      document.addEventListener("astro:before-preparation", cleanup, {
+        once: true,
+      });
+    });
+  }
+
+  bindHoverCards();
+  document.addEventListener("astro:page-load", () => bindHoverCards());
+</script>

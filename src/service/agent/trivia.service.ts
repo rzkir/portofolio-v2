@@ -5,44 +5,44 @@ import {
   sendAgentPrompt,
 } from "@/service/agent.service";
 
-export const FINANCE_AGENT_CATEGORY: AgentPromptCategory = "finance";
+export const TRIVIA_AGENT_CATEGORY: AgentPromptCategory = "trivia";
 
-export const FINANCE_CATEGORY_CARDS: AgentCategoryCard[] = [
+export const TRIVIA_CATEGORY_CARDS: AgentCategoryCard[] = [
   {
-    title: "Budget Planner",
-    categoryLabel: "Finance · Personal",
+    title: "Fun Facts",
+    categoryLabel: "Trivia · Facts",
     description:
-      "Susun anggaran bulanan yang realistis, lengkap dengan pos wajib, tabungan, dan spending limit.",
-    category: "finance",
+      "Temukan fakta unik dan menarik dari berbagai topik, dari sejarah sampai budaya pop.",
+    category: "trivia",
     prompt:
-      "Bantu saya bikin budget bulanan. Saya punya pemasukan Rp..., pengeluaran wajib Rp..., dan target tabungan Rp...; buat alokasi yang masuk akal.",
+      "Berikan saya 10 fun facts menarik dari topik yang saya pilih, dengan penjelasan singkat tiap fakta.",
   },
   {
-    title: "Debt Payoff Strategy",
-    categoryLabel: "Finance · Debt",
+    title: "Quiz Challenge",
+    categoryLabel: "Trivia · Quiz",
     description:
-      "Buat strategi pelunasan utang (snowball/avalanche) beserta estimasi waktu dan prioritas cicilan.",
-    category: "finance",
+      "Buat kuis interaktif dengan tingkat kesulitan yang bisa disesuaikan.",
+    category: "trivia",
     prompt:
-      "Bantu saya menyusun strategi pelunasan utang. Berikut daftar utang (saldo, bunga, cicilan minimum). Pilihkan metode terbaik dan rencana langkahnya.",
+      "Buatkan kuis trivia 10 soal dengan pilihan ganda tentang topik yang saya sebutkan, lalu berikan kunci jawaban.",
   },
   {
-    title: "Investment Plan",
-    categoryLabel: "Finance · Investing",
+    title: "Guess The Answer",
+    categoryLabel: "Trivia · Game",
     description:
-      "Rancang rencana investasi sesuai profil risiko, horizon waktu, dan tujuan finansial.",
-    category: "finance",
+      "Main tebak-tebakan trivia dengan format clue bertahap agar lebih seru.",
+    category: "trivia",
     prompt:
-      "Bantu saya membuat rencana investasi. Profil risiko saya..., horizon..., tujuan..., dan kondisi dana darurat...; buat strategi yang prudent.",
+      "Ajak saya bermain tebak-tebakan trivia. Beri clue bertahap dan tunggu jawaban saya sebelum mengungkap jawabannya.",
   },
   {
-    title: "Cashflow Audit",
-    categoryLabel: "Finance · Audit",
+    title: "Today In History",
+    categoryLabel: "Trivia · History",
     description:
-      "Audit pemasukan-pengeluaran, temukan kebocoran, dan saran optimasi cashflow yang actionable.",
-    category: "finance",
+      "Lihat momen bersejarah penting yang terjadi pada hari ini dari berbagai era.",
+    category: "trivia",
     prompt:
-      "Audit cashflow saya. Berikut pemasukan dan pengeluaran 3 bulan terakhir; temukan kebocoran dan berikan rekomendasi penghematan + prioritas.",
+      "Ceritakan peristiwa penting 'hari ini dalam sejarah' secara ringkas dan menarik, lengkap dengan konteksnya.",
   },
 ];
 
@@ -55,7 +55,7 @@ function escapeHtml(value: string): string {
     .replaceAll("'", "&#39;");
 }
 
-export function createFinanceAgentController(root: ParentNode): () => void {
+export function createTriviaAgentController(root: ParentNode): () => void {
   const form = root.querySelector<HTMLFormElement>("#agent-prompt-form");
   const input = root.querySelector<HTMLInputElement>("#main-prompt-input");
   const sendBtn = root.querySelector<HTMLButtonElement>("#main-prompt-input-send");
@@ -94,7 +94,7 @@ export function createFinanceAgentController(root: ParentNode): () => void {
   }
 
   function applyCategoryPreset(prompt: string) {
-    if (categoryInput) categoryInput.value = FINANCE_AGENT_CATEGORY;
+    if (categoryInput) categoryInput.value = TRIVIA_AGENT_CATEGORY;
     if (!input) return;
 
     input.value = prompt;
@@ -218,7 +218,7 @@ export function createFinanceAgentController(root: ParentNode): () => void {
     clearError();
 
     const message = input.value.trim();
-    if (categoryInput) categoryInput.value = FINANCE_AGENT_CATEGORY;
+    if (categoryInput) categoryInput.value = TRIVIA_AGENT_CATEGORY;
 
     const userMessage: AgentChatMessage = {
       id: crypto.randomUUID(),
@@ -242,7 +242,7 @@ export function createFinanceAgentController(root: ParentNode): () => void {
       const history = buildPromptHistory(chatMessages.slice(0, -1));
       const response = await sendAgentPrompt({
         message,
-        category: FINANCE_AGENT_CATEGORY,
+        category: TRIVIA_AGENT_CATEGORY,
         history: history.length > 0 ? history : undefined,
       });
 
@@ -297,13 +297,13 @@ export function createFinanceAgentController(root: ParentNode): () => void {
   };
 }
 
-function mountFinanceAgent(root: ParentNode = document): void {
+function mountTriviaAgent(root: ParentNode = document): void {
   const shell = root.querySelector<HTMLElement>(".agent-shell");
   if (!shell || shell.dataset.bound === "true") return;
 
   shell.dataset.bound = "true";
 
-  const cleanup = createFinanceAgentController(root);
+  const cleanup = createTriviaAgentController(root);
 
   document.addEventListener(
     "astro:before-preparation",
@@ -315,7 +315,7 @@ function mountFinanceAgent(root: ParentNode = document): void {
   );
 }
 
-export function bindFinanceAgent(root: ParentNode = document): void {
-  mountFinanceAgent(root);
-  document.addEventListener("astro:page-load", () => mountFinanceAgent(document));
+export function bindTriviaAgent(root: ParentNode = document): void {
+  mountTriviaAgent(root);
+  document.addEventListener("astro:page-load", () => mountTriviaAgent(document));
 }

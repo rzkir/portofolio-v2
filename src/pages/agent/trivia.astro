@@ -5,14 +5,14 @@ import Card from "@/components/ui/card.astro";
 import AgentHeader from "@/components/ui/agent-header.astro";
 import Textarea from "@/components/ui/textarea.astro";
 import {
-  FINANCE_AGENT_CATEGORY,
-  FINANCE_CATEGORY_CARDS,
-} from "@/service/agent/finance.service";
+  TRIVIA_AGENT_CATEGORY,
+  TRIVIA_CATEGORY_CARDS,
+} from "@/service/agent/trivia.service";
 ---
 
 <Layout
-  title="AI Studio · Finance"
-  description="Susun budget, audit cashflow, rencana investasi, dan strategi pelunasan utang dengan bantuan AI."
+  title="AI Studio · Trivia"
+  description="Main kuis seru, eksplor fun facts, dan tebak-tebakan pengetahuan umum bersama AI."
   noIndex={true}
 >
   <Aside homeHref="/agent" />
@@ -33,7 +33,7 @@ import {
         </div>
       </div>
 
-      <AgentHeader title="Finance Engine" />
+      <AgentHeader title="Trivia Engine" />
 
       <div
         id="agent-messages"
@@ -44,12 +44,12 @@ import {
             <h2
               class="mb-6 font-display text-5xl font-light opacity-80 italic md:text-6xl"
             >
-              Make money <br />
-              <span class="font-bold text-foreground not-italic">work for you.</span>
+              Play smart <br />
+              <span class="font-bold text-foreground not-italic">learn fun facts.</span>
             </h2>
             <p class="text-lg font-light text-muted-foreground">
-              Susun budget, audit cashflow, rencana investasi, dan strategi pelunasan
-              utang dengan bantuan AI.
+              Main kuis seru, eksplor fun facts, dan tebak-tebakan pengetahuan umum
+              bersama AI.
             </p>
 
             <div
@@ -58,7 +58,7 @@ import {
             >
               <ul class="agent-category-cards__list">
                 {
-                  FINANCE_CATEGORY_CARDS.map((item) => (
+                  TRIVIA_CATEGORY_CARDS.map((item) => (
                     <li>
                       <Card
                         variant="select"
@@ -87,12 +87,12 @@ import {
           >
           </p>
           <form id="agent-prompt-form">
-            <input type="hidden" name="category" value={FINANCE_AGENT_CATEGORY} />
+            <input type="hidden" name="category" value={TRIVIA_AGENT_CATEGORY} />
             <Textarea
               variant="prompt"
               id="main-prompt-input"
               name="message"
-              label="Type your finance prompt..."
+              label="Type your trivia prompt..."
               maxlength={4000}
               required
             />
@@ -104,9 +104,9 @@ import {
 </Layout>
 
 <script>
-  import { bindFinanceAgent } from "@/service/agent/finance.service";
+  import { bindTriviaAgent } from "@/service/agent/trivia.service";
 
-  bindFinanceAgent();
+  bindTriviaAgent();
 </script>
 
 <style>

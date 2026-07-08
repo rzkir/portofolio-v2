@@ -872,6 +872,20 @@ html[data-theme-resolved="dark"] .grab-cursor[data-surface="invert"] .grab-curso
   overflow-y: hidden;
 }
 
+@media (max-width: 767px) {
+  .agent-sidebar-backdrop {
+    z-index: 60;
+  }
+
+  .agent-sidebar {
+    z-index: 65;
+  }
+
+  .agent-sidebar-toggle {
+    z-index: 70;
+  }
+}
+
 .agent-glass {
   background: color-mix(in oklch, var(--foreground) 3%, transparent);
   backdrop-filter: blur(10px);

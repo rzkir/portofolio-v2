@@ -5,44 +5,44 @@ import {
   sendAgentPrompt,
 } from "@/service/agent.service";
 
-export const FINANCE_AGENT_CATEGORY: AgentPromptCategory = "finance";
+export const HEALTH_AGENT_CATEGORY: AgentPromptCategory = "health";
 
-export const FINANCE_CATEGORY_CARDS: AgentCategoryCard[] = [
+export const HEALTH_CATEGORY_CARDS: AgentCategoryCard[] = [
   {
-    title: "Budget Planner",
-    categoryLabel: "Finance · Personal",
+    title: "Healthy Lifestyle Plan",
+    categoryLabel: "Health · Lifestyle",
     description:
-      "Susun anggaran bulanan yang realistis, lengkap dengan pos wajib, tabungan, dan spending limit.",
-    category: "finance",
+      "Susun rutinitas sehat harian yang realistis: tidur, aktivitas, dan kebiasaan inti.",
+    category: "health",
     prompt:
-      "Bantu saya bikin budget bulanan. Saya punya pemasukan Rp..., pengeluaran wajib Rp..., dan target tabungan Rp...; buat alokasi yang masuk akal.",
+      "Bantu saya menyusun rencana gaya hidup sehat harian yang realistis sesuai rutinitas dan kondisi saya.",
   },
   {
-    title: "Debt Payoff Strategy",
-    categoryLabel: "Finance · Debt",
+    title: "Nutrition Guidance",
+    categoryLabel: "Health · Nutrition",
     description:
-      "Buat strategi pelunasan utang (snowball/avalanche) beserta estimasi waktu dan prioritas cicilan.",
-    category: "finance",
+      "Panduan pola makan seimbang sesuai tujuan: maintain, fat loss, atau muscle gain.",
+    category: "health",
     prompt:
-      "Bantu saya menyusun strategi pelunasan utang. Berikut daftar utang (saldo, bunga, cicilan minimum). Pilihkan metode terbaik dan rencana langkahnya.",
+      "Beri saya panduan nutrisi harian yang seimbang berdasarkan tujuan saya, contoh menu, dan porsi sederhananya.",
   },
   {
-    title: "Investment Plan",
-    categoryLabel: "Finance · Investing",
+    title: "Exercise Routine",
+    categoryLabel: "Health · Fitness",
     description:
-      "Rancang rencana investasi sesuai profil risiko, horizon waktu, dan tujuan finansial.",
-    category: "finance",
+      "Program latihan bertahap sesuai level kebugaran dan waktu yang tersedia.",
+    category: "health",
     prompt:
-      "Bantu saya membuat rencana investasi. Profil risiko saya..., horizon..., tujuan..., dan kondisi dana darurat...; buat strategi yang prudent.",
+      "Buatkan rencana olahraga mingguan sesuai level kebugaran saya, durasi latihan, dan target kebugaran.",
   },
   {
-    title: "Cashflow Audit",
-    categoryLabel: "Finance · Audit",
+    title: "Stress & Recovery",
+    categoryLabel: "Health · Recovery",
     description:
-      "Audit pemasukan-pengeluaran, temukan kebocoran, dan saran optimasi cashflow yang actionable.",
-    category: "finance",
+      "Strategi manajemen stres, kualitas tidur, dan pemulihan agar energi tetap stabil.",
+    category: "health",
     prompt:
-      "Audit cashflow saya. Berikut pemasukan dan pengeluaran 3 bulan terakhir; temukan kebocoran dan berikan rekomendasi penghematan + prioritas.",
+      "Bantu saya mengelola stres dan memperbaiki kualitas tidur dengan langkah yang bisa saya lakukan setiap hari.",
   },
 ];
 
@@ -55,7 +55,7 @@ function escapeHtml(value: string): string {
     .replaceAll("'", "&#39;");
 }
 
-export function createFinanceAgentController(root: ParentNode): () => void {
+export function createHealthAgentController(root: ParentNode): () => void {
   const form = root.querySelector<HTMLFormElement>("#agent-prompt-form");
   const input = root.querySelector<HTMLInputElement>("#main-prompt-input");
   const sendBtn = root.querySelector<HTMLButtonElement>("#main-prompt-input-send");
@@ -94,7 +94,7 @@ export function createFinanceAgentController(root: ParentNode): () => void {
   }
 
   function applyCategoryPreset(prompt: string) {
-    if (categoryInput) categoryInput.value = FINANCE_AGENT_CATEGORY;
+    if (categoryInput) categoryInput.value = HEALTH_AGENT_CATEGORY;
     if (!input) return;
 
     input.value = prompt;
@@ -218,7 +218,7 @@ export function createFinanceAgentController(root: ParentNode): () => void {
     clearError();
 
     const message = input.value.trim();
-    if (categoryInput) categoryInput.value = FINANCE_AGENT_CATEGORY;
+    if (categoryInput) categoryInput.value = HEALTH_AGENT_CATEGORY;
 
     const userMessage: AgentChatMessage = {
       id: crypto.randomUUID(),
@@ -242,7 +242,7 @@ export function createFinanceAgentController(root: ParentNode): () => void {
       const history = buildPromptHistory(chatMessages.slice(0, -1));
       const response = await sendAgentPrompt({
         message,
-        category: FINANCE_AGENT_CATEGORY,
+        category: HEALTH_AGENT_CATEGORY,
         history: history.length > 0 ? history : undefined,
       });
 
@@ -297,13 +297,13 @@ export function createFinanceAgentController(root: ParentNode): () => void {
   };
 }
 
-function mountFinanceAgent(root: ParentNode = document): void {
+function mountHealthAgent(root: ParentNode = document): void {
   const shell = root.querySelector<HTMLElement>(".agent-shell");
   if (!shell || shell.dataset.bound === "true") return;
 
   shell.dataset.bound = "true";
 
-  const cleanup = createFinanceAgentController(root);
+  const cleanup = createHealthAgentController(root);
 
   document.addEventListener(
     "astro:before-preparation",
@@ -315,7 +315,7 @@ function mountFinanceAgent(root: ParentNode = document): void {
   );
 }
 
-export function bindFinanceAgent(root: ParentNode = document): void {
-  mountFinanceAgent(root);
-  document.addEventListener("astro:page-load", () => mountFinanceAgent(document));
+export function bindHealthAgent(root: ParentNode = document): void {
+  mountHealthAgent(root);
+  document.addEventListener("astro:page-load", () => mountHealthAgent(document));
 }

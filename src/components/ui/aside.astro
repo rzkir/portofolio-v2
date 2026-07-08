@@ -10,9 +10,55 @@ interface Props {
 const { class: className, homeHref } = Astro.props;
 ---
 
+<button
+  type="button"
+  id="agent-sidebar-toggle"
+  class="agent-sidebar-toggle fixed top-3 left-4 flex size-10 items-center justify-center rounded-xl border border-border bg-surface/95 text-foreground shadow-lg backdrop-blur-md transition-colors hover:bg-surface md:hidden"
+  aria-label="Open navigation"
+  aria-controls="agent-sidebar"
+  aria-expanded="false"
+>
+  <svg
+    class="agent-sidebar-toggle__open size-5"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.75"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M4 6h16" />
+    <path d="M4 12h16" />
+    <path d="M4 18h16" />
+  </svg>
+  <svg
+    class="agent-sidebar-toggle__close hidden size-5"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.75"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M18 6 6 18" />
+    <path d="m6 6 12 12" />
+  </svg>
+</button>
+
+<div
+  id="agent-sidebar-backdrop"
+  class="agent-sidebar-backdrop pointer-events-none fixed inset-0 bg-background/60 opacity-0 transition-opacity duration-200 md:hidden"
+  aria-hidden="true"
+></div>
+
 <aside
+  id="agent-sidebar"
   class={cn(
-    "relative z-50 isolate flex w-20 shrink-0 flex-col overflow-visible border-r border-border bg-surface py-8",
+    "agent-sidebar fixed inset-y-0 left-0 isolate flex w-20 -translate-x-full flex-col overflow-visible border-r border-border bg-surface py-8 transition-transform duration-200 ease-out md:static md:z-50 md:w-20 md:shrink-0 md:translate-x-0",
     className,
   )}
 >
@@ -20,3 +66,98 @@ const { class: className, homeHref } = Astro.props;
     <Sidebar homeHref={homeHref} />
   </slot>
 </aside>
+
+<script>
+  function setSidebarToggleIcon(
+    toggle: HTMLButtonElement,
+    isOpen: boolean,
+  ): void {
+    const openIcon = toggle.querySelector<SVGElement>(
+      ".agent-sidebar-toggle__open",
+    );
+    const closeIcon = toggle.querySelector<SVGElement>(
+      ".agent-sidebar-toggle__close",
+    );
+
+    openIcon?.classList.toggle("hidden", isOpen);
+    closeIcon?.classList.toggle("hidden", !isOpen);
+  }
+
+  function bindAgentSidebar(root: ParentNode = document): void {
+    const shell = root.querySelector<HTMLElement>(".agent-shell");
+    if (!shell || shell.dataset.sidebarBound === "true") return;
+    shell.dataset.sidebarBound = "true";
+
+    const toggle = root.querySelector<HTMLButtonElement>("#agent-sidebar-toggle");
+    const sidebar = root.querySelector<HTMLElement>("#agent-sidebar");
+    const backdrop = root.querySelector<HTMLElement>("#agent-sidebar-backdrop");
+    if (!toggle || !sidebar || !backdrop) return;
+
+    const open = () => {
+      if (window.matchMedia("(min-width: 768px)").matches) return;
+
+      sidebar.classList.remove("-translate-x-full");
+      sidebar.classList.add("translate-x-0");
+      backdrop.classList.remove("pointer-events-none", "opacity-0");
+      backdrop.classList.add("opacity-100");
+      toggle.setAttribute("aria-expanded", "true");
+      toggle.setAttribute("aria-label", "Close navigation");
+      setSidebarToggleIcon(toggle, true);
+      document.body.classList.add("overflow-hidden");
+    };
+
+    const close = () => {
+      sidebar.classList.add("-translate-x-full");
+      sidebar.classList.remove("translate-x-0");
+      backdrop.classList.add("pointer-events-none", "opacity-0");
+      backdrop.classList.remove("opacity-100");
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.setAttribute("aria-label", "Open navigation");
+      setSidebarToggleIcon(toggle, false);
+      document.body.classList.remove("overflow-hidden");
+    };
+
+    const onToggle = () => {
+      if (toggle.getAttribute("aria-expanded") === "true") close();
+      else open();
+    };
+
+    const onSidebarClick = (event: Event) => {
+      const target = event.target as HTMLElement | null;
+      const link = target?.closest("a[href]");
+      if (!link || !sidebar.contains(link)) return;
+      close();
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") close();
+    };
+
+    const onResize = () => {
+      if (window.matchMedia("(min-width: 768px)").matches) close();
+    };
+
+    toggle.addEventListener("click", onToggle);
+    backdrop.addEventListener("click", close);
+    sidebar.addEventListener("click", onSidebarClick);
+    document.addEventListener("keydown", onKeyDown);
+    window.addEventListener("resize", onResize);
+
+    document.addEventListener(
+      "astro:before-preparation",
+      () => {
+        toggle.removeEventListener("click", onToggle);
+        backdrop.removeEventListener("click", close);
+        sidebar.removeEventListener("click", onSidebarClick);
+        document.removeEventListener("keydown", onKeyDown);
+        window.removeEventListener("resize", onResize);
+        document.body.classList.remove("overflow-hidden");
+        shell.dataset.sidebarBound = "false";
+      },
+      { once: true },
+    );
+  }
+
+  bindAgentSidebar();
+  document.addEventListener("astro:page-load", () => bindAgentSidebar());
+</script>
