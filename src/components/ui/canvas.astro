@@ -1,5 +1,8 @@
 ---
 import { cn } from "@/lib/utiles";
+import Tabs from "@/components/ui/tabs.astro";
+import PreviewDialog from "@/components/dialog/dialog.priview.astro";
+import PreviewIcon from "@/components/svg/priview.astro";
 
 interface Props {
   id?: string;
@@ -7,12 +10,13 @@ interface Props {
 }
 
 const { id = "agent-canvas", class: className } = Astro.props;
+const tabsId = `${id}-tabs`;
 ---
 
 <aside
   id={id}
   class={cn(
-    "agent-canvas hidden h-full w-full shrink-0 flex-col border-border bg-surface md:w-[42%] md:border-l",
+    "agent-canvas h-full w-full shrink-0 border-border bg-surface md:w-[42%] md:border-l",
     className,
   )}
   aria-label="Web preview canvas"
@@ -63,6 +67,17 @@ const { id = "agent-canvas", class: className } = Astro.props;
     <div class="flex items-center gap-4">
       <button
         type="button"
+        id={`${id}-expand`}
+        data-dialog-open="agent-preview-dialog"
+        class="flex items-center gap-2 font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase transition-colors hover:text-foreground"
+        aria-label="Open full preview"
+      >
+        <PreviewIcon class="size-4" />
+        Expand
+      </button>
+
+      <button
+        type="button"
         id={`${id}-refresh`}
         class="flex items-center gap-2 font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase transition-colors hover:text-foreground"
       >
@@ -82,30 +97,6 @@ const { id = "agent-canvas", class: className } = Astro.props;
           <path d="M12 7v5l4 2" />
         </svg>
         Refresh
-      </button>
-
-      <button
-        type="button"
-        id={`${id}-source`}
-        class="flex items-center gap-2 font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase transition-colors hover:text-foreground"
-        aria-expanded="false"
-        aria-controls={`${id}-source-panel`}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.75"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="size-4"
-          aria-hidden="true"
-        >
-          <polyline points="16 18 22 12 16 6" />
-          <polyline points="8 6 2 12 8 18" />
-        </svg>
-        Source
       </button>
 
       <button
@@ -134,21 +125,273 @@ const { id = "agent-canvas", class: className } = Astro.props;
     </div>
   </div>
 
-  <div class="agent-canvas__viewport min-h-0 flex-1 p-4">
-    <iframe
-      id={`${id}-frame`}
-      class="agent-canvas__frame size-full rounded-xl border border-border bg-white"
-      title="Live web preview"
-      sandbox="allow-scripts allow-modals allow-forms"
-    ></iframe>
-  </div>
+  <div class="flex min-h-0 flex-1 flex-col px-6 pb-6">
+    <Tabs
+      id={tabsId}
+      tabs={[
+        { id: "preview", label: "Preview" },
+        { id: "code", label: "Code" },
+      ]}
+      defaultTab="preview"
+      class="min-h-0 flex-1"
+      listClass="mb-4 shrink-0"
+      panelsClass="min-h-0 flex-1"
+    >
+      <div
+        id={`${id}-panel-preview`}
+        role="tabpanel"
+        aria-labelledby={`${tabsId}-tab-preview`}
+        class="ui-tabs__panel"
+        data-tab-panel="preview"
+      >
+        <div class="agent-canvas__viewport">
+          <iframe
+            id={`${id}-frame`}
+            class="agent-canvas__frame rounded-xl border border-border bg-white"
+            title="Live web preview"
+            sandbox="allow-scripts allow-modals allow-forms allow-popups"
+          ></iframe>
+        </div>
+      </div>
 
-  <div
-    id={`${id}-source-panel`}
-    class="agent-canvas__source max-h-56 shrink-0 overflow-auto border-t border-border"
-  >
-    <pre
-      class="agent-canvas__pre m-0 p-4 font-mono text-xs leading-relaxed text-foreground/90"
-    ><code id={`${id}-code`} class="block whitespace-pre-wrap"></code></pre>
+      <div
+        id={`${id}-panel-code`}
+        role="tabpanel"
+        aria-labelledby={`${tabsId}-tab-code`}
+        class="ui-tabs__panel ui-tabs__panel--hidden"
+        data-tab-panel="code"
+        hidden
+      >
+        <div
+          id={`${id}-code-tabs`}
+          class="agent-code-editor"
+          data-ui-tabs
+          data-tabs-variant="editor"
+        >
+          <div class="agent-code-editor__tabbar" role="tablist" aria-label="Source files">
+            <button
+              type="button"
+              role="tab"
+              id={`${id}-code-tab-html`}
+              class="agent-code-editor__tab is-active"
+              data-tab-trigger="html"
+              aria-selected="true"
+              aria-controls={`${id}-code-panel-html`}
+            >
+              index.html
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id={`${id}-code-tab-css`}
+              class="agent-code-editor__tab"
+              data-tab-trigger="css"
+              aria-selected="false"
+              aria-controls={`${id}-code-panel-css`}
+            >
+              styles.css
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id={`${id}-code-tab-js`}
+              class="agent-code-editor__tab"
+              data-tab-trigger="js"
+              aria-selected="false"
+              aria-controls={`${id}-code-panel-js`}
+            >
+              script.js
+            </button>
+          </div>
+
+          <div class="agent-code-editor__workspace">
+            <div
+              id={`${id}-code-panel-html`}
+              role="tabpanel"
+              aria-labelledby={`${id}-code-tab-html`}
+              class="ui-tabs__panel agent-code-editor__panel"
+              data-tab-panel="html"
+            >
+              <div class="agent-code-editor__surface">
+                <div class="agent-code-editor__gutter" aria-hidden="true">1</div>
+                <pre class="agent-code-editor__pre"><code id={`${id}-code-html`} class="agent-code-editor__code"></code></pre>
+              </div>
+            </div>
+
+            <div
+              id={`${id}-code-panel-css`}
+              role="tabpanel"
+              aria-labelledby={`${id}-code-tab-css`}
+              class="ui-tabs__panel agent-code-editor__panel ui-tabs__panel--hidden"
+              data-tab-panel="css"
+              hidden
+            >
+              <div class="agent-code-editor__surface">
+                <div class="agent-code-editor__gutter" aria-hidden="true">1</div>
+                <pre class="agent-code-editor__pre"><code id={`${id}-code-css`} class="agent-code-editor__code"></code></pre>
+              </div>
+            </div>
+
+            <div
+              id={`${id}-code-panel-js`}
+              role="tabpanel"
+              aria-labelledby={`${id}-code-tab-js`}
+              class="ui-tabs__panel agent-code-editor__panel ui-tabs__panel--hidden"
+              data-tab-panel="js"
+              hidden
+            >
+              <div class="agent-code-editor__surface">
+                <div class="agent-code-editor__gutter" aria-hidden="true">1</div>
+                <pre class="agent-code-editor__pre"><code id={`${id}-code-js`} class="agent-code-editor__code"></code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Tabs>
   </div>
 </aside>
+
+<PreviewDialog />
+
+<style is:global>
+  .agent-canvas {
+    display: none;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .agent-canvas.is-open {
+    display: flex;
+  }
+
+  .agent-canvas__viewport {
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklch, var(--accent) 30%, transparent) transparent;
+  }
+
+  .agent-canvas__frame {
+    display: block;
+    flex: 1 1 0%;
+    width: 100%;
+    min-height: 0;
+    border: 0;
+    color-scheme: light;
+    background: #fff;
+  }
+
+  .agent-code-editor {
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: #1e1e1e;
+  }
+
+  .agent-code-editor__tabbar {
+    display: flex;
+    align-items: flex-end;
+    gap: 0;
+    overflow-x: auto;
+    border-bottom: 1px solid #2b2b2b;
+    background: #252526;
+    scrollbar-width: thin;
+  }
+
+  .agent-code-editor__tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 0;
+    border-right: 1px solid #2b2b2b;
+    border-bottom: 2px solid transparent;
+    background: #2d2d2d;
+    padding: 0.65rem 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: #969696;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      color 0.15s ease,
+      background-color 0.15s ease,
+      border-color 0.15s ease;
+  }
+
+  .agent-code-editor__tab:hover {
+    color: #d4d4d4;
+    background: #1f1f1f;
+  }
+
+  .agent-code-editor__tab.is-active {
+    color: #ffffff;
+    background: #1e1e1e;
+    border-bottom-color: var(--accent);
+  }
+
+  .agent-code-editor__tab.is-hidden {
+    display: none;
+  }
+
+  .agent-code-editor__workspace {
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .agent-code-editor__panel {
+    flex: 1 1 0%;
+    min-height: 0;
+  }
+
+  .agent-code-editor__surface {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    height: 100%;
+    min-height: 0;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #424242 transparent;
+  }
+
+  .agent-code-editor__gutter {
+    padding: 1rem 0.75rem 1rem 1rem;
+    border-right: 1px solid #2b2b2b;
+    background: #1e1e1e;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.6;
+    text-align: right;
+    color: #858585;
+    user-select: none;
+    white-space: pre;
+  }
+
+  .agent-code-editor__pre {
+    margin: 0;
+    padding: 1rem;
+    overflow: visible;
+    background: #1e1e1e;
+  }
+
+  .agent-code-editor__code {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+    color: #d4d4d4;
+    white-space: pre;
+    tab-size: 2;
+  }
+</style>

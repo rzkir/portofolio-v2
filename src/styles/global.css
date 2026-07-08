@@ -895,10 +895,6 @@ html.splash-pending .animate-focus {
   isolation: isolate;
 }
 
-.agent-main--with-canvas .agent-canvas.is-open {
-  display: flex;
-}
-
 @media (max-width: 767px) {
   .agent-main--with-canvas .agent-chat-pane {
     display: none;
@@ -919,27 +915,3 @@ html.splash-pending .animate-focus {
   }
 }
 
-.agent-canvas.is-open {
-  display: flex;
-}
-
-.agent-canvas__viewport {
-  scrollbar-width: thin;
-  scrollbar-color: color-mix(in oklch, var(--accent) 30%, transparent) transparent;
-}
-
-.agent-canvas__frame {
-  color-scheme: light;
-}
-
-.agent-canvas__source {
-  display: none;
-}
-
-.agent-canvas__source.is-open {
-  display: block;
-}
-
-.agent-canvas__pre {
-  tab-size: 2;
-}

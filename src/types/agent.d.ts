@@ -50,9 +50,16 @@ interface AgentCodeBlock {
   code: string;
 }
 
+interface AgentWebPreviewFiles {
+  html: string;
+  css: string;
+  js: string;
+}
+
 interface AgentWebPreview {
   title: string;
   language: string;
   source: string;
   document: string;
+  files: AgentWebPreviewFiles;
 }

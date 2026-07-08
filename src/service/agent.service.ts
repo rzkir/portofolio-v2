@@ -16,8 +16,17 @@ export function isCodingTopic(message: string): boolean {
   return CODING_TOPIC_PATTERN.test(message);
 }
 
+const WEB_PREVIEW_TOPIC_PATTERN =
+  /\b(html|css|javascript|jsx|tsx|tailwind|landing|website|webpage|navbar|hero|button|card|component|ui|frontend|responsive|markup|web|halaman|situs|tampilan|layout|styling|desain|design|mockup|template|portofolio|portfolio|agency|agensi|properti|property)\b/i;
+
+export function isWebBuildTopic(message: string): boolean {
+  return WEB_PREVIEW_TOPIC_PATTERN.test(message);
+}
+
 export function resolveAgentCategory(message: string): AgentPromptCategory {
-  return isCodingTopic(message) ? "programming" : DEFAULT_AGENT_CATEGORY;
+  return isCodingTopic(message) || isWebBuildTopic(message)
+    ? "programming"
+    : DEFAULT_AGENT_CATEGORY;
 }
 
 export function extractCodeBlocks(content: string): AgentCodeBlock[] {
@@ -34,9 +43,6 @@ export function extractCodeBlocks(content: string): AgentCodeBlock[] {
   return blocks;
 }
 
-const WEB_PREVIEW_TOPIC_PATTERN =
-  /\b(html|css|javascript|jsx|tsx|tailwind|landing|website|webpage|navbar|hero|button|card|component|ui|frontend|responsive|markup|web)\b/i;
-
 function normalizeBlockLanguage(language: string): string {
   return language.toLowerCase().replace(/^language-/, "");
 }
@@ -49,44 +55,100 @@ function looksLikeHtmlFragment(code: string): boolean {
   return /<[a-z][\s\S]*>/i.test(code);
 }
 
-function composeWebDocument(parts: {
+function extractEmbeddedStyles(html: string): string {
+  const styles: string[] = [];
+
+  for (const match of html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)) {
+    const chunk = match[1]?.trim();
+    if (chunk) styles.push(chunk);
+  }
+
+  return styles.join("\n\n");
+}
+
+function extractInlineScripts(html: string): string {
+  const scripts: string[] = [];
+
+  for (const match of html.matchAll(
+    /<script\b(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi,
+  )) {
+    const chunk = match[1]?.trim();
+    if (chunk) scripts.push(chunk);
+  }
+
+  return scripts.join("\n\n");
+}
+
+function stripEmbeddedStyles(html: string): string {
+  return html.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, "").trim();
+}
+
+function stripInlineScripts(html: string): string {
+  return html
+    .replace(/<script\b(?![^>]*\bsrc=)[^>]*>[\s\S]*?<\/script>/gi, "")
+    .trim();
+}
+
+function stripRelativeStylesheetLinks(html: string): string {
+  return html
+    .replace(
+      /<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["'](?!https?:|\/\/)[^"']+["'])[^>]*\/?>/gi,
+      "",
+    )
+    .trim();
+}
+
+function stripRelativeScriptTags(html: string): string {
+  return html
+    .replace(
+      /<script\b(?=[^>]*\bsrc=["'](?!https?:|\/\/)[^"']+["'])[^>]*>\s*<\/script>/gi,
+      "",
+    )
+    .trim();
+}
+
+export function splitWebPreviewFiles(parts: {
   html?: string;
   css?: string;
   js?: string;
-}): string {
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Preview</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; }
-    body { margin: 0; font-family: system-ui, sans-serif; }
-    ${parts.css ?? ""}
-  </style>
-</head>
-<body>
-  ${parts.html ?? ""}
-  <script>${parts.js ?? ""}<\/script>
-</body>
-</html>`;
+}): AgentWebPreviewFiles {
+  let html = parts.html?.trim() ?? "";
+  let css = parts.css?.trim() ?? "";
+  let js = parts.js?.trim() ?? "";
+
+  if (!css && html) {
+    const embedded = extractEmbeddedStyles(html);
+    if (embedded) css = embedded;
+  }
+
+  if (!js && html) {
+    const embedded = extractInlineScripts(html);
+    if (embedded) js = embedded;
+  }
+
+  if (css && html) {
+    html = stripEmbeddedStyles(html);
+    html = stripRelativeStylesheetLinks(html);
+  }
+
+  if (js && html) {
+    html = stripInlineScripts(html);
+    html = stripRelativeScriptTags(html);
+  }
+
+  return { html, css, js };
 }
 
-export function buildWebPreview(content: string): AgentWebPreview | null {
+function collectPreviewBlocks(content: string): {
+  html?: string;
+  css?: string;
+  js?: string;
+} | null {
   const blocks = extractCodeBlocks(content);
 
   if (blocks.length === 0) {
-    if (looksLikeHtmlFragment(content)) {
-      const document = composeWebDocument({ html: content.trim() });
-      return {
-        title: "Web Preview",
-        language: "html",
-        source: content.trim(),
-        document,
-      };
-    }
-    return null;
+    if (!looksLikeHtmlFragment(content)) return null;
+    return { html: content.trim() };
   }
 
   const htmlBlock = blocks.find((block) =>
@@ -101,51 +163,272 @@ export function buildWebPreview(content: string): AgentWebPreview | null {
     ),
   );
 
-  if (htmlBlock && isFullHtmlDocument(htmlBlock.code)) {
-    return {
-      title: "Web Preview",
-      language: "html",
-      source: htmlBlock.code,
-      document: htmlBlock.code,
-    };
-  }
-
   if (htmlBlock || cssBlock || jsBlock) {
-    const document = composeWebDocument({
-      html: htmlBlock?.code ?? "",
-      css: cssBlock?.code ?? "",
-      js: jsBlock?.code ?? "",
-    });
-
-    const source = [htmlBlock, cssBlock, jsBlock]
-      .filter(Boolean)
-      .map((block) => `\`\`\`${block!.language}\n${block!.code}\n\`\`\``)
-      .join("\n\n");
-
     return {
-      title: "Web Preview",
-      language: "html",
-      source,
-      document,
+      html: htmlBlock?.code,
+      css: cssBlock?.code,
+      js: jsBlock?.code,
     };
   }
 
   const first = blocks[0];
   if (first && looksLikeHtmlFragment(first.code)) {
-    const document = composeWebDocument({ html: first.code });
-    return {
-      title: "Web Preview",
-      language: first.language || "html",
-      source: first.code,
-      document,
-    };
+    return { html: first.code };
   }
 
   return null;
 }
 
+function buildPreviewSource(files: AgentWebPreviewFiles): string {
+  return [
+    files.html && `\`\`\`html\n${files.html}\n\`\`\``,
+    files.css && `\`\`\`css\n${files.css}\n\`\`\``,
+    files.js && `\`\`\`javascript\n${files.js}\n\`\`\``,
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+}
+
+const TAILWIND_UTILITY_PATTERN =
+  /\b(?:flex|grid|inline-flex|block|hidden|container|rounded(?:-[a-z0-9]+)?|shadow(?:-[a-z0-9]+)?|gap-(?:x-|y-)?\d|p[trblxy]?-\d|m[trblxy]?-\d|w-(?:full|screen|\d+\/\d+|\d+)|h-(?:full|screen|\d+)|(?:min-|max-)?[wh]-\[[^\]]+\]|text-(?:xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|[a-z]+-\d{3})|bg-(?:[a-z]+-\d{3}|[a-z]+)|border(?:-[a-z0-9]+)?|font-(?:sans|serif|mono|bold|medium|semibold|light)|items-(?:start|center|end|stretch)|justify-(?:start|center|end|between|around)|space-[xy]-\d|object-(?:cover|contain)|aspect-(?:square|video)|overflow-(?:hidden|auto)|z-\d+|top-\d+|left-\d+|right-\d+|bottom-\d+|translate-[xy]-\d+|scale-\d+|opacity-\d+|transition(?:-[a-z]+)?|hover:[a-z0-9_-]+|md:[a-z0-9_-]+|lg:[a-z0-9_-]+)\b/;
+
+const TAILWIND_CDN_SCRIPT =
+  '<script src="https://cdn.tailwindcss.com"><\/script>';
+
+function usesTailwindUtilities(markup: string): boolean {
+  return TAILWIND_UTILITY_PATTERN.test(markup);
+}
+
+function hasTailwindCdn(markup: string): boolean {
+  return /cdn\.tailwindcss\.com/i.test(markup);
+}
+
+function isAbsoluteResource(href: string): boolean {
+  return (
+    /^(?:https?:)?\/\//i.test(href) ||
+    /^(?:data:|blob:|mailto:|tel:|#)/i.test(href)
+  );
+}
+
+function resourceBasename(href: string): string {
+  return href.split(/[?#]/)[0].split("/").pop() || href;
+}
+
+function resolveAssetContent(
+  href: string,
+  assets: Map<string, string>,
+  fallback?: string,
+): string | undefined {
+  const file = resourceBasename(href);
+  if (assets.has(file)) return assets.get(file);
+  if (assets.has(href)) return assets.get(href);
+  if (assets.size === 1) return [...assets.values()][0];
+  return fallback;
+}
+
+function buildCssAssetMap(css?: string): Map<string, string> {
+  const map = new Map<string, string>();
+  if (!css) return map;
+  for (const name of ["styles.css", "style.css", "main.css"]) {
+    map.set(name, css);
+  }
+  return map;
+}
+
+function buildJsAssetMap(js?: string): Map<string, string> {
+  const map = new Map<string, string>();
+  if (!js) return map;
+  for (const name of ["script.js", "main.js", "app.js", "index.js"]) {
+    map.set(name, js);
+  }
+  return map;
+}
+
+function injectBeforeHeadEnd(html: string, snippet: string): string {
+  if (/<\/head>/i.test(html)) {
+    return html.replace(/<\/head>/i, `  ${snippet}\n</head>`);
+  }
+  return html;
+}
+
+function injectBeforeBodyEnd(html: string, snippet: string): string {
+  if (/<\/body>/i.test(html)) {
+    return html.replace(/<\/body>/i, `  ${snippet}\n</body>`);
+  }
+  return `${html}\n${snippet}`;
+}
+
+function inlineRelativeAssets(
+  html: string,
+  assets?: { css?: string; js?: string },
+): string {
+  let doc = html;
+  let inlinedCss = false;
+  let inlinedJs = false;
+  const cssMap = buildCssAssetMap(assets?.css);
+  const jsMap = buildJsAssetMap(assets?.js);
+
+  doc = doc.replace(/<link\b[^>]*\/?>/gi, (tag) => {
+    if (!/rel=["']stylesheet["']/i.test(tag)) return tag;
+
+    const href = tag.match(/\bhref=["']([^"']+)["']/i)?.[1];
+    if (!href) return tag;
+    if (isAbsoluteResource(href)) return tag;
+
+    const css = resolveAssetContent(href, cssMap, assets?.css);
+    if (!css) return "";
+
+    inlinedCss = true;
+    return `<style data-inlined-from="${resourceBasename(href)}">\n${css}\n</style>`;
+  });
+
+  doc = doc.replace(
+    /<script\b([^>]*)\bsrc=["']([^"']+)["']([^>]*)>\s*<\/script>/gi,
+    (match, before, src, after) => {
+      if (isAbsoluteResource(src)) return match;
+
+      const js = resolveAssetContent(src, jsMap, assets?.js);
+      if (!js) return "";
+
+      inlinedJs = true;
+      return `<script${before}${after} data-inlined-from="${resourceBasename(src)}">\n${js}\n</script>`;
+    },
+  );
+
+  if (assets?.css && !inlinedCss) {
+    doc = injectBeforeHeadEnd(
+      doc,
+      `<style data-inlined-from="styles.css">\n${assets.css}\n</style>`,
+    );
+  }
+
+  if (assets?.js && !inlinedJs) {
+    doc = injectBeforeBodyEnd(
+      doc,
+      `<script data-inlined-from="script.js">\n${assets.js}\n</script>`,
+    );
+  }
+
+  return doc;
+}
+
+function hoistHeadAssets(html: string): { body: string; headAssets: string } {
+  const headAssets: string[] = [];
+  let body = html;
+
+  body = body.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, (match) => {
+    headAssets.push(match);
+    return "";
+  });
+
+  body = body.replace(/<link\b[^>]*\/?>/gi, (match) => {
+    if (!/rel=["']stylesheet["']/i.test(match)) return match;
+
+    const href = match.match(/\bhref=["']([^"']+)["']/i)?.[1];
+    if (href && isAbsoluteResource(href)) {
+      headAssets.push(match);
+      return "";
+    }
+
+    return match;
+  });
+
+  return { body: body.trim(), headAssets: headAssets.join("\n  ") };
+}
+
+function injectTailwindCdnIntoHead(html: string): string {
+  if (!usesTailwindUtilities(html) || hasTailwindCdn(html)) return html;
+
+  if (/<head[\s>]/i.test(html)) {
+    return html.replace(
+      /<head([^>]*)>/i,
+      `<head$1>\n  ${TAILWIND_CDN_SCRIPT}`,
+    );
+  }
+
+  if (/<html[\s>]/i.test(html)) {
+    return html.replace(
+      /<html([^>]*)>/i,
+      `<html$1>\n<head>\n  ${TAILWIND_CDN_SCRIPT}\n</head>`,
+    );
+  }
+
+  return html;
+}
+
+function preparePreviewDocument(
+  html: string,
+  assets?: { css?: string; js?: string },
+): string {
+  if (!isFullHtmlDocument(html)) return html;
+
+  let document = inlineRelativeAssets(html, assets);
+  document = injectTailwindCdnIntoHead(document);
+  return document;
+}
+
+function composeWebDocument(parts: {
+  html?: string;
+  css?: string;
+  js?: string;
+}): string {
+  const hoisted = hoistHeadAssets(parts.html ?? "");
+  const markup = `${hoisted.body} ${parts.css ?? ""}`;
+  const tailwindScript =
+    usesTailwindUtilities(markup) && !hasTailwindCdn(hoisted.headAssets)
+      ? `\n  ${TAILWIND_CDN_SCRIPT}`
+      : "";
+
+  const shell = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preview</title>${tailwindScript}
+  ${hoisted.headAssets ? `  ${hoisted.headAssets}\n` : ""}  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, sans-serif; }
+  </style>
+</head>
+<body>
+  ${hoisted.body}
+</body>
+</html>`;
+
+  return inlineRelativeAssets(shell, { css: parts.css, js: parts.js });
+}
+
+export function buildWebPreview(content: string): AgentWebPreview | null {
+  const raw = collectPreviewBlocks(content);
+  if (!raw) return null;
+
+  const files = splitWebPreviewFiles(raw);
+  if (!files.html && !files.css && !files.js) return null;
+
+  const document =
+    raw.html && isFullHtmlDocument(raw.html)
+      ? preparePreviewDocument(raw.html, {
+          css: raw.css,
+          js: raw.js,
+        })
+      : composeWebDocument({
+          html: raw.html ?? "",
+          css: raw.css ?? "",
+          js: raw.js ?? "",
+        });
+
+  return {
+    title: "Web Preview",
+    language: "html",
+    source: buildPreviewSource(files),
+    document,
+    files,
+  };
+}
+
 export function isWebCodingTopic(message: string): boolean {
-  return isCodingTopic(message) && WEB_PREVIEW_TOPIC_PATTERN.test(message);
+  return (isCodingTopic(message) || isWebBuildTopic(message)) &&
+    WEB_PREVIEW_TOPIC_PATTERN.test(message);
 }
 
 export function getCanvasPayload(

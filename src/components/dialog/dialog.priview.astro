@@ -1,0 +1,75 @@
+---
+import UiDialog from "@/components/ui/dialog.astro";
+import { cn } from "@/lib/utiles";
+
+interface Props {
+  id?: string;
+  frameId?: string;
+  class?: string;
+}
+
+const {
+  id = "agent-preview-dialog",
+  frameId = "agent-preview-dialog-frame",
+  class: className,
+} = Astro.props;
+---
+
+<UiDialog
+  id={id}
+  class={cn(
+    "preview-dialog h-[min(92vh,960px)] w-[min(96vw,1400px)] max-w-none overflow-hidden p-0 sm:rounded-2xl",
+    className,
+  )}
+>
+  <article class="preview-dialog__shell flex h-full min-h-0 flex-col">
+    <header
+      class="flex shrink-0 items-center justify-between border-b border-border px-6 py-5"
+    >
+      <div>
+        <p
+          class="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase"
+        >
+          Canvas
+        </p>
+        <h2 class="font-display text-2xl italic">Full preview</h2>
+      </div>
+
+      <span
+        id={`${id}-language`}
+        class="rounded-full border border-border px-3 py-1 font-mono text-[10px] tracking-widest text-accent uppercase"
+      >
+        live
+      </span>
+    </header>
+
+    <div class="preview-dialog__viewport min-h-0 flex-1 p-5">
+      <iframe
+        id={frameId}
+        class="preview-dialog__frame size-full rounded-xl border border-border bg-white"
+        title="Expanded web preview"
+        sandbox="allow-scripts allow-modals allow-forms allow-popups"
+      ></iframe>
+    </div>
+  </article>
+</UiDialog>
+
+<style is:global>
+  .preview-dialog__shell {
+    background: var(--surface);
+  }
+
+  .preview-dialog__viewport {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .preview-dialog__frame {
+    display: block;
+    min-height: 0;
+    border: 0;
+    color-scheme: light;
+    background: #fff;
+  }
+</style>

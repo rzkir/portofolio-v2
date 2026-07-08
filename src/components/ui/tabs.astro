@@ -1,0 +1,122 @@
+---
+import { cn } from "@/lib/utiles";
+
+export interface TabItem {
+  id: string;
+  label: string;
+}
+
+interface Props {
+  id: string;
+  tabs: TabItem[];
+  defaultTab?: string;
+  class?: string;
+  listClass?: string;
+  panelsClass?: string;
+}
+
+const {
+  id,
+  tabs,
+  defaultTab = tabs[0]?.id,
+  class: className,
+  listClass,
+  panelsClass,
+} = Astro.props;
+---
+
+<div id={id} class={cn("ui-tabs", className)} data-ui-tabs>
+  <div
+    role="tablist"
+    class={cn("ui-tabs__list", listClass)}
+    aria-label="Tab navigation"
+  >
+    {
+      tabs.map((tab) => (
+        <button
+          type="button"
+          role="tab"
+          id={`${id}-tab-${tab.id}`}
+          class={cn(
+            "ui-tabs__trigger",
+            tab.id === defaultTab && "is-active",
+          )}
+          aria-selected={tab.id === defaultTab ? "true" : "false"}
+          aria-controls={`${id}-panel-${tab.id}`}
+          data-tab-trigger={tab.id}
+        >
+          {tab.label}
+        </button>
+      ))
+    }
+  </div>
+
+  <div class={cn("ui-tabs__panels", panelsClass)}>
+    <slot />
+  </div>
+</div>
+
+<style>
+  .ui-tabs {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    flex: 1 1 0%;
+  }
+
+  .ui-tabs__list {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border-radius: 9999px;
+    background: color-mix(in oklch, var(--foreground) 4%, transparent);
+    border: 1px solid var(--border);
+  }
+
+  .ui-tabs__trigger {
+    flex: 1 1 0%;
+    border: 0;
+    border-radius: 9999px;
+    padding: 0.5rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    background: transparent;
+    cursor: pointer;
+    transition:
+      color 0.2s ease,
+      background-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .ui-tabs__trigger:hover {
+    color: var(--foreground);
+  }
+
+  .ui-tabs__trigger.is-active {
+    color: var(--accent-foreground);
+    background: var(--accent);
+    box-shadow: 0 8px 24px color-mix(in oklch, var(--accent) 25%, transparent);
+  }
+
+  .ui-tabs__panels {
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  :global(.ui-tabs__panel) {
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  :global(.ui-tabs__panel--hidden) {
+    display: none;
+  }
+</style>
