@@ -14,127 +14,119 @@ import { DEFAULT_AGENT_CATEGORY } from "@/service/agent.service";
 >
   <Aside />
 
-    <main
-      id="agent-main"
-      class="relative flex min-w-0 flex-1 flex-col overflow-hidden md:flex-row"
+  <main
+    id="agent-main"
+    class="relative flex min-w-0 flex-1 flex-col overflow-hidden md:flex-row"
+  >
+    <div
+      class="agent-chat-pane relative flex min-w-0 flex-1 flex-col overflow-hidden"
     >
-      <div
-        class="agent-chat-pane relative flex min-w-0 flex-1 flex-col overflow-hidden"
+      <div class="pointer-events-none absolute inset-0 overflow-hidden">
+        <div
+          class="absolute top-[-20%] right-[-10%] size-[50%] rounded-full bg-accent/5 blur-[120px]"
+        >
+        </div>
+        <div
+          class="absolute bottom-[-20%] left-[-10%] size-[50%] rounded-full bg-foreground/5 blur-[120px]"
+        >
+        </div>
+      </div>
+
+      <header
+        class="relative z-10 flex h-20 shrink-0 items-center justify-between border-b border-border bg-background/80 px-6 backdrop-blur-md md:px-12"
       >
-        <div class="pointer-events-none absolute inset-0 overflow-hidden">
-          <div
-            class="absolute top-[-20%] right-[-10%] size-[50%] rounded-full bg-accent/5 blur-[120px]"
-          >
-          </div>
-          <div
-            class="absolute bottom-[-20%] left-[-10%] size-[50%] rounded-full bg-foreground/5 blur-[120px]"
-          >
-          </div>
+        <div>
+          <h1 class="font-display text-3xl font-light tracking-wide italic">
+            Deep Intelegence
+            <span class="ml-2 font-bold text-accent not-italic">v4</span>
+          </h1>
         </div>
 
-        <header
-          class="relative z-10 flex h-20 shrink-0 items-center justify-between border-b border-border bg-background/80 px-6 backdrop-blur-md md:px-12"
-        >
-          <div>
-            <h1 class="font-display text-3xl font-light tracking-wide italic">
-              Deep Intelegence
-              <span class="ml-2 font-bold text-accent not-italic">v4</span>
-            </h1>
-          </div>
+        <div class="flex items-center gap-4 md:gap-6">
+          <ThemeSwitch />
 
-          <div class="flex items-center gap-4 md:gap-6">
-            <ThemeSwitch />
-
-            <div
-              class="agent-glass flex items-center gap-2 rounded-full px-4 py-2"
+          <div
+            class="agent-glass flex items-center gap-2 rounded-full px-4 py-2"
+          >
+            <span class="size-2 rounded-full bg-accent pulse-soft"></span>
+            <span
+              class="font-mono text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase"
             >
-              <span class="size-2 rounded-full bg-accent pulse-soft"></span>
-              <span
-                class="font-mono text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase"
-              >
-                Neural Link Active
-              </span>
-            </div>
+              Neural Link Active
+            </span>
+          </div>
 
-            <button
-              type="button"
-              id="header-share-btn"
-              class="text-muted-foreground transition-colors hover:text-foreground"
-              aria-label="Share conversation"
+          <button
+            type="button"
+            id="header-share-btn"
+            class="text-muted-foreground transition-colors hover:text-foreground"
+            aria-label="Share conversation"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-5"
+              aria-hidden="true"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.75"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="size-5"
-                aria-hidden="true"
-              >
-                <circle cx="18" cy="5" r="3"></circle>
-                <circle cx="6" cy="12" r="3"></circle>
-                <circle cx="18" cy="19" r="3"></circle>
-                <line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line>
-                <line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line>
-              </svg>
-            </button>
-          </div>
-        </header>
-
-        <div
-          id="agent-messages"
-          class="agent-scrollbar relative min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-12 md:px-12"
-        >
-          <div id="agent-thread" class="mx-auto max-w-4xl space-y-16">
-            <div class="py-20 text-center" id="agent-empty-state">
-              <h2
-                class="mb-6 font-display text-5xl font-light opacity-80 italic md:text-6xl"
-              >
-                Let's create <br />
-                <span class="font-bold text-foreground not-italic"
-                  >the impossible.</span
-                >
-              </h2>
-              <p class="text-lg font-light text-muted-foreground">
-                Precision engines for professional execution.
-              </p>
-            </div>
-          </div>
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line>
+              <line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line>
+            </svg>
+          </button>
         </div>
+      </header>
 
-        <div
-          class="agent-prompt-dock shrink-0 px-6 pt-10 pb-6 md:px-12 md:pb-8"
-        >
-          <div class="mx-auto max-w-4xl">
-            <form id="agent-prompt-form">
-              <input
-                type="hidden"
-                name="category"
-                value={DEFAULT_AGENT_CATEGORY}
-              />
-              <Textarea
-                variant="prompt"
-                id="main-prompt-input"
-                name="message"
-                label="Type your prompt..."
-                maxlength={4000}
-                required
-              />
-            </form>
-            <p
-              id="agent-error"
-              class="mt-3 hidden text-center font-mono text-[10px] tracking-widest text-destructive uppercase"
-              role="alert"
+      <div
+        id="agent-messages"
+        class="agent-scrollbar relative min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-12 md:px-12"
+      >
+        <div id="agent-thread" class="mx-auto max-w-4xl space-y-16">
+          <div class="py-20 text-center" id="agent-empty-state">
+            <h2
+              class="mb-6 font-display text-5xl font-light opacity-80 italic md:text-6xl"
             >
+              Let's create <br />
+              <span class="font-bold text-foreground not-italic"
+                >the impossible.</span
+              >
+            </h2>
+            <p class="text-lg font-light text-muted-foreground">
+              Precision engines for professional execution.
             </p>
           </div>
         </div>
       </div>
 
-      <Canvas />
-    </main>
+      <div class="agent-prompt-dock shrink-0 pb-4 px-6 pt-4 md:px-12">
+        <div class="mx-auto max-w-4xl">
+          <form id="agent-prompt-form">
+            <input
+              type="hidden"
+              name="category"
+              value={DEFAULT_AGENT_CATEGORY}
+            />
+            <Textarea
+              variant="prompt"
+              id="main-prompt-input"
+              name="message"
+              label="Type your prompt..."
+              maxlength={4000}
+              required
+            />
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Canvas />
 </Layout>
 
 <script>

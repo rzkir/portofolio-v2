@@ -5,8 +5,6 @@ import {
 
 export { DEFAULT_AGENT_CATEGORY };
 
-const MAX_HISTORY_ITEMS = 20;
-
 const CODING_TOPIC_PATTERN =
   /\b(code|coding|program|programming|developer|javascript|typescript|python|react|vue|angular|api|function|bug|error|debug|serverless|html|css|sql|git|deploy|compile|syntax|algorithm|frontend|backend|fullstack|astro|node|npm|docker|database|query|component|class|interface|variable|loop|array|object|json|rest|graphql|webpack|vite|tailwind|cloudflare|worker|typescript|java|golang|rust|php|laravel|nextjs|nuxt|express|fastapi|django|flutter|kotlin|swift|regex|refactor|implementasi|optimasi|arsitektur)\b/i;
 
@@ -456,10 +454,12 @@ export function shouldShowCanvas(
 export function buildPromptHistory(
   messages: AgentChatMessage[],
 ): AgentHistoryItem[] {
-  return messages.slice(-MAX_HISTORY_ITEMS).map((message) => ({
-    role: message.role,
-    content: message.content,
-  }));
+  return messages
+    .map((message) => ({
+      role: message.role,
+      content: message.content.trim(),
+    }))
+    .filter((message) => message.content.length > 0);
 }
 
 export function formatAgentTime(iso: string): string {
