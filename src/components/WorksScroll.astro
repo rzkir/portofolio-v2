@@ -4,10 +4,7 @@ import ScaleIn from "@astroanimate/core/ScaleIn";
 import { Image } from "astro:assets";
 import FocusIn from "@/components/FocusIn.astro";
 import PreviewIcon from "@/components/svg/priview.astro";
-import {
-  getFeaturedWorks,
-  getWorksScrollVh,
-} from "@/service/works.service";
+import { getFeaturedWorks, getWorksScrollVh } from "@/service/works.service";
 import { getLocale, getMessages } from "@/lib/i18n";
 
 const locale = getLocale(Astro);
@@ -23,7 +20,7 @@ const inViewMargin = "-12%";
   id="karya"
   data-works-scroll
   data-header-theme="inverse"
-  class="works-scroll relative isolate bg-accent text-background"
+  class="works-scroll relative isolate bg-accent text-background dark:text-foreground rounded-t-4xl"
   aria-label={m.worksScroll.aria}
 >
   <div class="relative mx-auto container px-4 md:px-6">
@@ -36,13 +33,13 @@ const inViewMargin = "-12%";
     </div>
 
     <div
-      class="works-scroll__intro relative z-10 border-b border-background/10 pt-20 pb-12 md:pt-24"
+      class="works-scroll__intro relative z-10 border-b border-background/10 pt-20 pb-12 dark:border-foreground/15 md:pt-24"
     >
       <FocusIn>
         <div class="flex items-end justify-between">
           <div>
             <p
-              class="mb-4 font-mono text-sm tracking-widest text-gray-300 uppercase"
+              class="mb-4 font-mono text-sm tracking-widest text-background/70 uppercase dark:text-foreground/72"
             >
               {m.worksScroll.eyebrow}
             </p>
@@ -50,7 +47,7 @@ const inViewMargin = "-12%";
           </div>
           <div class="hidden flex-col items-end gap-3 md:flex">
             <span
-              class="font-mono text-sm tracking-widest text-gray-300 uppercase"
+              class="font-mono text-sm tracking-widest text-background/70 uppercase dark:text-foreground/72"
             >
               {m.worksScroll.scrollHint}
             </span>
@@ -58,7 +55,7 @@ const inViewMargin = "-12%";
               href="/works"
               data-cursor="focus"
               data-cursor-label="View"
-              class="font-mono text-[10px] uppercase tracking-[0.2em] text-background/70 transition-colors hover:text-background"
+              class="font-mono text-[10px] uppercase tracking-[0.2em] text-background/70 transition-colors hover:text-background dark:text-foreground/72 dark:hover:text-foreground"
             >
               {m.worksScroll.viewAll}
             </a>
@@ -98,7 +95,7 @@ const inViewMargin = "-12%";
                     initialScale={0.94}
                     easing={cinematic}
                     margin={`0px 0px ${inViewMargin} 0px`}
-                    class="overflow-hidden rounded-lg bg-background/10 md:col-span-7"
+                    class="overflow-hidden rounded-lg bg-background/10 dark:bg-foreground/8 md:col-span-7"
                   >
                     <figure data-cursor="grab">
                       {typeof work.image === "string" ? (
@@ -131,12 +128,14 @@ const inViewMargin = "-12%";
                       yOffset={24}
                       easing={cinematic}
                       inViewMargin={inViewMargin}
-                      class={`mb-1 max-w-sm font-display text-5xl leading-none italic text-background/25 md:text-6xl ${i % 2 === 1 ? "md:ml-auto" : ""}`}
+                      class={`mb-1 max-w-sm font-display text-5xl leading-none italic text-background/25 dark:text-foreground/35 md:text-6xl ${i % 2 === 1 ? "md:ml-auto" : ""}`}
                       aria-hidden="true"
                     >
                       {work.no}
                     </FadeInText>
-                    <span class="sr-only">{m.worksScroll.workNo.replace("{no}", work.no)}</span>
+                    <span class="sr-only">
+                      {m.worksScroll.workNo.replace("{no}", work.no)}
+                    </span>
                     <FadeInText
                       enhance
                       once={false}
@@ -148,8 +147,10 @@ const inViewMargin = "-12%";
                       inViewMargin={inViewMargin}
                       class={`mb-5 flex max-w-sm items-center justify-between gap-4 font-mono text-xs ${i % 2 === 1 ? "md:ml-auto" : ""}`}
                     >
-                      <span class="text-background/90">{work.tag}</span>
-                      <span class="text-xs uppercase tracking-[0.18em] text-background/45">
+                      <span class="text-background/90 dark:text-foreground/90">
+                        {work.tag}
+                      </span>
+                      <span class="text-xs uppercase tracking-[0.18em] text-background/45 dark:text-foreground/55">
                         {work.year}
                       </span>
                     </FadeInText>
@@ -176,7 +177,7 @@ const inViewMargin = "-12%";
                       yOffset={18}
                       easing={cinematic}
                       inViewMargin={inViewMargin}
-                      class="max-w-lg text-base leading-relaxed text-background/60"
+                      class="max-w-lg text-base leading-relaxed text-background/60 dark:text-foreground/72"
                     >
                       {work.desc}
                     </FadeInText>
@@ -195,8 +196,11 @@ const inViewMargin = "-12%";
                         href={`/works/${work.slug}`}
                         data-cursor="focus"
                         data-cursor-label="View"
-                        aria-label={m.worksScroll.viewWork.replace("{title}", work.title)}
-                        class="group/cta inline-flex items-center gap-2 border-b border-background/40 pb-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-background transition-colors hover:border-background"
+                        aria-label={m.worksScroll.viewWork.replace(
+                          "{title}",
+                          work.title,
+                        )}
+                        class="group/cta inline-flex items-center gap-2 border-b border-background/40 pb-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-background transition-colors hover:border-background dark:border-foreground/45 dark:text-foreground dark:hover:border-foreground"
                       >
                         {m.worksScroll.detail}
                         <PreviewIcon
@@ -213,8 +217,11 @@ const inViewMargin = "-12%";
         </div>
 
         <div class="flex shrink-0 items-center gap-4 pb-8">
-          <div class="h-px flex-1 bg-background/20">
-            <div data-works-bar class="h-full w-0 origin-left bg-background">
+          <div class="h-px flex-1 bg-background/20 dark:bg-foreground/25">
+            <div
+              data-works-bar
+              class="h-full w-0 origin-left bg-background dark:bg-foreground"
+            >
             </div>
           </div>
           <p
@@ -231,7 +238,7 @@ const inViewMargin = "-12%";
 
 <style>
   .works-scroll__grid span {
-    background-color: color-mix(in oklch, var(--background) 11%, transparent);
+    background-color: color-mix(in oklch, var(--foreground) 16%, transparent);
   }
 
   .works-scroll__viewport {

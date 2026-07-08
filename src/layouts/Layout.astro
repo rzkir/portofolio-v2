@@ -46,6 +46,7 @@ const meta = resolvePageMetadata({
 });
 
 const verification = getSiteVerification();
+const isAgentRoute = Astro.url.pathname.startsWith("/agent");
 ---
 
 <!doctype html>
@@ -64,6 +65,19 @@ const verification = getSiteVerification();
       } catch (_) {
         document.documentElement.classList.add("splash-pending");
       }
+    </script>
+    <script is:inline>
+      (function () {
+        try {
+          var dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          var root = document.documentElement;
+
+          if (dark) root.classList.add("dark");
+          root.setAttribute("data-theme", "system");
+          root.setAttribute("data-theme-resolved", dark ? "dark" : "light");
+          root.style.colorScheme = dark ? "dark" : "light";
+        } catch (_) {}
+      })();
     </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
@@ -158,7 +172,33 @@ const verification = getSiteVerification();
     <SplashScreen />
     <GrabCursor />
     <NotificationContext />
-    <slot />
+    {
+      isAgentRoute ? (
+        <div class="agent-shell flex h-dvh w-full bg-background text-foreground">
+          <slot />
+        </div>
+      ) : (
+        <slot />
+      )
+    }
     <link rel="stylesheet" href="/force-motion.css" />
+
+    <script>
+      import { bindTheme } from "@/lib/theme";
+
+      function initTheme() {
+        bindTheme();
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initTheme, {
+          once: true,
+        });
+      } else {
+        initTheme();
+      }
+
+      document.addEventListener("astro:page-load", initTheme);
+    </script>
   </body>
 </html>

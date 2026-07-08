@@ -10,7 +10,7 @@ const m = getMessages(locale);
 <footer
   id="kontak"
   data-header-theme="inverse"
-  class="rounded-t-[3rem] bg-accent px-4 py-20 text-background md:px-6"
+  class="footer-accent rounded-t-[3rem] bg-accent px-4 py-20 text-background dark:text-foreground md:px-6"
 >
   <div class="mx-auto container px-4 md:px-6">
     <div class="grid gap-20 md:grid-cols-12">
@@ -21,7 +21,7 @@ const m = getMessages(locale);
           {m.footer.eyebrow}
         </p>
         <h2
-          class="mb-12 font-display text-5xl leading-none text-background italic md:text-7xl"
+          class="mb-12 font-display text-5xl leading-none text-background dark:text-foreground italic md:text-7xl"
         >
           {m.footer.title}
         </h2>
@@ -30,7 +30,7 @@ const m = getMessages(locale);
             href={`mailto:${contact.email}`}
             data-cursor="focus"
             data-cursor-label="Send"
-            class="inline-flex w-fit items-center gap-3 border-b border-background/40 pb-2 text-lg font-medium text-background transition-colors hover:border-background"
+            class="inline-flex w-fit items-center gap-3 border-b border-background/40 dark:text-foreground pb-2 text-lg font-medium text-background transition-colors hover:border-background"
           >
             {contact.email} →
           </a>
@@ -104,3 +104,29 @@ const m = getMessages(locale);
     </div>
   </div>
 </footer>
+
+<style is:global>
+  html[data-theme-resolved="dark"] .footer-accent .text-background\/50 {
+    color: color-mix(in oklch, var(--foreground) 72%, transparent);
+  }
+
+  html[data-theme-resolved="dark"] .footer-accent .text-background\/60 {
+    color: color-mix(in oklch, var(--foreground) 78%, transparent);
+  }
+
+  html[data-theme-resolved="dark"] .footer-accent .text-background\/70 {
+    color: color-mix(in oklch, var(--foreground) 84%, transparent);
+  }
+
+  html[data-theme-resolved="dark"] .footer-accent .text-background\/90 {
+    color: color-mix(in oklch, var(--foreground) 92%, transparent);
+  }
+
+  html[data-theme-resolved="dark"] .footer-accent .border-background\/10 {
+    border-color: color-mix(in oklch, var(--foreground) 16%, transparent);
+  }
+
+  html[data-theme-resolved="dark"] .footer-accent .border-background\/40 {
+    border-color: color-mix(in oklch, var(--foreground) 48%, transparent);
+  }
+</style>

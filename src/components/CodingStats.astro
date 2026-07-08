@@ -11,11 +11,11 @@ const m = getMessages(locale);
 const stats = await getCodingStatsView(locale);
 
 const countUpClass =
-  "font-display text-5xl italic font-normal text-background md:text-6xl";
+  "font-display text-5xl italic font-normal text-background dark:text-foreground md:text-6xl";
 const countUpSmClass =
-  "font-display text-3xl italic font-normal text-background";
+  "font-display text-3xl italic font-normal text-background dark:text-foreground";
 const countUpXsClass =
-  "font-display text-2xl italic font-normal text-background md:text-3xl";
+  "font-display text-2xl italic font-normal text-background dark:text-foreground md:text-3xl";
 
 function parseStatValue(raw: string) {
   const match = raw.match(/^(\D*)(\d+)(\D*)$/);
@@ -30,7 +30,7 @@ function parseStatValue(raw: string) {
 ---
 
 <section
-  class="coding-stats bg-accent px-4 py-20 text-background md:px-6"
+  class="coding-stats bg-accent px-4 py-20 text-background dark:text-foreground md:px-6"
   data-header-theme="inverse"
 >
   <div class="mx-auto container px-4 md:px-6">
@@ -42,7 +42,7 @@ function parseStatValue(raw: string) {
           {m.codingStats.eyebrow}
         </p>
         <h2
-          class="font-display text-5xl leading-tight text-background italic md:text-6xl"
+          class="font-display text-5xl leading-tight text-background dark:text-foreground italic md:text-6xl"
         >
           {m.codingStats.title}
         </h2>
@@ -564,3 +564,74 @@ function parseStatValue(raw: string) {
     <CommitsRepoDialog repos={stats.commitsByRepo} />
   </div>
 </section>
+
+<style is:global>
+  html[data-theme-resolved="dark"] .coding-stats .text-background {
+    color: var(--foreground);
+  }
+
+  html[data-theme-resolved="dark"] .coding-stats .bg-background {
+    background-color: var(--foreground);
+  }
+
+  html[data-theme-resolved="dark"] .coding-stats .hover\:text-background:hover {
+    color: var(--foreground);
+  }
+
+  html[data-theme-resolved="dark"] .coding-stats .text-background\/50 {
+    color: color-mix(in oklch, var(--foreground) 72%, transparent);
+  }
+
+  html[data-theme-resolved="dark"] .coding-stats .text-background\/45 {
+    color: color-mix(in oklch, var(--foreground) 62%, transparent);
+  }
+
+  html[data-theme-resolved="dark"] .coding-stats .text-background\/60 {
+    color: color-mix(in oklch, var(--foreground) 75%, transparent);
+  }
+
+  html[data-theme-resolved="dark"] .coding-stats .text-background\/70 {
+    color: color-mix(in oklch, var(--foreground) 82%, transparent);
+  }
+
+  html[data-theme-resolved="dark"] .coding-stats .text-background\/75 {
+    color: color-mix(in oklch, var(--foreground) 84%, transparent);
+  }
+
+  html[data-theme-resolved="dark"] .coding-stats .text-background\/85,
+  html[data-theme-resolved="dark"] .coding-stats .text-background\/90 {
+    color: color-mix(in oklch, var(--foreground) 92%, transparent);
+  }
+
+  html[data-theme-resolved="dark"] .coding-stats .border-background\/10 {
+    border-color: color-mix(in oklch, var(--foreground) 16%, transparent);
+  }
+
+  html[data-theme-resolved="dark"] .coding-stats .border-background\/15 {
+    border-color: color-mix(in oklch, var(--foreground) 20%, transparent);
+  }
+
+  html[data-theme-resolved="dark"] .coding-stats .border-background\/20 {
+    border-color: color-mix(in oklch, var(--foreground) 24%, transparent);
+  }
+
+  html[data-theme-resolved="dark"] .coding-stats .border-background\/25 {
+    border-color: color-mix(in oklch, var(--foreground) 30%, transparent);
+  }
+
+  html[data-theme-resolved="dark"] .coding-stats .border-background\/30 {
+    border-color: color-mix(in oklch, var(--foreground) 36%, transparent);
+  }
+
+  html[data-theme-resolved="dark"] .coding-stats .bg-background\/10 {
+    background-color: color-mix(in oklch, var(--foreground) 12%, transparent);
+  }
+
+  html[data-theme-resolved="dark"] .coding-stats .bg-background\/15 {
+    background-color: color-mix(in oklch, var(--foreground) 16%, transparent);
+  }
+
+  html[data-theme-resolved="dark"] .coding-stats .bg-background\/20 {
+    background-color: color-mix(in oklch, var(--foreground) 20%, transparent);
+  }
+</style>

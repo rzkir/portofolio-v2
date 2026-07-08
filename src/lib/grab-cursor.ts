@@ -1,6 +1,8 @@
 type CursorState = "default" | "hover" | "grab" | "grabbing" | "focus";
 type CursorSurface = "light" | "invert";
 
+import { THEME_EVENT } from "@/lib/theme";
+
 const INVERSE_SELECTOR =
   '[data-header-theme="inverse"], [data-cursor-surface="invert"], .bg-accent, .bg-foreground';
 
@@ -209,6 +211,10 @@ export function initGrabCursor() {
     setSurface(resolveSurface(x, y));
   }
 
+  function syncSurfaceFromLastPointer() {
+    syncSurface(mx, my);
+  }
+
   function resolveState(target: EventTarget | null): CursorState {
     if (!(target instanceof Element)) return "default";
     if (target.closest(grabSelector)) return "grab";
@@ -292,6 +298,8 @@ export function initGrabCursor() {
     syncFocusMode(event.target);
     setState(resolveState(event.target));
   });
+
+  document.addEventListener(THEME_EVENT, syncSurfaceFromLastPointer);
 
   bindDialogCursorLayer(cursor, show);
 }

@@ -201,7 +201,17 @@ html.splash-seen #splash-screen {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: var(--accent-warm);
+  background:
+    radial-gradient(
+      circle at top,
+      color-mix(in oklch, var(--accent) 34%, transparent),
+      transparent 46%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklch, var(--background) 80%, var(--accent) 20%),
+      color-mix(in oklch, var(--surface) 90%, var(--foreground) 10%)
+    );
   will-change: transform;
   transition: transform 800ms var(--ease-cinematic);
 }
@@ -541,6 +551,18 @@ html.splash-pending .animate-focus {
   );
 }
 
+html[data-theme-resolved="dark"] .grab-cursor[data-surface="invert"] {
+  --cursor-ring-idle: color-mix(in oklch, var(--foreground) 50%, transparent);
+  --cursor-ring-active: color-mix(in oklch, var(--foreground) 96%, transparent);
+  --cursor-ink: var(--foreground);
+  --cursor-fill-active: color-mix(in oklch, var(--foreground) 14%, transparent);
+  --cursor-fill-grabbing: color-mix(
+    in oklch,
+    var(--foreground) 18%,
+    transparent
+  );
+}
+
 .grab-cursor.is-visible {
   opacity: 1;
 }
@@ -597,6 +619,10 @@ html.splash-pending .animate-focus {
   filter: drop-shadow(0 1px 3px rgb(0 0 0 / 0.4));
 }
 
+html[data-theme-resolved="dark"] .grab-cursor[data-surface="invert"] .grab-cursor__hand-img {
+  filter: invert(1) drop-shadow(0 1px 3px rgb(255 255 255 / 0.18));
+}
+
 .grab-cursor__ring {
   width: 2rem;
   height: 2rem;
@@ -623,6 +649,10 @@ html.splash-pending .animate-focus {
 
 .grab-cursor[data-surface="invert"] .grab-cursor__label {
   text-shadow: 0 1px 10px rgb(0 0 0 / 0.35);
+}
+
+html[data-theme-resolved="dark"] .grab-cursor[data-surface="invert"] .grab-cursor__label {
+  text-shadow: 0 0 10px rgb(255 255 255 / 0.28);
 }
 
 .grab-cursor[data-surface="light"] .grab-cursor__label {

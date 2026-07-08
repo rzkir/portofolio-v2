@@ -2,6 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import Aside from "@/components/ui/aside.astro";
 import Canvas from "@/components/ui/canvas.astro";
+import ThemeSwitch from "@/components/ui/switch.astro";
 import Textarea from "@/components/ui/textarea.astro";
 import { DEFAULT_AGENT_CATEGORY } from "@/service/agent.service";
 ---
@@ -11,21 +12,22 @@ import { DEFAULT_AGENT_CATEGORY } from "@/service/agent.service";
   description="Precision engines for professional execution."
   noIndex={true}
 >
-  <div class="agent-shell flex h-dvh w-full bg-background text-foreground">
-    <Aside />
+  <Aside />
 
     <main
       id="agent-main"
       class="relative flex min-w-0 flex-1 flex-col overflow-hidden md:flex-row"
     >
-      <div class="agent-chat-pane relative flex min-w-0 flex-1 flex-col overflow-hidden">
+      <div
+        class="agent-chat-pane relative flex min-w-0 flex-1 flex-col overflow-hidden"
+      >
         <div class="pointer-events-none absolute inset-0 overflow-hidden">
           <div
-            class="absolute -top-[20%] -right-[10%] size-[50%] rounded-full bg-accent/5 blur-[120px]"
+            class="absolute top-[-20%] right-[-10%] size-[50%] rounded-full bg-accent/5 blur-[120px]"
           >
           </div>
           <div
-            class="absolute -bottom-[20%] -left-[10%] size-[50%] rounded-full bg-foreground/5 blur-[120px]"
+            class="absolute bottom-[-20%] left-[-10%] size-[50%] rounded-full bg-foreground/5 blur-[120px]"
           >
           </div>
         </div>
@@ -40,8 +42,12 @@ import { DEFAULT_AGENT_CATEGORY } from "@/service/agent.service";
             </h1>
           </div>
 
-          <div class="flex items-center gap-6">
-            <div class="agent-glass flex items-center gap-2 rounded-full px-4 py-2">
+          <div class="flex items-center gap-4 md:gap-6">
+            <ThemeSwitch />
+
+            <div
+              class="agent-glass flex items-center gap-2 rounded-full px-4 py-2"
+            >
               <span class="size-2 rounded-full bg-accent pulse-soft"></span>
               <span
                 class="font-mono text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase"
@@ -67,11 +73,11 @@ import { DEFAULT_AGENT_CATEGORY } from "@/service/agent.service";
                 class="size-5"
                 aria-hidden="true"
               >
-                <circle cx="18" cy="5" r="3" />
-                <circle cx="6" cy="12" r="3" />
-                <circle cx="18" cy="19" r="3" />
-                <line x1="8.59" x2="15.42" y1="13.51" y2="17.49" />
-                <line x1="15.41" x2="8.59" y1="6.51" y2="10.49" />
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line>
+                <line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line>
               </svg>
             </button>
           </div>
@@ -98,7 +104,9 @@ import { DEFAULT_AGENT_CATEGORY } from "@/service/agent.service";
           </div>
         </div>
 
-        <div class="agent-prompt-dock shrink-0 px-6 pt-10 pb-6 md:px-12 md:pb-8">
+        <div
+          class="agent-prompt-dock shrink-0 px-6 pt-10 pb-6 md:px-12 md:pb-8"
+        >
           <div class="mx-auto max-w-4xl">
             <form id="agent-prompt-form">
               <input
@@ -127,7 +135,6 @@ import { DEFAULT_AGENT_CATEGORY } from "@/service/agent.service";
 
       <Canvas />
     </main>
-  </div>
 </Layout>
 
 <script>

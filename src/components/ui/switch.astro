@@ -1,0 +1,142 @@
+---
+import { cn } from "@/lib/utiles";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const options = [
+  { value: "light", label: "Light mode" },
+  { value: "dark", label: "Dark mode" },
+  { value: "system", label: "System theme" },
+] as const;
+---
+
+<div
+  class={cn("theme-switch", className)}
+  role="group"
+  aria-label="Theme"
+>
+  {
+    options.map((option, index) => (
+      <button
+        type="button"
+        class="theme-switch__btn"
+        data-theme-option={option.value}
+        aria-pressed={index === 2 ? "true" : "false"}
+        aria-label={option.label}
+        title={option.label}
+      >
+        {option.value === "light" && (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="size-4"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2" />
+            <path d="M12 20v2" />
+            <path d="m4.93 4.93 1.41 1.41" />
+            <path d="m17.66 17.66 1.41 1.41" />
+            <path d="M2 12h2" />
+            <path d="M20 12h2" />
+            <path d="m6.34 17.66-1.41 1.41" />
+            <path d="m19.07 4.93-1.41 1.41" />
+          </svg>
+        )}
+        {option.value === "dark" && (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="size-4"
+            aria-hidden="true"
+          >
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+          </svg>
+        )}
+        {option.value === "system" && (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="size-4"
+            aria-hidden="true"
+          >
+            <rect width="20" height="14" x="2" y="3" rx="2" />
+            <path d="M8 21h8" />
+            <path d="M12 17v4" />
+          </svg>
+        )}
+        <span class="sr-only">{option.label}</span>
+      </button>
+    ))
+  }
+</div>
+
+<style>
+  .theme-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.125rem;
+    padding: 0.2rem;
+    border-radius: 9999px;
+    border: 1px solid var(--border);
+    background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  }
+
+  .theme-switch__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: 0;
+    border-radius: 9999px;
+    color: var(--muted-foreground);
+    background: transparent;
+    cursor: pointer;
+    transition:
+      color 0.2s ease,
+      background-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .theme-switch__btn:hover {
+    color: var(--foreground);
+  }
+
+  .theme-switch__btn.is-active {
+    color: var(--accent-foreground);
+    background: var(--accent);
+    box-shadow: 0 6px 18px color-mix(in oklch, var(--accent) 25%, transparent);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>

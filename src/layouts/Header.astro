@@ -1,5 +1,6 @@
 ---
 import LangSwitcher from "@/components/LangSwitcher.astro";
+import ThemeSwitch from "@/components/ui/switch.astro";
 import { cn } from "@/lib/utiles";
 import { getLocale, getMessages } from "@/lib/i18n";
 
@@ -148,8 +149,9 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
         </nav>
 
         <div
-          class="site-header__actions animate-focus flex [animation-delay:200ms] items-center justify-end"
+          class="site-header__actions animate-focus flex [animation-delay:200ms] items-center justify-end gap-3"
         >
+          <ThemeSwitch />
           <LangSwitcher />
         </div>
       </div>

@@ -8,7 +8,8 @@ const cinematic = "cubic-bezier(0.32, 0.72, 0, 1)";
   id="splash-screen"
   aria-hidden="true"
   data-header-theme="inverse"
-  class="splash-screen fixed inset-0 z-100 flex flex-col items-center justify-center bg-accent"
+  data-cursor-surface="invert"
+  class="splash-screen fixed inset-0 z-100 flex flex-col items-center justify-center"
 >
   <div
     id="splash-content"
@@ -23,7 +24,7 @@ const cinematic = "cubic-bezier(0.32, 0.72, 0, 1)";
       blur="0px"
       yOffset={24}
       easing={cinematic}
-      class="font-display text-[8rem] leading-none text-background/90 italic md:text-[12rem]"
+      class="font-display text-[8rem] leading-none text-foreground/90 italic md:text-[12rem]"
     >
       RR
     </FadeInText>
@@ -38,11 +39,11 @@ const cinematic = "cubic-bezier(0.32, 0.72, 0, 1)";
       class="flex flex-col items-center gap-2"
     >
       <span
-        class="font-mono text-xs tracking-[0.3em] text-background/70 uppercase"
+        class="font-mono text-xs tracking-[0.3em] text-foreground/78 uppercase"
         >Rizki Ramadhan</span
       >
       <span
-        class="font-mono text-xs tracking-[0.3em] text-background/40 uppercase"
+        class="font-mono text-xs tracking-[0.3em] text-foreground/55 uppercase"
         >Fullstack Developer</span
       >
     </FadeInText>
@@ -60,12 +61,12 @@ const cinematic = "cubic-bezier(0.32, 0.72, 0, 1)";
   >
     <span
       id="splash-progress"
-      class="font-mono text-md tracking-[0.24em] text-background/50 tabular-nums"
+      class="font-mono text-md tracking-[0.24em] text-foreground/65 tabular-nums"
       aria-hidden="true"
     >
       000
     </span>
-    <span class="block h-px w-24 bg-background/30"></span>
+    <span class="block h-px w-24 bg-foreground/35"></span>
   </FadeInText>
 </div>
 
