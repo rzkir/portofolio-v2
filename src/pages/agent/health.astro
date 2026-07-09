@@ -2,7 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import Aside from "@/components/ui/aside.astro";
 import Card from "@/components/ui/card.astro";
-import AgentHeader from "@/components/ui/agent-header.astro";
+import AgentHeader from "@/layouts/agent-header.astro";
 import Textarea from "@/components/ui/textarea.astro";
 import {
   HEALTH_AGENT_CATEGORY,
@@ -21,7 +21,9 @@ import {
     id="agent-main"
     class="relative flex min-w-0 flex-1 flex-col overflow-hidden md:flex-row"
   >
-    <div class="agent-chat-pane relative flex min-w-0 flex-1 flex-col overflow-hidden">
+    <div
+      class="agent-chat-pane relative flex min-w-0 flex-1 flex-col overflow-hidden"
+    >
       <div class="pointer-events-none absolute inset-0 overflow-hidden">
         <div
           class="absolute top-[-20%] right-[-10%] size-[50%] rounded-full bg-accent/5 blur-[120px]"
@@ -45,7 +47,9 @@ import {
               class="mb-6 font-display text-5xl font-light opacity-80 italic md:text-6xl"
             >
               Build better <br />
-              <span class="font-bold text-foreground not-italic">daily health habits.</span>
+              <span class="font-bold text-foreground not-italic"
+                >daily health habits.</span
+              >
             </h2>
             <p class="text-lg font-light text-muted-foreground">
               Atur pola hidup sehat, nutrisi, olahraga, dan pemulihan dengan
@@ -87,7 +91,11 @@ import {
           >
           </p>
           <form id="agent-prompt-form">
-            <input type="hidden" name="category" value={HEALTH_AGENT_CATEGORY} />
+            <input
+              type="hidden"
+              name="category"
+              value={HEALTH_AGENT_CATEGORY}
+            />
             <Textarea
               variant="prompt"
               id="main-prompt-input"

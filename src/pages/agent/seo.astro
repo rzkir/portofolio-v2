@@ -2,7 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import Aside from "@/components/ui/aside.astro";
 import Card from "@/components/ui/card.astro";
-import AgentHeader from "@/components/ui/agent-header.astro";
+import AgentHeader from "@/layouts/agent-header.astro";
 import Textarea from "@/components/ui/textarea.astro";
 import {
   SEO_AGENT_CATEGORY,
@@ -91,11 +91,7 @@ import {
           >
           </p>
           <form id="agent-prompt-form">
-            <input
-              type="hidden"
-              name="category"
-              value={SEO_AGENT_CATEGORY}
-            />
+            <input type="hidden" name="category" value={SEO_AGENT_CATEGORY} />
             <Textarea
               variant="prompt"
               id="main-prompt-input"

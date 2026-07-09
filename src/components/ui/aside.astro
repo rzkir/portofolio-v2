@@ -1,13 +1,9 @@
 ---
 import Sidebar from "@/components/ui/sidebar.astro";
+
 import { cn } from "@/lib/utiles";
 
-interface Props {
-  class?: string;
-  homeHref?: string;
-}
-
-const { class: className, homeHref } = Astro.props;
+const { class: className, homeHref } = Astro.props as AsideProps;
 ---
 
 <button
@@ -29,9 +25,9 @@ const { class: className, homeHref } = Astro.props;
     stroke-linejoin="round"
     aria-hidden="true"
   >
-    <path d="M4 6h16" />
-    <path d="M4 12h16" />
-    <path d="M4 18h16" />
+    <path d="M4 6h16"></path>
+    <path d="M4 12h16"></path>
+    <path d="M4 18h16"></path>
   </svg>
   <svg
     class="agent-sidebar-toggle__close hidden size-5"
@@ -44,8 +40,8 @@ const { class: className, homeHref } = Astro.props;
     stroke-linejoin="round"
     aria-hidden="true"
   >
-    <path d="M18 6 6 18" />
-    <path d="m6 6 12 12" />
+    <path d="M18 6 6 18"></path>
+    <path d="m6 6 12 12"></path>
   </svg>
 </button>
 
@@ -53,7 +49,8 @@ const { class: className, homeHref } = Astro.props;
   id="agent-sidebar-backdrop"
   class="agent-sidebar-backdrop pointer-events-none fixed inset-0 bg-background/60 opacity-0 transition-opacity duration-200 md:hidden"
   aria-hidden="true"
-></div>
+>
+</div>
 
 <aside
   id="agent-sidebar"
@@ -88,7 +85,9 @@ const { class: className, homeHref } = Astro.props;
     if (!shell || shell.dataset.sidebarBound === "true") return;
     shell.dataset.sidebarBound = "true";
 
-    const toggle = root.querySelector<HTMLButtonElement>("#agent-sidebar-toggle");
+    const toggle = root.querySelector<HTMLButtonElement>(
+      "#agent-sidebar-toggle",
+    );
     const sidebar = root.querySelector<HTMLElement>("#agent-sidebar");
     const backdrop = root.querySelector<HTMLElement>("#agent-sidebar-backdrop");
     if (!toggle || !sidebar || !backdrop) return;

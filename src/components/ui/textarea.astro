@@ -1,22 +1,6 @@
 ---
 import { cn } from "@/lib/utiles";
 
-export interface TextareaProps {
-  label: string;
-  id: string;
-  name: string;
-  placeholder?: string;
-  maxlength?: number;
-  rows?: number;
-  required?: boolean;
-  class?: string;
-  textareaClass?: string;
-  variant?: "default" | "prompt";
-  attachLabel?: string;
-  sendLabel?: string;
-  footerHints?: string[];
-}
-
 const {
   label,
   id,
@@ -30,7 +14,6 @@ const {
   variant = "default",
   attachLabel = "Attach file",
   sendLabel = "Send prompt",
-  footerHints = ["Neural Context: Enabled", "Privacy Mode: Active"],
 } = Astro.props;
 
 const fieldClass =

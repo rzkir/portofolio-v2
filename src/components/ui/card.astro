@@ -1,27 +1,11 @@
 ---
 import { Image } from "astro:assets";
+
 import type { ImageMetadata } from "astro";
+
 import PreviewIcon from "@/components/svg/priview.astro";
+
 import { cn } from "@/lib/utiles";
-
-export interface CardProps {
-  no?: string;
-  title: string;
-  tag?: string;
-  year?: string;
-  description?: string;
-  image?: ImageMetadata | string;
-  href?: string;
-  external?: boolean;
-  variant?: "link" | "select";
-  category?: string;
-  categoryLabel?: string;
-  prompt?: string;
-}
-
-interface Props extends CardProps {
-  class?: string;
-}
 
 const {
   no = "",
@@ -62,13 +46,11 @@ const sharedLabel = isSelect
       class={sharedClass}
     >
       <div class="ui-card__body">
-        {
-          categoryLabel ? (
-            <span class="ui-card__category font-mono text-[10px] font-bold tracking-[0.2em] text-accent uppercase">
-              {categoryLabel}
-            </span>
-          ) : null
-        }
+        {categoryLabel ? (
+          <span class="ui-card__category font-mono text-[10px] font-bold tracking-[0.2em] text-accent uppercase">
+            {categoryLabel}
+          </span>
+        ) : null}
         <h2 class="ui-card__title font-display text-xl italic leading-tight">
           {title}
         </h2>

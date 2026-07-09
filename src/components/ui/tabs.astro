@@ -1,20 +1,6 @@
 ---
 import { cn } from "@/lib/utiles";
 
-export interface TabItem {
-  id: string;
-  label: string;
-}
-
-interface Props {
-  id: string;
-  tabs: TabItem[];
-  defaultTab?: string;
-  class?: string;
-  listClass?: string;
-  panelsClass?: string;
-}
-
 const {
   id,
   tabs,
@@ -22,7 +8,7 @@ const {
   class: className,
   listClass,
   panelsClass,
-} = Astro.props;
+} = Astro.props as TabsProps;
 ---
 
 <div id={id} class={cn("ui-tabs", className)} data-ui-tabs>
@@ -37,10 +23,7 @@ const {
           type="button"
           role="tab"
           id={`${id}-tab-${tab.id}`}
-          class={cn(
-            "ui-tabs__trigger",
-            tab.id === defaultTab && "is-active",
-          )}
+          class={cn("ui-tabs__trigger", tab.id === defaultTab && "is-active")}
           aria-selected={tab.id === defaultTab ? "true" : "false"}
           aria-controls={`${id}-panel-${tab.id}`}
           data-tab-trigger={tab.id}

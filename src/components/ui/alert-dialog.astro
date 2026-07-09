@@ -1,16 +1,7 @@
 ---
 import { cn } from "@/lib/utiles";
-import Spiner from "@/components/ui/spiner.astro";
 
-interface Props {
-  id: string;
-  title: string;
-  description?: string;
-  confirmLabel?: string;
-  cancelLabel?: string;
-  loadingLabel?: string;
-  class?: string;
-}
+import Spiner from "@/components/ui/spiner.astro";
 
 const {
   id,
@@ -20,7 +11,7 @@ const {
   cancelLabel = "Cancel",
   loadingLabel = "Loading…",
   class: className,
-} = Astro.props;
+} = Astro.props as AlertDialogProps;
 ---
 
 <dialog
@@ -65,7 +56,9 @@ const {
       aria-hidden="true"
     >
       <Spiner size="lg" label={loadingLabel} />
-      <span class="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
+      <span
+        class="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
+      >
         {loadingLabel}
       </span>
     </div>

@@ -1,0 +1,777 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Aside from "@/components/ui/aside.astro";
+import ThemeSwitch from "@/components/ui/switch.astro";
+import { portrait, contact } from "@/data/portfolio";
+import { cn } from "@/lib/utiles";
+
+const navGroups = [
+  {
+    label: "General",
+    items: [
+      { id: "preferences", label: "Preferences", icon: "settings" },
+      { id: "profile", label: "Profile", icon: "user", active: true },
+      { id: "notifications", label: "Notifications", icon: "bell" },
+      { id: "security", label: "Security & Access", icon: "shield" },
+    ],
+  },
+  {
+    label: "Extensions",
+    items: [
+      { id: "connected", label: "Connected Accounts", icon: "link" },
+      { id: "agent", label: "Agent Personalization", icon: "sparkles" },
+    ],
+  },
+] as const;
+
+const preferenceToggles = [
+  {
+    id: "pref-notifications",
+    label: "Desktop Notifications",
+    description: "Receive real-time alerts for project updates.",
+    checked: true,
+  },
+  {
+    id: "pref-autosave",
+    label: "Auto-save Drafts",
+    description: "Automatically save changes to your projects every 30 seconds.",
+    checked: true,
+  },
+  {
+    id: "pref-beta",
+    label: "Beta Features",
+    description: "Early access to experimental Agent intelligence tools.",
+    checked: false,
+  },
+] as const;
+
+const integrations = [
+  {
+    id: "github",
+    name: "GitHub",
+    description: "Connected as @rzkir",
+    connected: true,
+  },
+  {
+    id: "google",
+    name: "Google Cloud",
+    description: "Sync your cloud deployments",
+    connected: false,
+  },
+  {
+    id: "slack",
+    name: "Slack",
+    description: "Send notifications to your workspace",
+    connected: false,
+  },
+] as const;
+
+const navLinkClass =
+  "flex items-center gap-3 rounded-lg px-4 py-2 text-sm transition-all";
+const navLinkActiveClass = "bg-surface font-medium text-foreground";
+const navLinkIdleClass =
+  "text-muted-foreground hover:bg-surface/70 hover:text-foreground";
+
+const sectionTitleClass = "text-xl font-medium font-display";
+---
+
+<Layout
+  title="Settings"
+  description="Manage your account preferences, profile visibility, and system configurations."
+  noIndex={true}
+>
+  <Aside homeHref="/agent" />
+
+  <main
+    id="agent-main"
+    class="relative flex min-h-0 min-w-0 flex-1 overflow-hidden"
+  >
+    <div class="flex min-h-0 w-full">
+      <aside
+        class="settings-nav hidden h-full w-72 shrink-0 flex-col border-r border-border bg-background lg:flex"
+        aria-label="Settings navigation"
+      >
+        <div class="p-8 pb-4">
+          <a
+            href="/"
+            class="font-display text-xl font-medium tracking-tight transition-colors hover:text-accent"
+          >
+            R. Ramadhan
+          </a>
+          <p
+            class="mt-1 text-[10px] tracking-widest text-muted-foreground uppercase"
+          >
+            Settings & Preferences
+          </p>
+        </div>
+
+        <nav class="flex-1 space-y-1 overflow-y-auto px-4 py-8">
+          {
+            navGroups.map((group) => (
+              <div>
+                <div class="mb-4 px-4">
+                  <p class="text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">
+                    {group.label}
+                  </p>
+                </div>
+                <div class="space-y-1">
+                  {group.items.map((item) => (
+                    <a
+                      href={`#${item.id}`}
+                      id={`nav-${item.id}`}
+                      class={cn(
+                        navLinkClass,
+                        "active" in item && item.active
+                          ? navLinkActiveClass
+                          : navLinkIdleClass,
+                      )}
+                    >
+                      {item.icon === "settings" && (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="size-4.5 shrink-0"
+                          aria-hidden="true"
+                        >
+                          <path d="M20 7h-9" />
+                          <path d="M14 17H5" />
+                          <circle cx="17" cy="17" r="3" />
+                          <circle cx="7" cy="7" r="3" />
+                        </svg>
+                      )}
+                      {item.icon === "user" && (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="size-4.5 shrink-0"
+                          aria-hidden="true"
+                        >
+                          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                          <circle cx="12" cy="7" r="4" />
+                        </svg>
+                      )}
+                      {item.icon === "bell" && (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="size-4.5 shrink-0"
+                          aria-hidden="true"
+                        >
+                          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                        </svg>
+                      )}
+                      {item.icon === "shield" && (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="size-4.5 shrink-0"
+                          aria-hidden="true"
+                        >
+                          <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+                          <path d="m9 12 2 2 4-4" />
+                        </svg>
+                      )}
+                      {item.icon === "link" && (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="size-4.5 shrink-0"
+                          aria-hidden="true"
+                        >
+                          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                        </svg>
+                      )}
+                      {item.icon === "sparkles" && (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="size-4.5 shrink-0"
+                          aria-hidden="true"
+                        >
+                          <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
+                          <path d="M20 3v4" />
+                          <path d="M22 5h-4" />
+                          <path d="M4 17v2" />
+                          <path d="M5 18H3" />
+                        </svg>
+                      )}
+                      {item.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ))
+          }
+        </nav>
+
+        <div class="border-t border-border p-8">
+          <div class="flex items-center gap-3">
+            <div class="size-8 overflow-hidden rounded-full border border-border">
+              <img
+                src={portrait.src}
+                width={32}
+                height={32}
+                alt="Rizki Ramadhan"
+                class="size-full object-cover"
+              />
+            </div>
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-sm font-medium">Rizki R.</p>
+              <p class="truncate text-[11px] text-muted-foreground">Pro Plan</p>
+            </div>
+            <a
+              href="/"
+              class="text-muted-foreground transition-colors hover:text-destructive"
+              aria-label="Back to portfolio"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-4"
+                aria-hidden="true"
+              >
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" x2="9" y1="12" y2="12" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+      <div class="settings-content min-h-0 flex-1 overflow-y-auto overscroll-contain bg-background">
+        <div class="mx-auto max-w-4xl px-6 py-12 md:px-12 md:py-16">
+          <header class="mb-16">
+            <h1 class="mb-4 font-display text-4xl italic md:text-5xl">
+              Settings
+            </h1>
+            <p class="max-w-lg text-sm leading-relaxed text-muted-foreground">
+              Manage your account preferences, profile visibility, and system
+              configurations. Tailor your agent experience to your workflow.
+            </p>
+          </header>
+
+          <section id="profile" class="settings-section mb-20 scroll-mt-8">
+            <div
+              class="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-4"
+            >
+              <h2 class={sectionTitleClass}>Public Profile</h2>
+              <button
+                type="button"
+                class="rounded-full bg-foreground px-6 py-2 text-xs font-medium text-background transition-colors hover:bg-foreground/85"
+              >
+                Edit Profile
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 gap-12 md:grid-cols-3">
+              <div class="space-y-1">
+                <p class="text-sm font-medium">Personal Information</p>
+                <p class="text-xs text-muted-foreground">
+                  This will be displayed on your public portfolio page.
+                </p>
+              </div>
+
+              <div class="space-y-8 md:col-span-2">
+                <div class="flex flex-wrap items-center gap-8">
+                  <div class="group relative">
+                    <div
+                      class="size-24 overflow-hidden rounded-full border-4 border-background bg-surface shadow-sm"
+                    >
+                      <img
+                        src={portrait.src}
+                        width={96}
+                        height={96}
+                        alt="Rizki Ramadhan"
+                        class="size-full object-cover"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      class="absolute right-0 bottom-0 flex size-8 items-center justify-center rounded-full border border-border bg-background shadow-sm transition-colors hover:bg-surface"
+                      aria-label="Change avatar"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.75"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="size-3.5"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"
+                        />
+                        <circle cx="12" cy="13" r="3" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <div class="space-y-1">
+                    <div>
+                      <p
+                        class="text-[10px] font-semibold text-muted-foreground uppercase"
+                      >
+                        Full Name
+                      </p>
+                      <p class="text-sm">Rizki Ramadhan</p>
+                    </div>
+                    <div>
+                      <p
+                        class="mt-4 text-[10px] font-semibold text-muted-foreground uppercase"
+                      >
+                        Bio
+                      </p>
+                      <p class="text-sm leading-relaxed text-muted-foreground italic">
+                        "Crafting human-centric code in a machine world."
+                      </p>
+                    </div>
+                    <div>
+                      <p
+                        class="mt-4 text-[10px] font-semibold text-muted-foreground uppercase"
+                      >
+                        Email
+                      </p>
+                      <p class="text-sm">{contact.email}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="preferences" class="settings-section mb-20 scroll-mt-8">
+            <div class="mb-8 border-b border-border pb-4">
+              <h2 class={sectionTitleClass}>Application Preferences</h2>
+            </div>
+
+            <div class="space-y-6">
+              <div
+                class="flex flex-wrap items-center justify-between gap-4 py-2"
+              >
+                <div class="space-y-0.5">
+                  <p class="text-sm font-medium">Color Theme</p>
+                  <p class="text-xs text-muted-foreground">
+                    Choose light, dark, or system appearance.
+                  </p>
+                </div>
+                <ThemeSwitch />
+              </div>
+
+              {
+                preferenceToggles.map((pref) => (
+                  <div class="flex items-center justify-between gap-4 py-2">
+                    <div class="space-y-0.5">
+                      <p class="text-sm font-medium">{pref.label}</p>
+                      <p class="text-xs text-muted-foreground">
+                        {pref.description}
+                      </p>
+                    </div>
+                    <label class="settings-toggle relative inline-flex cursor-pointer items-center">
+                      <input
+                        type="checkbox"
+                        id={pref.id}
+                        class="settings-toggle__input sr-only"
+                        checked={pref.checked}
+                      />
+                      <span class="settings-toggle__track" aria-hidden="true">
+                        <span class="settings-toggle__thumb" />
+                      </span>
+                    </label>
+                  </div>
+                ))
+              }
+            </div>
+          </section>
+
+          <section id="notifications" class="settings-section mb-20 scroll-mt-8">
+            <div class="mb-8 border-b border-border pb-4">
+              <h2 class={sectionTitleClass}>Notifications</h2>
+            </div>
+
+            <div class="space-y-4">
+              <div
+                class="flex items-center justify-between gap-4 rounded-xl border border-border p-4"
+              >
+                <div class="space-y-0.5">
+                  <p class="text-sm font-medium">Agent Responses</p>
+                  <p class="text-xs text-muted-foreground">
+                    Notify when a long-running agent task completes.
+                  </p>
+                </div>
+                <label class="settings-toggle relative inline-flex cursor-pointer items-center">
+                  <input
+                    type="checkbox"
+                    id="notif-agent"
+                    class="settings-toggle__input sr-only"
+                    checked
+                  />
+                  <span class="settings-toggle__track" aria-hidden="true">
+                    <span class="settings-toggle__thumb" />
+                  </span>
+                </label>
+              </div>
+
+              <div
+                class="flex items-center justify-between gap-4 rounded-xl border border-border p-4"
+              >
+                <div class="space-y-0.5">
+                  <p class="text-sm font-medium">Weekly Digest</p>
+                  <p class="text-xs text-muted-foreground">
+                    Summary of your agent activity and project updates.
+                  </p>
+                </div>
+                <label class="settings-toggle relative inline-flex cursor-pointer items-center">
+                  <input
+                    type="checkbox"
+                    id="notif-digest"
+                    class="settings-toggle__input sr-only"
+                  />
+                  <span class="settings-toggle__track" aria-hidden="true">
+                    <span class="settings-toggle__thumb" />
+                  </span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section id="security" class="settings-section mb-20 scroll-mt-8">
+            <div class="mb-8 border-b border-border pb-4">
+              <h2 class={sectionTitleClass}>Security & Privacy</h2>
+            </div>
+
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div
+                class="group rounded-2xl border border-border bg-surface/30 p-6 transition-all hover:bg-background hover:shadow-sm"
+              >
+                <div class="mb-4 flex items-center gap-4">
+                  <div
+                    class="flex size-10 items-center justify-center rounded-xl bg-accent/10 text-accent"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.75"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="size-5"
+                      aria-hidden="true"
+                    >
+                      <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                  </div>
+                  <h3 class="text-sm font-medium">Change Password</h3>
+                </div>
+                <p class="mb-6 text-xs text-muted-foreground">
+                  Last changed 3 months ago. We recommend regular updates.
+                </p>
+                <button
+                  type="button"
+                  class="border-b border-foreground pb-0.5 text-xs font-semibold transition-colors hover:border-accent hover:text-accent"
+                >
+                  Update credentials
+                </button>
+              </div>
+
+              <div
+                class="group rounded-2xl border border-border bg-surface/30 p-6 transition-all hover:bg-background hover:shadow-sm"
+              >
+                <div class="mb-4 flex items-center gap-4">
+                  <div
+                    class="flex size-10 items-center justify-center rounded-xl bg-surface text-muted-foreground"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.75"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="size-5"
+                      aria-hidden="true"
+                    >
+                      <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+                      <path d="M12 18h.01" />
+                    </svg>
+                  </div>
+                  <h3 class="text-sm font-medium">Two-Factor Auth</h3>
+                </div>
+                <p class="mb-6 text-xs text-muted-foreground">
+                  Add an extra layer of security to your developer account.
+                </p>
+                <button
+                  type="button"
+                  class="border-b border-foreground pb-0.5 text-xs font-semibold transition-colors hover:border-accent hover:text-accent"
+                >
+                  Enable 2FA
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section id="connected" class="settings-section mb-20 scroll-mt-8">
+            <div class="mb-8 border-b border-border pb-4">
+              <h2 class={sectionTitleClass}>Integrations</h2>
+            </div>
+
+            <div class="space-y-4">
+              {
+                integrations.map((item) => (
+                  <div class="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-border p-4">
+                    <div class="flex items-center gap-4">
+                      {item.id === "github" && (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          class="size-8 shrink-0"
+                          aria-hidden="true"
+                        >
+                          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                        </svg>
+                      )}
+                      {item.id === "google" && (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          class="size-7 shrink-0"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fill="#4285F4"
+                            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                          />
+                          <path
+                            fill="#34A853"
+                            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                          />
+                          <path
+                            fill="#FBBC05"
+                            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                          />
+                          <path
+                            fill="#EA4335"
+                            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                          />
+                        </svg>
+                      )}
+                      {item.id === "slack" && (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          class="size-7 shrink-0"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fill="#E01E5A"
+                            d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313z"
+                          />
+                          <path
+                            fill="#36C5F0"
+                            d="M8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.527 2.527 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.527 2.527 0 0 1 2.521 2.521 2.527 2.527 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312z"
+                          />
+                          <path
+                            fill="#2EB67D"
+                            d="M18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.527 2.527 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.527 2.527 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.528 2.528 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312z"
+                          />
+                          <path
+                            fill="#ECB22E"
+                            d="M15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.527 2.527 0 0 1 2.52-2.52h6.313A2.528 2.528 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"
+                          />
+                        </svg>
+                      )}
+                      <div>
+                        <p class="text-sm font-medium">{item.name}</p>
+                        <p class="text-xs text-muted-foreground">
+                          {item.description}
+                        </p>
+                      </div>
+                    </div>
+                    {item.connected ? (
+                      <button
+                        type="button"
+                        class="rounded-full border border-border px-4 py-1.5 text-xs transition-all hover:border-destructive/30 hover:bg-destructive/5 hover:text-destructive"
+                      >
+                        Disconnect
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        class="rounded-full bg-foreground px-4 py-1.5 text-xs text-background transition-colors hover:bg-foreground/85"
+                      >
+                        Connect
+                      </button>
+                    )}
+                  </div>
+                ))
+              }
+            </div>
+          </section>
+
+          <section id="agent" class="settings-section mb-20 scroll-mt-8">
+            <div class="mb-8 border-b border-border pb-4">
+              <h2 class={sectionTitleClass}>Agent Personalization</h2>
+            </div>
+
+            <div class="grid grid-cols-1 gap-12 md:grid-cols-3">
+              <div class="space-y-1">
+                <p class="text-sm font-medium">Default Behavior</p>
+                <p class="text-xs text-muted-foreground">
+                  Configure how agents respond across all categories.
+                </p>
+              </div>
+
+              <div class="space-y-6 md:col-span-2">
+                <div
+                  class="flex items-center justify-between gap-4 rounded-xl border border-border p-4"
+                >
+                  <div class="space-y-0.5">
+                    <p class="text-sm font-medium">Concise Responses</p>
+                    <p class="text-xs text-muted-foreground">
+                      Prefer shorter, direct answers by default.
+                    </p>
+                  </div>
+                  <label class="settings-toggle relative inline-flex cursor-pointer items-center">
+                    <input
+                      type="checkbox"
+                      id="agent-concise"
+                      class="settings-toggle__input sr-only"
+                    />
+                    <span class="settings-toggle__track" aria-hidden="true">
+                      <span class="settings-toggle__thumb" />
+                    </span>
+                  </label>
+                </div>
+
+                <div
+                  class="flex items-center justify-between gap-4 rounded-xl border border-border p-4"
+                >
+                  <div class="space-y-0.5">
+                    <p class="text-sm font-medium">Remember Context</p>
+                    <p class="text-xs text-muted-foreground">
+                      Keep conversation history across agent sessions.
+                    </p>
+                  </div>
+                  <label class="settings-toggle relative inline-flex cursor-pointer items-center">
+                    <input
+                      type="checkbox"
+                      id="agent-context"
+                      class="settings-toggle__input sr-only"
+                      checked
+                    />
+                    <span class="settings-toggle__track" aria-hidden="true">
+                      <span class="settings-toggle__thumb" />
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <footer
+            class="flex flex-wrap justify-between gap-4 border-t border-border pt-8 text-[10px] tracking-widest text-muted-foreground uppercase"
+          >
+            <div>© 2026 R. Ramadhan Studio</div>
+            <div class="flex gap-6">
+              <a href="/" class="transition-colors hover:text-foreground">
+                Privacy
+              </a>
+              <a href="/" class="transition-colors hover:text-foreground">
+                Terms
+              </a>
+              <a href={contact.website} class="transition-colors hover:text-foreground">
+                Help Center
+              </a>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .settings-toggle__track {
+    position: relative;
+    display: inline-flex;
+    width: 2.75rem;
+    height: 1.5rem;
+    border-radius: 9999px;
+    background: color-mix(in oklch, var(--foreground) 12%, transparent);
+    transition: background-color 0.2s ease;
+  }
+
+  .settings-toggle__thumb {
+    position: absolute;
+    top: 0.25rem;
+    left: 0.25rem;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 9999px;
+    background: var(--background);
+    transition: transform 0.2s ease;
+  }
+
+  .settings-toggle__input:checked + .settings-toggle__track {
+    background: var(--accent);
+  }
+
+  .settings-toggle__input:checked + .settings-toggle__track .settings-toggle__thumb {
+    transform: translateX(1.25rem);
+  }
+
+  .settings-toggle__input:focus-visible + .settings-toggle__track {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .settings-content {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklch, var(--foreground) 18%, transparent)
+      transparent;
+  }
+</style>

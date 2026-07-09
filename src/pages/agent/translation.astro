@@ -2,7 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import Aside from "@/components/ui/aside.astro";
 import Card from "@/components/ui/card.astro";
-import AgentHeader from "@/components/ui/agent-header.astro";
+import AgentHeader from "@/layouts/agent-header.astro";
 import Textarea from "@/components/ui/textarea.astro";
 import {
   TRANSLATION_AGENT_CATEGORY,
@@ -27,10 +27,12 @@ import {
       <div class="pointer-events-none absolute inset-0 overflow-hidden">
         <div
           class="absolute top-[-20%] right-[-10%] size-[50%] rounded-full bg-accent/5 blur-[120px]"
-        ></div>
+        >
+        </div>
         <div
           class="absolute bottom-[-20%] left-[-10%] size-[50%] rounded-full bg-foreground/5 blur-[120px]"
-        ></div>
+        >
+        </div>
       </div>
 
       <AgentHeader title="Translation Engine" />
@@ -45,7 +47,9 @@ import {
               class="mb-6 font-display text-5xl font-light opacity-80 italic md:text-6xl"
             >
               Translate <br />
-              <span class="font-bold text-foreground not-italic">with intent.</span>
+              <span class="font-bold text-foreground not-italic"
+                >with intent.</span
+              >
             </h2>
             <p class="text-lg font-light text-muted-foreground">
               Terjemahkan teks dengan gaya, nada, dan konteks yang tepat.
@@ -83,7 +87,8 @@ import {
             class="mb-3 hidden rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
             role="alert"
             aria-live="polite"
-          ></p>
+          >
+          </p>
 
           <form id="agent-prompt-form">
             <input

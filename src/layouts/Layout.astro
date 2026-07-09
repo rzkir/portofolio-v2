@@ -4,7 +4,7 @@ import Announcement from "@/layouts/announcement.astro";
 import NotificationContext from "@/layouts/NotificationContext.astro";
 import SplashScreen from "@/components/SplashScreen.astro";
 import { FORCE_MOTION_INLINE_SCRIPT } from "@/lib/force-motion";
-import { getLocale, getMessages } from "@/lib/i18n";
+import { getLocale, getMessages, langHref } from "@/lib/i18n";
 import {
   getSiteVerification,
   resolvePageMetadata,
@@ -89,6 +89,18 @@ const isAgentRoute = Astro.url.pathname.startsWith("/agent");
     <link rel="canonical" href={meta.canonicalUrl} />
     <link rel="sitemap" href="/sitemap.xml" type="application/xml" />
     {meta.robots && <meta name="robots" content={meta.robots} />}
+
+    <link
+      rel="alternate"
+      hreflang="id"
+      href={langHref(Astro.url.pathname, Astro.url.search, "id")}
+    />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href={langHref(Astro.url.pathname, Astro.url.search, "en")}
+    />
+    <link rel="alternate" hreflang="x-default" href={Astro.url.pathname} />
 
     {
       verification.googleSiteVerification && (

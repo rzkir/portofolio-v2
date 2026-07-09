@@ -1,18 +1,6 @@
 ---
 import { cn } from "@/lib/utiles";
 
-export interface InputProps {
-  label: string;
-  id: string;
-  name: string;
-  type?: string;
-  placeholder?: string;
-  maxlength?: number;
-  required?: boolean;
-  class?: string;
-  inputClass?: string;
-}
-
 const {
   label,
   id,
@@ -30,7 +18,9 @@ const fieldClass =
 ---
 
 <label class={cn("block", className)}>
-  <span class="mb-2 block font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
+  <span
+    class="mb-2 block font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase"
+  >
     {label}
   </span>
   <input

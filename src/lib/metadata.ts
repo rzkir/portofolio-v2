@@ -71,6 +71,8 @@ export function getSiteVerification(): SiteVerification {
 }
 
 const SITE_NAME = "Rizki Ramadhan";
+const DEFAULT_ROBOTS =
+  "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
 
 const OG_LOCALE: Record<Locale, string> = {
   id: "id_ID",
@@ -192,7 +194,7 @@ export function resolvePageMetadata(input: PageMetadataInput): PageMetadata {
     title,
     description,
     canonicalUrl,
-    robots: noIndex ? "noindex, nofollow" : null,
+    robots: noIndex ? "noindex, nofollow" : DEFAULT_ROBOTS,
     og: {
       type: ogType,
       title,

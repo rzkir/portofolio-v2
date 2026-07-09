@@ -3,11 +3,9 @@ import Layout from "@/layouts/Layout.astro";
 import Aside from "@/components/ui/aside.astro";
 import Canvas from "@/components/ui/canvas.astro";
 import Card from "@/components/ui/card.astro";
-import AgentHeader from "@/components/ui/agent-header.astro";
+import AgentHeader from "@/layouts/agent-header.astro";
 import Textarea from "@/components/ui/textarea.astro";
-import {
-  AGENT_CATEGORY_CARDS,
-} from "@/service/agent.service";
+import { AGENT_CATEGORY_CARDS } from "@/service/agent.service";
 ---
 
 <Layout
@@ -90,17 +88,13 @@ import {
           >
           </p>
           <form id="agent-prompt-form">
-            <input
-              type="hidden"
-              name="category"
-              value="roleplay"
-            />
+            <input type="hidden" name="category" value="roleplay" />
             <Textarea
               variant="prompt"
               id="main-prompt-input"
               name="message"
               label="Type your prompt..."
-              maxlength={4000}
+              maxlength={10000}
               required
             />
           </form>
