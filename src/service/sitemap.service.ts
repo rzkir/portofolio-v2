@@ -75,17 +75,29 @@ function mapApiRoutes(
   const entries = new Map<string, SitemapEntryMeta>();
 
   for (const route of routes) {
-    const pathname = mapApiPathname(new URL(route.loc).pathname);
-    if (!pathname) continue;
+    if (!route?.loc) continue;
 
-    addEntry(entries, toAbsoluteUrl(siteUrl, pathname), {
-      lastmod: route.lastmod,
-      changefreq: route.changefreq,
-      priority: route.priority,
-    });
+    try {
+      const pathname = mapApiPathname(new URL(route.loc).pathname);
+      if (!pathname) continue;
+
+      addEntry(entries, toAbsoluteUrl(siteUrl, pathname), {
+        lastmod: route.lastmod,
+        changefreq: route.changefreq,
+        priority: route.priority,
+      });
+    } catch {
+      continue;
+    }
   }
 
   return entries;
+}
+
+export function buildFallbackSitemapMetadata(
+  siteUrl: string,
+): Map<string, SitemapEntryMeta> {
+  return buildLocalStaticEntries(siteUrl);
 }
 
 export async function buildAstroSitemapData(
@@ -95,7 +107,8 @@ export async function buildAstroSitemapData(
 
   try {
     const apiSitemap = await fetchSitemap();
-    const apiEntries = mapApiRoutes(siteUrl, apiSitemap.routes);
+    const apiRoutes = Array.isArray(apiSitemap?.routes) ? apiSitemap.routes : [];
+    const apiEntries = mapApiRoutes(siteUrl, apiRoutes);
 
     for (const [url, meta] of apiEntries) {
       addEntry(entries, url, meta);

@@ -58,3 +58,13 @@ export function langHref(
   const query = params.toString();
   return query ? `${pathname}?${query}` : `${pathname}?lang=${locale}`;
 }
+
+export function absoluteLangHref(
+  origin: string,
+  pathname: string,
+  search: string,
+  locale: Locale,
+): string {
+  const base = origin.replace(/\/$/, "");
+  return `${base}${langHref(pathname, search, locale)}`;
+}

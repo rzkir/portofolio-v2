@@ -22,7 +22,10 @@ export function renderSitemapUrlset(
         lines.push(`    <changefreq>${meta.changefreq}</changefreq>`);
       }
 
-      if (meta.priority != null) {
+      if (
+        typeof meta.priority === "number" &&
+        Number.isFinite(meta.priority)
+      ) {
         lines.push(`    <priority>${meta.priority.toFixed(1)}</priority>`);
       }
 

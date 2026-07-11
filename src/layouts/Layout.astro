@@ -4,7 +4,7 @@ import Announcement from "@/layouts/announcement.astro";
 import NotificationContext from "@/layouts/NotificationContext.astro";
 import SplashScreen from "@/components/SplashScreen.astro";
 import { FORCE_MOTION_INLINE_SCRIPT } from "@/lib/force-motion";
-import { getLocale, getMessages, langHref } from "@/lib/i18n";
+import { absoluteLangHref, getLocale, getMessages } from "@/lib/i18n";
 import {
   getSiteVerification,
   resolvePageMetadata,
@@ -58,7 +58,12 @@ const isAgentRoute = Astro.url.pathname.startsWith("/agent");
     <script is:inline set:html={FORCE_MOTION_INLINE_SCRIPT} />
     <script is:inline>
       try {
-        if (sessionStorage.getItem("splash-seen") === "1") {
+        var isCrawler =
+          /bot|crawl|spider|slurp|mediapartners|bingpreview|facebookexternalhit/i.test(
+            navigator.userAgent,
+          );
+
+        if (isCrawler || sessionStorage.getItem("splash-seen") === "1") {
           document.documentElement.classList.add("splash-seen");
         } else {
           document.documentElement.classList.add("splash-pending");
@@ -133,6 +138,12 @@ const isAgentRoute = Astro.url.pathname.startsWith("/agent");
     <meta name="twitter:title" content={meta.twitter.title} />
     <meta name="twitter:description" content={meta.twitter.description} />
     <meta name="twitter:image" content={meta.twitter.image} />
+
+    {
+      meta.siteJsonLd && (
+        <script type="application/ld+json" set:html={meta.siteJsonLd} />
+      )
+    }
 
     {
       meta.breadcrumbJsonLd && (

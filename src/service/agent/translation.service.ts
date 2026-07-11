@@ -4,6 +4,7 @@ import {
   formatAgentTime,
   sendAgentPrompt,
 } from "@/service/agent.service";
+import { formatAgentMessageHtml } from "@/lib/agent-message";
 
 export const TRANSLATION_AGENT_CATEGORY: AgentPromptCategory = "translation";
 
@@ -146,7 +147,7 @@ export function createTranslationAgentController(root: ParentNode): () => void {
         </span>
       </div>
       <div class="agent-ai-bubble max-w-3xl rounded-[40px] rounded-tl-none p-8 shadow-2xl shadow-accent/20">
-        <p class="whitespace-pre-wrap text-lg leading-relaxed">${escapeHtml(message.content)}</p>
+        <div class="agent-message-content text-lg leading-relaxed">${formatAgentMessageHtml(message.content)}</div>
       </div>
       <div class="flex gap-6 px-4">
         <button type="button" class="agent-copy-btn flex items-center gap-2 font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase opacity-30 transition-opacity hover:opacity-100">

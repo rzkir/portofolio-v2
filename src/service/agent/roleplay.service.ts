@@ -8,6 +8,13 @@ import {
 import { bindUiTabs, setUiTab } from "@/lib/ui-tabs";
 import { highlightCode, toHighlightLanguage } from "@/lib/code-highlight";
 import { saveAgentWebBuild } from "@/service/agent/builds.client";
+import {
+  loadAgentChatSession,
+  saveAgentChatSession,
+} from "@/lib/storage";
+import { formatAgentMessageHtml } from "@/lib/agent-message";
+
+const CHAT_STORAGE_KEY = "studio";
 
 function escapeHtml(value: string): string {
   return value
@@ -51,10 +58,12 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
   const emptyState = root.querySelector<HTMLElement>("#agent-empty-state");
   const errorEl = root.querySelector<HTMLElement>("#agent-error");
 
-  const chatMessages: AgentChatMessage[] = [];
+  const storedSession = loadAgentChatSession(CHAT_STORAGE_KEY);
+  const chatMessages: AgentChatMessage[] = storedSession?.messages ?? [];
   let isSubmitting = false;
   let sessionCategory: AgentPromptCategory | null =
-    (categoryInput?.value as AgentPromptCategory | "") || defaultCategory;
+    storedSession?.sessionCategory ??
+    ((categoryInput?.value as AgentPromptCategory | "") || defaultCategory);
   let currentCanvasCode = "";
   let currentPreviewDocument = "";
   let currentFiles: AgentWebPreviewFiles = { html: "", css: "", js: "" };
@@ -329,7 +338,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
         </span>
       </div>
       <div class="agent-ai-bubble max-w-3xl rounded-[40px] rounded-tl-none p-8 shadow-2xl shadow-accent/20">
-        <p class="whitespace-pre-wrap text-lg leading-relaxed">${escapeHtml(message.content)}</p>
+        <div class="agent-message-content text-lg leading-relaxed">${formatAgentMessageHtml(message.content)}</div>
       </div>
       <div class="flex gap-6 px-4">
         <button type="button" class="agent-copy-btn flex items-center gap-2 font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase opacity-30 transition-opacity hover:opacity-100">
@@ -392,6 +401,29 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     root.querySelector("#agent-loading")?.remove();
   }
 
+  function persistChat() {
+    saveAgentChatSession(CHAT_STORAGE_KEY, chatMessages, sessionCategory);
+  }
+
+  function restoreChatFromStorage() {
+    if (chatMessages.length === 0) return;
+
+    chatMessages.forEach((message, index) => {
+      if (message.role === "user") {
+        appendMessageNode(renderUserMessage(message));
+        const next = chatMessages[index + 1];
+        if (next?.role === "assistant") {
+          appendDivider();
+        }
+        return;
+      }
+
+      if (message.role === "assistant") {
+        appendMessageNode(renderAssistantMessage(message));
+      }
+    });
+  }
+
   async function onFormSubmit(event: Event) {
     event.preventDefault();
     if (isSubmitting || !input?.value.trim() || !thread) return;
@@ -417,6 +449,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     };
 
     chatMessages.push(userMessage);
+    persistChat();
     const userNode = renderUserMessage(userMessage);
     appendMessageNode(userNode);
     const divider = appendDivider();
@@ -448,6 +481,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
 
       chatMessages.push(assistantMessage);
       sessionCategory = response.category;
+      persistChat();
       appendMessageNode(renderAssistantMessage(assistantMessage));
 
       if (shouldShowCanvas(message, response.category, response.reply)) {
@@ -463,6 +497,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     } catch (error) {
       removeLoading();
       chatMessages.pop();
+      persistChat();
       userNode.remove();
       divider?.remove();
       input.value = message;
@@ -486,6 +521,12 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
   if (categoryInput && !categoryInput.value) {
     categoryInput.value = defaultCategory;
   }
+
+  if (sessionCategory && categoryInput) {
+    categoryInput.value = sessionCategory;
+  }
+
+  restoreChatFromStorage();
 
   const categoryCards = root.querySelectorAll<HTMLButtonElement>(
     "[data-agent-category]",

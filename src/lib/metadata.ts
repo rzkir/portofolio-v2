@@ -1,4 +1,4 @@
-import { project1 } from "@/data/portfolio";
+import { contact, project1, socialLinks } from "@/data/portfolio";
 import {
   BING_VERIFICATION,
   GOOGLE_SEARCH_CONSOLE_ID,
@@ -144,6 +144,46 @@ export function resolveBreadcrumbs(
   return crumbs;
 }
 
+function buildHomeJsonLd(
+  site: URL | string | undefined,
+  description: string,
+): string {
+  const origin = resolveSiteOrigin(site);
+  const image = toAbsoluteUrl(site, getDefaultOgImage(site));
+
+  return JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${origin}/#website`,
+        name: SITE_NAME,
+        url: `${origin}/`,
+        description,
+        inLanguage: ["id-ID", "en-US"],
+        publisher: { "@id": `${origin}/#person` },
+      },
+      {
+        "@type": "Person",
+        "@id": `${origin}/#person`,
+        name: SITE_NAME,
+        url: `${origin}/`,
+        image,
+        jobTitle: "Fullstack Developer",
+        email: contact.email,
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Bogor",
+          addressCountry: "ID",
+        },
+        sameAs: socialLinks
+          .map((link) => link.href)
+          .filter((href) => href.startsWith("http")),
+      },
+    ],
+  });
+}
+
 function buildBreadcrumbJsonLd(
   site: URL | string | undefined,
   breadcrumbs: BreadcrumbItem[],
@@ -213,5 +253,9 @@ export function resolvePageMetadata(input: PageMetadataInput): PageMetadata {
     },
     breadcrumbs,
     breadcrumbJsonLd: buildBreadcrumbJsonLd(site, breadcrumbs),
+    siteJsonLd:
+      !noIndex && path === "/"
+        ? buildHomeJsonLd(site, description)
+        : null,
   };
 }
