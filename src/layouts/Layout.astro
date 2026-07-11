@@ -48,6 +48,8 @@ const meta = resolvePageMetadata({
 
 const verification = getSiteVerification();
 const isAgentRoute = Astro.url.pathname.startsWith("/agent");
+const siteOrigin = Astro.site?.origin ?? "https://rizkiramadhan.biz.id";
+const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
 ---
 
 <!doctype html>
@@ -92,20 +94,30 @@ const isAgentRoute = Astro.url.pathname.startsWith("/agent");
     <title>{meta.title}</title>
     <meta name="description" content={meta.description} />
     <link rel="canonical" href={meta.canonicalUrl} />
-    <link rel="sitemap" href="/sitemap.xml" type="application/xml" />
+    <link rel="sitemap" href={sitemapUrl} type="application/xml" />
     {meta.robots && <meta name="robots" content={meta.robots} />}
 
     <link
       rel="alternate"
       hreflang="id"
-      href={langHref(Astro.url.pathname, Astro.url.search, "id")}
+      href={absoluteLangHref(
+        siteOrigin,
+        Astro.url.pathname,
+        Astro.url.search,
+        "id",
+      )}
     />
     <link
       rel="alternate"
       hreflang="en"
-      href={langHref(Astro.url.pathname, Astro.url.search, "en")}
+      href={absoluteLangHref(
+        siteOrigin,
+        Astro.url.pathname,
+        Astro.url.search,
+        "en",
+      )}
     />
-    <link rel="alternate" hreflang="x-default" href={Astro.url.pathname} />
+    <link rel="alternate" hreflang="x-default" href={meta.canonicalUrl} />
 
     {
       verification.googleSiteVerification && (

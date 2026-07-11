@@ -366,7 +366,9 @@ function mapGithubStats(
 /** Metrik coding dari GitHub + WakaTime — di-fetch saat SSR/build. */
 export async function getCodingStatsView(
   locale: Locale = DEFAULT_LOCALE,
-): Promise<CodingStatsView> {
+): Promise<CodingStatsView | null> {
   const data = await fetchGithubStats();
+  if (!data) return null;
+
   return mapGithubStats(data, locale);
 }

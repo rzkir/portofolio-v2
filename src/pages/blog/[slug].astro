@@ -100,9 +100,9 @@ const related = await getRelatedArticles(slug);
       </FocusIn>
 
       <div class="mx-auto container px-4 pb-16 md:px-6 md:pb-24">
-        <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div class="flex flex-col gap-12 lg:flex-row lg:items-start lg:gap-16">
           <aside
-            class="lg:col-span-3 lg:sticky lg:top-28 lg:self-start"
+            class="lg:sticky lg:top-28 lg:w-64 lg:shrink-0"
             aria-label={m.blogDetail.metaAria}
           >
             <dl
@@ -137,9 +137,10 @@ const related = await getRelatedArticles(slug);
             </dl>
           </aside>
 
-          <div class="lg:col-span-8 lg:col-start-5">
-            <Typography content={article.content} />
-          </div>
+          <Typography
+            content={article.content}
+            class="blog-detail-prose prose-editorial--work w-full min-w-0 max-w-xl shrink-0 grow-0 basis-auto"
+          />
         </div>
       </div>
 
@@ -255,3 +256,15 @@ const related = await getRelatedArticles(slug);
     bindBackTab("blog-back-fab"),
   );
 </script>
+
+<style is:global>
+  .blog-detail-prose.prose-editorial {
+    width: 100%;
+    max-width: 48rem;
+    overflow-wrap: anywhere;
+  }
+
+  .blog-detail-prose.prose-editorial :is(img, video, iframe, pre) {
+    max-width: 100%;
+  }
+</style>

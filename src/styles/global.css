@@ -747,6 +747,40 @@ html[data-theme-resolved="dark"]
 }
 
 /* ── Work detail prose ── */
+.prose-editorial.prose-editorial--work {
+  width: 100%;
+  max-width: 36rem;
+}
+
+.prose-editorial.prose-editorial--work :is(h2, h3) {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+  font-style: italic;
+  line-height: 1.2;
+  color: var(--foreground);
+}
+
+.prose-editorial.prose-editorial--work :is(h2, h3):first-child {
+  margin-top: 0;
+}
+
+.prose-editorial.prose-editorial--work :is(ul, ol) {
+  margin: 0 0 1.25rem;
+  padding-left: 1.25rem;
+}
+
+.prose-editorial.prose-editorial--work li {
+  margin-bottom: 0.35rem;
+}
+
+.prose-editorial.prose-editorial--work :is(img, video, iframe) {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
 .prose-editorial {
   color: color-mix(in oklch, var(--foreground) 85%, transparent);
   font-size: 0.9375rem;

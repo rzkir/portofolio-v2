@@ -49,10 +49,30 @@ function parseStatValue(raw: string) {
       </div>
       <span
         class="hidden shrink-0 font-mono text-xs tracking-widest text-background/50 uppercase md:block"
-        >{stats.updatedLabel}</span
+        >{stats?.updatedLabel}</span
       >
     </FocusIn>
 
+    {
+      !stats ? (
+        <FocusIn
+          class="border border-background/20 p-8 text-center"
+          delay={40}
+        >
+          <p class="mx-auto max-w-xl font-mono text-sm leading-relaxed text-background/70">
+            {m.codingStats.unavailableBody}
+          </p>
+          <a
+            href="https://github.com/rzkir"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-6 inline-block font-mono text-xs tracking-widest text-background uppercase transition-opacity hover:opacity-80"
+          >
+            {m.codingStats.viewGithub}
+          </a>
+        </FocusIn>
+      ) : (
+        <>
     <FocusIn
       class="mb-12 flex flex-col gap-6 border border-background/20 p-6 md:flex-row md:items-center md:p-8"
       delay={40}
@@ -562,6 +582,9 @@ function parseStatValue(raw: string) {
     </div>
 
     <CommitsRepoDialog repos={stats.commitsByRepo} />
+        </>
+      )
+    }
   </div>
 </section>
 

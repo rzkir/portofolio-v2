@@ -122,8 +122,8 @@ const category = work.categoryDetail?.name ?? work.category;
     </section>
 
     <section class="mx-auto container w-full px-4 py-10 md:px-6">
-      <div class="grid grid-cols-1 gap-16 md:grid-cols-12">
-        <aside class="md:sticky md:top-28 md:col-span-4 md:self-start">
+      <div class="flex flex-col gap-16 lg:flex-row lg:items-start lg:gap-20">
+        <aside class="lg:sticky lg:top-28 lg:w-72 lg:shrink-0">
           <div class="space-y-10">
             <div>
               <h2
@@ -201,7 +201,10 @@ const category = work.categoryDetail?.name ?? work.category;
           </div>
         </aside>
 
-        <Typography content={work.content} class="md:col-span-8" />
+        <Typography
+          content={work.content}
+          class="work-detail-prose prose-editorial--work w-full min-w-0 max-w-xl shrink-0 grow-0 basis-auto"
+        />
       </div>
     </section>
 
@@ -210,7 +213,9 @@ const category = work.categoryDetail?.name ?? work.category;
         <section class="border-t border-border">
           <div class="mx-auto container w-full px-4 py-10 md:px-6">
             <div class="mb-12 flex items-end justify-between">
-              <h2 class="font-display text-3xl md:text-5xl">{m.workDetail.gallery}</h2>
+              <h2 class="font-display text-3xl md:text-5xl">
+                {m.workDetail.gallery}
+              </h2>
               <span class="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
                 {m.workDetail.frames.replace(
                   "{count}",
@@ -305,5 +310,19 @@ const category = work.categoryDetail?.name ?? work.category;
   import { bindBackTab } from "@/lib/back-tab";
 
   bindBackTab("work-back-fab");
-  document.addEventListener("astro:page-load", () => bindBackTab("work-back-fab"));
+  document.addEventListener("astro:page-load", () =>
+    bindBackTab("work-back-fab"),
+  );
 </script>
+
+<style is:global>
+  .work-detail-prose.prose-editorial {
+    width: 100%;
+    max-width: 48rem;
+    overflow-wrap: anywhere;
+  }
+
+  .work-detail-prose.prose-editorial :is(img, video, iframe, pre) {
+    max-width: 100%;
+  }
+</style>

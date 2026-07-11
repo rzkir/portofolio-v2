@@ -171,7 +171,9 @@
       "heatmapLess": "Sedikit",
       "heatmapMore": "Banyak",
       "heatmapContribution": "{date}: {count} kontribusi",
-      "updatedFallback": "Update · —"
+      "updatedFallback": "Update · —",
+      "unavailableBody": "Data GitHub/WakaTime tidak bisa dimuat saat ini. Statistik akan muncul kembali setelah API tersedia.",
+      "viewGithub": "Lihat GitHub →"
     },
     "commitsDialog": {
       "eyebrow": "Commits per Repo",
@@ -566,7 +568,9 @@
       "heatmapLess": "Less",
       "heatmapMore": "More",
       "heatmapContribution": "{date}: {count} contributions",
-      "updatedFallback": "Update · —"
+      "updatedFallback": "Update · —",
+      "unavailableBody": "GitHub/WakaTime data is unavailable right now. Stats will return once the API is back.",
+      "viewGithub": "View GitHub →"
     },
     "commitsDialog": {
       "eyebrow": "Commits per Repo",

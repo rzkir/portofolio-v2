@@ -49,6 +49,7 @@ export type PageMetadata = {
   };
   breadcrumbs: BreadcrumbItem[];
   breadcrumbJsonLd: string | null;
+  siteJsonLd: string | null;
 };
 
 export type SiteVerification = {
