@@ -12,7 +12,6 @@ const {
   class: className,
   textareaClass,
   variant = "default",
-  attachLabel = "Attach file",
   sendLabel = "Send prompt",
 } = Astro.props;
 
@@ -23,46 +22,24 @@ const fieldClass =
 {
   variant === "prompt" ? (
     <div class={cn("agent-prompt group relative", className)}>
-      <div class="agent-prompt__shell relative flex items-center p-1 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] focus-within:p-2">
-        <div class="absolute left-4 flex gap-2">
-          <button
-            type="button"
-            class="flex size-10 items-center justify-center rounded-full text-muted-foreground transition-all hover:bg-foreground/5 hover:text-foreground"
-            aria-label={attachLabel}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.75"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="size-5"
-              aria-hidden="true"
-            >
-              <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-            </svg>
-          </button>
-        </div>
-
-        <input
-          type="text"
+      <div class="agent-prompt__shell relative p-1 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
+        <textarea
           id={id}
           name={name}
+          rows={1}
           placeholder=" "
           maxlength={maxlength}
           required={required}
           autocomplete="off"
           class={cn(
-            "agent-prompt__input relative z-10 w-full rounded-full border border-border/30 bg-background py-6 pr-20 pl-16 text-lg font-light transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] placeholder:opacity-0 focus:border-accent/50 focus:bg-background focus:outline-none focus:shadow-[0_0_40px_color-mix(in_oklch,var(--accent)_15%,transparent)]",
+            "agent-prompt__input relative z-10 block w-full min-h-14 max-h-48 resize-none overflow-y-hidden rounded-[1.75rem] border border-border/30 bg-background py-4 pr-20 pl-6 text-lg leading-relaxed font-light transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] placeholder:opacity-0 focus:border-accent/50 focus:bg-background focus:outline-none focus:shadow-[0_0_40px_color-mix(in_oklch,var(--accent)_15%,transparent)]",
             textareaClass,
           )}
         />
 
         <label
           for={id}
-          class="agent-prompt__label pointer-events-none absolute top-1/2 left-16 z-20 -translate-y-1/2 origin-left bg-background px-2.5 py-0.5 text-lg font-light text-muted-foreground transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+          class="agent-prompt__label pointer-events-none absolute left-6 z-20 origin-left bg-background px-2.5 py-0.5 text-lg font-light text-muted-foreground transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
         >
           {label}
         </label>
@@ -70,7 +47,7 @@ const fieldClass =
         <button
           type="submit"
           id={`${id}-send`}
-          class="agent-prompt__send absolute right-4 z-20 flex size-14 scale-90 items-center justify-center rounded-full bg-foreground text-background opacity-0 shadow-xl transition-all duration-300 hover:bg-accent hover:text-accent-foreground"
+          class="agent-prompt__send absolute right-4 bottom-3 z-20 flex size-14 scale-90 items-center justify-center rounded-full bg-foreground text-background opacity-0 shadow-xl transition-all duration-300 hover:bg-accent hover:text-accent-foreground"
           aria-label={sendLabel}
         >
           <svg
@@ -109,20 +86,100 @@ const fieldClass =
   )
 }
 
+<script>
+  const PROMPT_MAX_HEIGHT = 192;
+
+  function resizePromptField(field: HTMLTextAreaElement) {
+    if (!field.value.trim()) {
+      field.style.height = "";
+      field.style.overflowY = "hidden";
+      return;
+    }
+
+    field.style.height = "auto";
+    const nextHeight = Math.min(field.scrollHeight, PROMPT_MAX_HEIGHT);
+    field.style.height = `${nextHeight}px`;
+    field.style.overflowY =
+      field.scrollHeight > PROMPT_MAX_HEIGHT ? "auto" : "hidden";
+  }
+
+  function bindPromptTextareas(root: ParentNode = document) {
+    root.querySelectorAll<HTMLTextAreaElement>(".agent-prompt__input").forEach((field) => {
+      if (field.dataset.bound === "true") return;
+      field.dataset.bound = "true";
+
+      const shell = field.closest(".agent-prompt__shell");
+
+      const onInput = () => resizePromptField(field);
+      const onFocus = () => {
+        if (field.value.trim()) resizePromptField(field);
+      };
+      const onBlur = () => {
+        if (!field.value.trim()) {
+          field.style.height = "";
+          field.style.overflowY = "hidden";
+        }
+      };
+      const onKeydown = (event: KeyboardEvent) => {
+        if (event.key !== "Enter" || event.shiftKey) return;
+        event.preventDefault();
+        field.closest("form")?.requestSubmit();
+      };
+      const onShellClick = (event: Event) => {
+        const target = event.target as HTMLElement | null;
+        if (!target || target.closest("button")) return;
+        field.focus();
+      };
+
+      field.addEventListener("input", onInput);
+      field.addEventListener("focus", onFocus);
+      field.addEventListener("blur", onBlur);
+      field.addEventListener("keydown", onKeydown);
+      shell?.addEventListener("click", onShellClick);
+    });
+  }
+
+  bindPromptTextareas();
+  document.addEventListener("astro:page-load", () => bindPromptTextareas());
+</script>
+
 <style>
   .agent-prompt__shell {
     overflow: visible;
+    cursor: text;
   }
 
-  .agent-prompt__input:focus ~ .agent-prompt__label,
-  .agent-prompt__input:not(:placeholder-shown) ~ .agent-prompt__label {
-    transform: translate(-0.5rem, calc(-50% - 1.2rem)) scale(0.82);
+  .agent-prompt__shell button {
+    cursor: pointer;
+  }
+
+  .agent-prompt__shell:has(.agent-prompt__input:focus) {
+    padding: 0.5rem;
+  }
+
+  .agent-prompt__input {
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklch, var(--accent) 35%, transparent)
+      transparent;
+  }
+
+  .agent-prompt__label {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .agent-prompt__input:focus ~ .agent-prompt__label {
+    top: 1.25rem;
+    transform: translate(-0.5rem, -100%) scale(0.82);
     opacity: 1;
-    border-color: color-mix(in oklch, var(--accent) 45%, var(--border));
   }
 
-  .agent-prompt__input:focus ~ .agent-prompt__send,
-  .agent-prompt__input:not(:placeholder-shown) ~ .agent-prompt__send {
+  .agent-prompt__input:not(:placeholder-shown):not(:focus) ~ .agent-prompt__label {
+    opacity: 0;
+  }
+
+  .agent-prompt__input:focus ~ .agent-prompt__send {
     opacity: 1;
     transform: scale(1);
     filter: drop-shadow(

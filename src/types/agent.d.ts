@@ -63,3 +63,13 @@ interface AgentWebPreview {
   document: string;
   files: AgentWebPreviewFiles;
 }
+
+interface AgentWebBuild {
+  id: string;
+  title: string;
+  prompt: string;
+  category: AgentPromptCategory;
+  model?: string;
+  createdAt: string;
+  preview: AgentWebPreview;
+}

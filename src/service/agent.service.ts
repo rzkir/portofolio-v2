@@ -440,9 +440,88 @@ function composeWebDocument(parts: {
   return inlineRelativeAssets(shell, { css: parts.css, js: parts.js });
 }
 
+function escapePreviewHtml(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function composeCodeOnlyDocument(code: string, language: string): string {
+  const safeCode = escapePreviewHtml(code);
+  const safeLanguage = escapePreviewHtml(language.toUpperCase());
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Code Preview</title>
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #1e1e1e;
+      color: #d4d4d4;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      display: flex;
+      flex-direction: column;
+    }
+    .badge {
+      align-self: flex-start;
+      margin: 12px 12px 0;
+      padding: 4px 10px;
+      border: 1px solid #333;
+      border-radius: 9999px;
+      color: #9cdcfe;
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    pre {
+      margin: 0;
+      padding: 12px;
+      overflow: auto;
+      white-space: pre;
+      line-height: 1.55;
+      font-size: 12px;
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <span class="badge">${safeLanguage}</span>
+  <pre><code>${safeCode}</code></pre>
+</body>
+</html>`;
+}
+
 export function buildWebPreview(content: string): AgentWebPreview | null {
   const raw = collectPreviewBlocks(content);
-  if (!raw) return null;
+  if (!raw) {
+    const fallback = extractCodeBlocks(content).find((block) =>
+      block.code.trim().length > 0
+    );
+    if (!fallback) return null;
+
+    const normalizedLanguage = normalizeBlockLanguage(fallback.language) || "code";
+    const normalizedCode = fallback.code.trimEnd();
+
+    return {
+      title: "Code Preview",
+      language: normalizedLanguage,
+      source: `\`\`\`${normalizedLanguage}\n${normalizedCode}\n\`\`\``,
+      document: composeCodeOnlyDocument(normalizedCode, normalizedLanguage),
+      files: {
+        html: normalizedCode,
+        css: "",
+        js: "",
+      },
+    };
+  }
 
   const files = splitWebPreviewFiles(raw);
   if (!files.html && !files.css && !files.js) return null;

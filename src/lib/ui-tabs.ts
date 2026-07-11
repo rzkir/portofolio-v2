@@ -1,3 +1,26 @@
+function getTabTriggers(container: HTMLElement): HTMLButtonElement[] {
+  const tablist = container.querySelector<HTMLElement>('[role="tablist"]');
+  if (!tablist) return [];
+
+  return Array.from(
+    tablist.querySelectorAll<HTMLButtonElement>(":scope > [data-tab-trigger]"),
+  );
+}
+
+function getTabPanels(container: HTMLElement): HTMLElement[] {
+  const panelsRoot =
+    container.querySelector<HTMLElement>(":scope > .ui-tabs__panels") ??
+    container.querySelector<HTMLElement>(
+      ":scope > .agent-code-editor__workspace",
+    );
+
+  if (!panelsRoot) return [];
+
+  return Array.from(
+    panelsRoot.querySelectorAll<HTMLElement>(":scope > [data-tab-panel]"),
+  );
+}
+
 export function setUiTab(root: ParentNode, tabId: string): void {
   const container =
     root instanceof HTMLElement && root.matches("[data-ui-tabs]")
@@ -6,10 +29,8 @@ export function setUiTab(root: ParentNode, tabId: string): void {
 
   if (!container) return;
 
-  const triggers = container.querySelectorAll<HTMLButtonElement>(
-    "[data-tab-trigger]",
-  );
-  const panels = container.querySelectorAll<HTMLElement>("[data-tab-panel]");
+  const triggers = getTabTriggers(container);
+  const panels = getTabPanels(container);
 
   triggers.forEach((trigger) => {
     const isActive = trigger.dataset.tabTrigger === tabId;
@@ -29,12 +50,14 @@ export function bindUiTabs(root: ParentNode): () => void {
   const cleanups: Array<() => void> = [];
 
   containers.forEach((container) => {
+    const ownedTriggers = getTabTriggers(container);
+
     const onClick = (event: Event) => {
       const trigger = (event.target as HTMLElement | null)?.closest<
         HTMLButtonElement
       >("[data-tab-trigger]");
 
-      if (!trigger || !container.contains(trigger)) return;
+      if (!trigger || !ownedTriggers.includes(trigger)) return;
 
       const tabId = trigger.dataset.tabTrigger;
       if (!tabId) return;

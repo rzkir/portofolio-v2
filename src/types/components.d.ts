@@ -124,7 +124,6 @@ interface TextareaProps {
     class?: string;
     textareaClass?: string;
     variant?: "default" | "prompt";
-    attachLabel?: string;
     sendLabel?: string;
     footerHints?: string[];
 }

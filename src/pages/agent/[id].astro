@@ -1,0 +1,36 @@
+---
+import Layout from "@/layouts/Layout.astro";
+
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect("/agent");
+}
+---
+
+<Layout title="Preview" description="Generated web preview." noIndex={true}>
+  <main
+    id="agent-build-detail"
+    data-build-id={id}
+    class="agent-build-full fixed inset-0 z-50 bg-white"
+  >
+    <iframe
+      id="agent-build-frame"
+      class="block size-full border-0"
+      title="Generated web preview"
+      sandbox="allow-scripts allow-modals allow-forms allow-popups"
+    ></iframe>
+  </main>
+</Layout>
+
+<script>
+  import { bindAgentBuildDetail } from "@/service/agent/build-detail.client";
+
+  bindAgentBuildDetail();
+</script>
+
+<style is:global>
+  .agent-build-full {
+    color-scheme: light;
+  }
+</style>

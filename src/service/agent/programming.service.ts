@@ -7,6 +7,8 @@ import {
   shouldShowCanvas,
 } from "@/service/agent.service";
 import { bindUiTabs, setUiTab } from "@/lib/ui-tabs";
+import { highlightCode, toHighlightLanguage } from "@/lib/code-highlight";
+import { saveAgentWebBuild } from "@/service/agent/builds.client";
 
 export const PROGRAMMING_AGENT_CATEGORY: AgentPromptCategory = "programming";
 
@@ -70,6 +72,10 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
   const canvasClose = root.querySelector<HTMLElement>("#agent-canvas-close");
   const canvasCopy = root.querySelector<HTMLElement>("#agent-canvas-copy");
   const canvasRefresh = root.querySelector<HTMLElement>("#agent-canvas-refresh");
+  const canvasDetails = root.querySelector<HTMLAnchorElement>("#agent-canvas-details");
+  const canvasCodeCopy = root.querySelector<HTMLButtonElement>(
+    "#agent-canvas-code-copy",
+  );
   const canvasTabs = root.querySelector<HTMLElement>("#agent-canvas-tabs");
   const previewDialog = root.querySelector<HTMLDialogElement>("#agent-preview-dialog");
   const previewDialogFrame = root.querySelector<HTMLIFrameElement>(
@@ -93,14 +99,20 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
   let currentFiles: AgentWebPreviewFiles = { html: "", css: "", js: "" };
   let activeCodeFile: keyof AgentWebPreviewFiles = "html";
 
-  function renderCodePanel(panel: HTMLElement | null, code: string) {
+  function renderCodePanel(
+    panel: HTMLElement | null,
+    code: string,
+    fileId: keyof AgentWebPreviewFiles,
+  ) {
     if (!panel) return;
 
     const codeEl = panel.querySelector("code");
     const gutter = panel.querySelector(".agent-code-editor__gutter");
     const value = code;
 
-    if (codeEl) codeEl.textContent = value || " ";
+    if (codeEl) {
+      codeEl.innerHTML = highlightCode(value, toHighlightLanguage(fileId));
+    }
     if (gutter) {
       const lineCount = Math.max(1, value ? value.split("\n").length : 1);
       gutter.textContent = Array.from({ length: lineCount }, (_, index) =>
@@ -144,7 +156,7 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
       if (!firstVisible) firstVisible = id;
       panel?.classList.remove("ui-tabs__panel--hidden");
       panel?.removeAttribute("hidden");
-      renderCodePanel(panel, content);
+      renderCodePanel(panel, content, id);
     });
 
     if (firstVisible) {
@@ -216,12 +228,34 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
     syncPreviewFrames();
   }
 
-  function openCanvas(preview: AgentWebPreview) {
+  function openCanvas(
+    preview: AgentWebPreview,
+    meta?: {
+      prompt: string;
+      category: AgentPromptCategory;
+      model?: string;
+    },
+  ) {
     renderPreview(preview);
     if (canvasTabs) setUiTab(canvasTabs, "preview");
     canvas?.classList.add("is-open");
     canvas?.setAttribute("aria-hidden", "false");
     main?.classList.add("agent-main--with-canvas");
+
+    if (!meta) return;
+
+    const build = saveAgentWebBuild({
+      title: preview.title,
+      prompt: meta.prompt,
+      category: meta.category,
+      model: meta.model,
+      preview,
+    });
+
+    if (canvasDetails) {
+      canvasDetails.href = `/agent/${build.id}`;
+      canvasDetails.classList.remove("hidden");
+    }
   }
 
   function closeCanvas() {
@@ -236,6 +270,7 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
     currentPreviewDocument = "";
     currentFiles = { html: "", css: "", js: "" };
     activeCodeFile = "html";
+    canvasDetails?.classList.add("hidden");
   }
 
   const onCanvasClose = () => closeCanvas();
@@ -250,17 +285,36 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
     syncPreviewFrames();
   }
 
-  async function onCanvasCopy() {
+  async function copyActiveCodeFile(trigger?: HTMLButtonElement) {
     const content =
       currentFiles[activeCodeFile]?.trim() ||
       currentCanvasCode ||
       currentPreviewDocument;
     if (!content) return;
+
     try {
       await navigator.clipboard.writeText(content);
+      if (!trigger) return;
+
+      const label = trigger.querySelector<HTMLElement>("[data-code-copy-label]");
+      trigger.classList.add("is-copied");
+      if (label) label.textContent = "Copied";
+
+      window.setTimeout(() => {
+        trigger.classList.remove("is-copied");
+        if (label) label.textContent = "Copy";
+      }, 1600);
     } catch {
       // ignore clipboard errors
     }
+  }
+
+  async function onCanvasCopy() {
+    await copyActiveCodeFile();
+  }
+
+  async function onCodeCopyClick() {
+    await copyActiveCodeFile(canvasCodeCopy ?? undefined);
   }
 
   function onCodeTabClick(event: Event) {
@@ -426,7 +480,13 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
         shouldShowCanvas(message, PROGRAMMING_AGENT_CATEGORY, response.reply)
       ) {
         const preview = buildWebPreview(response.reply);
-        if (preview) openCanvas(preview);
+        if (preview) {
+          openCanvas(preview, {
+            prompt: message,
+            category: PROGRAMMING_AGENT_CATEGORY,
+            model: response.model,
+          });
+        }
       }
     } catch (error) {
       removeLoading();
@@ -461,6 +521,7 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
   canvasClose?.addEventListener("click", onCanvasClose);
   canvasRefresh?.addEventListener("click", onCanvasRefresh);
   canvasCopy?.addEventListener("click", onCanvasCopy);
+  canvasCodeCopy?.addEventListener("click", onCodeCopyClick);
   canvasCodeTabs?.addEventListener("click", onCodeTabClick);
   previewDialog?.addEventListener("toggle", onPreviewDialogToggle);
   form?.addEventListener("submit", onFormSubmit);
@@ -473,6 +534,7 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
     canvasClose?.removeEventListener("click", onCanvasClose);
     canvasRefresh?.removeEventListener("click", onCanvasRefresh);
     canvasCopy?.removeEventListener("click", onCanvasCopy);
+    canvasCodeCopy?.removeEventListener("click", onCodeCopyClick);
     canvasCodeTabs?.removeEventListener("click", onCodeTabClick);
     previewDialog?.removeEventListener("toggle", onPreviewDialogToggle);
     form?.removeEventListener("submit", onFormSubmit);
