@@ -8,7 +8,7 @@ import sitemap from "@astrojs/sitemap";
 import { buildAstroSitemapData } from "./src/service/sitemap.service";
 
 const apiUrl = process.env.API_URL ?? "https://api.rizkiramadhan.biz.id";
-const siteUrl = "https://rizkiramadhan.biz.id";
+const siteUrl = "https://www.rizkiramadhan.biz.id";
 
 const { customPages, metadata: sitemapMetadata } =
   await buildAstroSitemapData(siteUrl);
