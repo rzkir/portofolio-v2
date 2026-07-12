@@ -19,6 +19,7 @@ interface Props {
   ogType?: OgType;
   breadcrumbCurrent?: string;
   noIndex?: boolean;
+  noGrabCursor?: boolean;
 }
 
 const locale = getLocale(Astro);
@@ -31,6 +32,7 @@ const {
   ogType,
   breadcrumbCurrent,
   noIndex,
+  noGrabCursor = false,
 } = Astro.props;
 
 const meta = resolvePageMetadata({
@@ -53,7 +55,7 @@ const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
 ---
 
 <!doctype html>
-<html lang={locale}>
+<html lang={locale} data-grab-cursor={noGrabCursor ? "off" : undefined}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -160,6 +162,7 @@ const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
     {
       meta.breadcrumbJsonLd && (
         <script
+          id="page-breadcrumb-jsonld"
           type="application/ld+json"
           set:html={meta.breadcrumbJsonLd}
         />
@@ -206,7 +209,7 @@ const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
       )
     }
     <SplashScreen />
-    <GrabCursor />
+    {!noGrabCursor && <GrabCursor />}
     <NotificationContext />
     {!isAgentRoute && <Announcement />}
     {

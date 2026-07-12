@@ -141,6 +141,8 @@ function bindDialogCursorLayer(cursor: HTMLElement, reveal: () => void) {
 }
 
 export function initGrabCursor() {
+  if (document.documentElement.dataset.grabCursor === "off") return;
+
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const finePointer = window.matchMedia("(pointer: fine)").matches;
 

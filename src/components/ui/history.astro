@@ -1,0 +1,173 @@
+---
+import Empaty from "@/components/ui/empaty.astro";
+import { cn } from "@/lib/utiles";
+
+const { class: className, storageKey, title = "History" } = Astro.props as HistoryProps;
+---
+
+<div
+  id="agent-history-root"
+  data-agent-history={storageKey}
+  class={cn(
+    "agent-history-root fixed inset-0 z-30 md:relative md:z-auto md:flex md:h-full md:shrink-0 md:flex-col md:overflow-hidden",
+    className,
+  )}
+  aria-hidden="false"
+>
+  <button
+    type="button"
+    id="agent-history-expand"
+    class="agent-panel-rail agent-history-rail"
+    aria-label="Buka riwayat"
+    aria-expanded="false"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="size-4"
+      aria-hidden="true"
+    >
+      <path d="m9 18 6-6-6-6"></path>
+    </svg>
+    <span class="agent-panel-rail__label">History</span>
+  </button>
+
+  <div
+    id="agent-history-backdrop"
+    class="agent-history-backdrop pointer-events-none fixed inset-0 bg-background/50 opacity-0 transition-opacity duration-300 md:hidden"
+    aria-hidden="true"
+  >
+  </div>
+
+  <aside
+    id="agent-history-panel"
+    class="agent-history-panel fixed inset-y-0 left-0 z-40 flex w-[min(100%,20rem)] -translate-x-full flex-col border-r border-border/30 bg-[#fcfcfc] transition-transform duration-300 ease-cinematic dark:bg-background/95 md:static md:z-auto md:h-full md:w-full md:translate-x-0"
+    aria-label="Riwayat percakapan"
+  >
+    <div class="agent-history-panel__body flex min-h-0 flex-1 flex-col">
+      <div class="shrink-0 space-y-6 p-6">
+        <div class="flex items-center justify-between gap-3">
+          <h2 class="font-display text-2xl font-normal tracking-tight">{title}</h2>
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              id="agent-history-new"
+              class="agent-history-new group flex items-center gap-2 rounded-full border border-foreground/10 px-4 py-2 text-sm font-medium transition-all duration-300 hover:bg-foreground hover:text-background"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-4 transition-transform duration-300 group-hover:rotate-90"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14"></path>
+                <path d="M12 5v14"></path>
+              </svg>
+              New Chat
+            </button>
+            <button
+              type="button"
+              id="agent-history-collapse"
+              class="hidden size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-foreground/5 hover:text-foreground md:inline-flex"
+              aria-label="Ciutkan riwayat"
+              aria-expanded="true"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-4"
+                aria-hidden="true"
+              >
+                <path d="m15 18-6-6 6-6"></path>
+              </svg>
+            </button>
+            <button
+              type="button"
+              id="agent-history-close"
+              class="text-muted-foreground transition-colors hover:text-foreground md:hidden"
+              aria-label="Tutup riwayat"
+            >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-4"
+              aria-hidden="true"
+            >
+              <path d="M18 6 6 18"></path>
+              <path d="m6 6 12 12"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="group relative">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground"
+          aria-hidden="true"
+        >
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.3-4.3"></path>
+        </svg>
+        <input
+          type="search"
+          id="agent-history-search"
+          placeholder="Search conversations..."
+          class="w-full rounded-xl border border-border/40 bg-background py-2.5 pr-4 pl-10 text-sm transition-all focus:border-foreground/20 focus:ring-1 focus:ring-foreground/5 focus:outline-none"
+          autocomplete="off"
+        />
+      </div>
+    </div>
+
+    <div
+      id="agent-history-list"
+      class="agent-history-list agent-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-6"
+    >
+      <div class="agent-history-empty px-3 pt-2">
+        <Empaty />
+      </div>
+    </div>
+    </div>
+  </aside>
+</div>
+
+<template id="agent-history-empty-default">
+  <div class="agent-history-empty px-3 pt-2">
+    <Empaty />
+  </div>
+</template>
+
+<template id="agent-history-empty-search">
+  <div class="agent-history-empty px-3 pt-2">
+    <Empaty
+      title="Tidak ada hasil"
+      description="Coba kata kunci lain untuk menemukan percakapan."
+    />
+  </div>
+</template>

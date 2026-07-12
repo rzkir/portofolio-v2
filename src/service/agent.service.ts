@@ -574,6 +574,67 @@ export function shouldShowCanvas(
   return isWebCodingTopic(message);
 }
 
+export function resolveCanvasPreviewFromMessages(
+  messages: AgentChatMessage[],
+  defaultCategory?: AgentPromptCategory | null,
+): AgentWebPreview | null {
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    const message = messages[index];
+    if (message.role !== "assistant") continue;
+
+    let userPrompt = "";
+    for (let userIndex = index - 1; userIndex >= 0; userIndex -= 1) {
+      if (messages[userIndex].role === "user") {
+        userPrompt = messages[userIndex].content;
+        break;
+      }
+    }
+
+    const category = message.category ?? defaultCategory ?? undefined;
+    if (!shouldShowCanvas(userPrompt, category, message.content)) continue;
+
+    const preview = buildWebPreview(message.content);
+    if (preview) return preview;
+  }
+
+  return null;
+}
+
+export function resolveCanvasMetaFromMessages(
+  messages: AgentChatMessage[],
+  defaultCategory?: AgentPromptCategory | null,
+): {
+  prompt: string;
+  category: AgentPromptCategory;
+  model?: string;
+} | null {
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    const message = messages[index];
+    if (message.role !== "assistant") continue;
+
+    let userPrompt = "";
+    for (let userIndex = index - 1; userIndex >= 0; userIndex -= 1) {
+      if (messages[userIndex].role === "user") {
+        userPrompt = messages[userIndex].content;
+        break;
+      }
+    }
+
+    const category = message.category ?? defaultCategory;
+    if (!category) continue;
+    if (!shouldShowCanvas(userPrompt, category, message.content)) continue;
+    if (!buildWebPreview(message.content)) continue;
+
+    return {
+      prompt: userPrompt,
+      category,
+      model: message.model,
+    };
+  }
+
+  return null;
+}
+
 function compactHistoryContent(content: string): string {
   let compact = content.replace(
     CODE_BLOCK_PATTERN,

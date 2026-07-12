@@ -6,10 +6,14 @@ import {
 } from "astro:env/server";
 
 import type { Locale, Messages } from "@/lib/i18n";
-export type BreadcrumbItem = {
-  name: string;
-  path: string;
-};
+import {
+  resolveBreadcrumbs,
+  serializeBreadcrumbJsonLd,
+  type BreadcrumbItem,
+} from "@/lib/breadcrumbs";
+
+export type { BreadcrumbItem };
+export { resolveBreadcrumbs };
 
 export type OgType = "website" | "article";
 
@@ -99,52 +103,6 @@ function normalizePath(pathname: string): string {
   return pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
 }
 
-export function resolveBreadcrumbs(
-  pathname: string,
-  nav: Messages["nav"],
-  breadcrumbCurrent?: string,
-): BreadcrumbItem[] {
-  const path = normalizePath(pathname);
-  const crumbs: BreadcrumbItem[] = [{ name: nav.home, path: "/" }];
-
-  if (path === "/") return crumbs;
-
-  const segments = path.split("/").filter(Boolean);
-  const root = segments[0];
-
-  if (root === "works") {
-    crumbs.push({ name: nav.works, path: "/works" });
-    if (segments[1]) {
-      crumbs.push({
-        name: breadcrumbCurrent ?? segments[1],
-        path: `/works/${segments[1]}`,
-      });
-    }
-    return crumbs;
-  }
-
-  if (root === "layanan") {
-    crumbs.push({ name: nav.services, path: "/layanan" });
-    return crumbs;
-  }
-
-  if (root === "achievements") {
-    crumbs.push({ name: nav.achievements, path: "/achievements" });
-    return crumbs;
-  }
-
-  if (root === "guest-notes") {
-    crumbs.push({ name: nav.guestNotes, path: "/guest-notes" });
-    return crumbs;
-  }
-
-  if (breadcrumbCurrent) {
-    crumbs.push({ name: breadcrumbCurrent, path });
-  }
-
-  return crumbs;
-}
-
 function buildHomeJsonLd(
   site: URL | string | undefined,
   description: string,
@@ -182,26 +140,6 @@ function buildHomeJsonLd(
           .filter((href) => href.startsWith("http")),
       },
     ],
-  });
-}
-
-function buildBreadcrumbJsonLd(
-  site: URL | string | undefined,
-  breadcrumbs: BreadcrumbItem[],
-): string | null {
-  if (breadcrumbs.length < 2) return null;
-
-  const origin = resolveSiteOrigin(site);
-
-  return JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: breadcrumbs.map((item, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      name: item.name,
-      item: `${origin}${item.path === "/" ? "/" : item.path}`,
-    })),
   });
 }
 
@@ -253,7 +191,7 @@ export function resolvePageMetadata(input: PageMetadataInput): PageMetadata {
       image,
     },
     breadcrumbs,
-    breadcrumbJsonLd: buildBreadcrumbJsonLd(site, breadcrumbs),
+    breadcrumbJsonLd: serializeBreadcrumbJsonLd(site, breadcrumbs),
     siteJsonLd:
       !noIndex && path === "/"
         ? buildHomeJsonLd(site, description)

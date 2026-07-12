@@ -5,9 +5,12 @@ import {
     formatAgentTime,
     sendAgentPrompt,
 } from "@/service/agent.service";
+import { setAgentBusy } from "@/lib/agent-busy";
+import { createAgentChatHistoryController } from "@/service/agent/chat-history.controller";
 import { formatAgentMessageHtml } from "@/lib/agent-message";
 
 export const MARKETING_AGENT_CATEGORY: AgentPromptCategory = "marketing";
+const CHAT_STORAGE_KEY = "marketing";
 
 export const MARKETING_CATEGORY_CARDS: AgentCategoryCard[] = [
     {
@@ -71,6 +74,7 @@ export function createMarketingAgentController(root: ParentNode): () => void {
 
     const chatMessages: AgentChatMessage[] = [];
     let isSubmitting = false;
+    let sessionCategory: AgentPromptCategory | null = MARKETING_AGENT_CATEGORY;
 
     function scrollToBottom() {
         if (!messagesViewport) return;
@@ -79,6 +83,7 @@ export function createMarketingAgentController(root: ParentNode): () => void {
 
     function setLoading(loading: boolean) {
         isSubmitting = loading;
+        setAgentBusy(loading);
         if (input) input.disabled = loading;
         if (sendBtn) sendBtn.disabled = loading;
     }
@@ -213,6 +218,58 @@ export function createMarketingAgentController(root: ParentNode): () => void {
         root.querySelector("#agent-loading")?.remove();
     }
 
+    function clearThreadUi() {
+        if (!thread) return;
+
+        thread
+            .querySelectorAll(
+                "[data-message-role], [data-message-divider], #agent-loading",
+            )
+            .forEach((node) => node.remove());
+        emptyState?.classList.remove("hidden");
+        clearError();
+    }
+
+    function renderStoredMessages() {
+        if (chatMessages.length === 0) return;
+
+        chatMessages.forEach((message, index) => {
+            if (message.role === "user") {
+                appendMessageNode(renderUserMessage(message));
+                const next = chatMessages[index + 1];
+                if (next?.role === "assistant") {
+                    appendDivider();
+                }
+                return;
+            }
+
+            if (message.role === "assistant") {
+                appendMessageNode(renderAssistantMessage(message));
+            }
+        });
+    }
+
+    const chatHistory = createAgentChatHistoryController({
+        storageKey: CHAT_STORAGE_KEY,
+        defaultCategory: MARKETING_AGENT_CATEGORY,
+        chatMessages,
+        getSessionCategory: () => sessionCategory,
+        setSessionCategory: (category) => {
+            sessionCategory = category;
+        },
+        setCategoryInputValue: (category) => {
+            if (categoryInput) categoryInput.value = category;
+        },
+        clearThreadUi,
+        renderStoredMessages,
+        scrollToBottom,
+        focusInput: () => input?.focus(),
+    });
+
+    function persistChat() {
+        chatHistory.persist();
+    }
+
     async function onFormSubmit(event: Event) {
         event.preventDefault();
         if (isSubmitting || !input?.value.trim() || !thread) return;
@@ -230,6 +287,7 @@ export function createMarketingAgentController(root: ParentNode): () => void {
         };
 
         chatMessages.push(userMessage);
+        persistChat();
         const userNode = renderUserMessage(userMessage);
         appendMessageNode(userNode);
         const divider = appendDivider();
@@ -260,10 +318,13 @@ export function createMarketingAgentController(root: ParentNode): () => void {
             };
 
             chatMessages.push(assistantMessage);
+            sessionCategory = response.category;
+            persistChat();
             appendMessageNode(renderAssistantMessage(assistantMessage));
         } catch (error) {
             removeLoading();
             chatMessages.pop();
+            persistChat();
             userNode.remove();
             divider?.remove();
             input.value = message;
@@ -282,6 +343,9 @@ export function createMarketingAgentController(root: ParentNode): () => void {
         }
     }
 
+    renderStoredMessages();
+    const cleanupHistory = chatHistory.bind();
+
     const categoryCards = root.querySelectorAll<HTMLButtonElement>(
         "[data-agent-category]",
     );
@@ -292,6 +356,7 @@ export function createMarketingAgentController(root: ParentNode): () => void {
     form?.addEventListener("submit", onFormSubmit);
 
     return () => {
+        cleanupHistory();
         categoryCards.forEach((card) => {
             card.removeEventListener("click", onCategoryCardClick);
         });

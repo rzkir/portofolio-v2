@@ -44,6 +44,26 @@ export function saveAgentWebBuild(input: {
   return build;
 }
 
+export function findOrSaveAgentWebBuild(input: {
+  title: string;
+  prompt: string;
+  category: AgentPromptCategory;
+  model?: string;
+  preview: AgentWebPreview;
+}): AgentWebBuild {
+  const builds = readBuilds();
+  const existing = builds.find(
+    (item) =>
+      item.preview.document === input.preview.document &&
+      item.prompt === input.prompt &&
+      item.category === input.category,
+  );
+
+  if (existing) return existing;
+
+  return saveAgentWebBuild(input);
+}
+
 export function getAgentWebBuild(id: string): AgentWebBuild | null {
   return readBuilds().find((build) => build.id === id) ?? null;
 }

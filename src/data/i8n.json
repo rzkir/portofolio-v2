@@ -36,6 +36,7 @@
       "services": "Layanan",
       "achievements": "Kredensial",
       "guestNotes": "Buku Tamu",
+      "agentStudio": "AI Studio",
       "shortHome": "Home",
       "shortWorks": "Karya",
       "shortBlog": "Blog",
@@ -49,6 +50,10 @@
     "announcement": {
       "text": "AI Studio kini live — Deep Intelligence untuk eksekusi profesional",
       "textMobile": "AI Studio kini live — Deep Intelligence"
+    },
+    "agentBuild": {
+      "previewTitle": "Web Preview",
+      "previewDescription": "Preview halaman web yang dihasilkan dari AI Studio."
     },
     "common": {
       "viewCv": "Lihat CV →",
@@ -433,6 +438,7 @@
       "services": "Services",
       "achievements": "Credentials",
       "guestNotes": "Guest Notes",
+      "agentStudio": "AI Studio",
       "shortHome": "Home",
       "shortWorks": "Works",
       "shortBlog": "Blog",
@@ -446,6 +452,10 @@
     "announcement": {
       "text": "AI Studio is now live — Deep Intelligence for professional execution",
       "textMobile": "AI Studio is now live — Deep Intelligence"
+    },
+    "agentBuild": {
+      "previewTitle": "Web Preview",
+      "previewDescription": "Generated web preview from AI Studio."
     },
     "common": {
       "viewCv": "View CV →",

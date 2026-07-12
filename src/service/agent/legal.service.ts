@@ -4,9 +4,12 @@ import {
   formatAgentTime,
   sendAgentPrompt,
 } from "@/service/agent.service";
+import { setAgentBusy } from "@/lib/agent-busy";
+import { setupAgentChatSession } from "@/lib/agent-chat-session";
 import { formatAgentMessageHtml } from "@/lib/agent-message";
 
 export const LEGAL_AGENT_CATEGORY: AgentPromptCategory = "legal";
+const CHAT_STORAGE_KEY = "legal";
 
 export const LEGAL_CATEGORY_CARDS: AgentCategoryCard[] = [
   {
@@ -66,6 +69,7 @@ export function createLegalAgentController(root: ParentNode): () => void {
 
   const chatMessages: AgentChatMessage[] = [];
   let isSubmitting = false;
+  let sessionCategory: AgentPromptCategory | null = LEGAL_AGENT_CATEGORY;
 
   function scrollToBottom() {
     if (!messagesViewport) return;
@@ -74,6 +78,7 @@ export function createLegalAgentController(root: ParentNode): () => void {
 
   function setLoading(loading: boolean) {
     isSubmitting = loading;
+    setAgentBusy(loading);
     if (input) input.disabled = loading;
     if (sendBtn) sendBtn.disabled = loading;
   }
@@ -91,6 +96,7 @@ export function createLegalAgentController(root: ParentNode): () => void {
   }
 
   function applyCategoryPreset(prompt: string) {
+    sessionCategory = LEGAL_AGENT_CATEGORY;
     if (categoryInput) categoryInput.value = LEGAL_AGENT_CATEGORY;
     if (!input) return;
 
@@ -208,6 +214,30 @@ export function createLegalAgentController(root: ParentNode): () => void {
     root.querySelector("#agent-loading")?.remove();
   }
 
+  const chatSession = setupAgentChatSession({
+    storageKey: CHAT_STORAGE_KEY,
+    defaultCategory: LEGAL_AGENT_CATEGORY,
+    chatMessages,
+    getSessionCategory: () => sessionCategory,
+    setSessionCategory: (category) => {
+      sessionCategory = category;
+    },
+    categoryInput,
+    thread,
+    emptyState,
+    errorEl,
+    renderUserMessage,
+    renderAssistantMessage,
+    appendMessageNode,
+    appendDivider,
+    scrollToBottom,
+    focusInput: () => input?.focus(),
+  });
+
+  function persistChat() {
+    chatSession.persist();
+  }
+
   async function onFormSubmit(event: Event) {
     event.preventDefault();
     if (isSubmitting || !input?.value.trim() || !thread) return;
@@ -225,6 +255,7 @@ export function createLegalAgentController(root: ParentNode): () => void {
     };
 
     chatMessages.push(userMessage);
+    persistChat();
     const userNode = renderUserMessage(userMessage);
     appendMessageNode(userNode);
     const divider = appendDivider();
@@ -255,10 +286,13 @@ export function createLegalAgentController(root: ParentNode): () => void {
       };
 
       chatMessages.push(assistantMessage);
+      sessionCategory = response.category;
+      persistChat();
       appendMessageNode(renderAssistantMessage(assistantMessage));
     } catch (error) {
       removeLoading();
       chatMessages.pop();
+      persistChat();
       userNode.remove();
       divider?.remove();
       input.value = message;
@@ -275,6 +309,9 @@ export function createLegalAgentController(root: ParentNode): () => void {
     }
   }
 
+  chatSession.renderStoredMessages();
+  const cleanupHistory = chatSession.bind();
+
   const categoryCards = root.querySelectorAll<HTMLButtonElement>(
     "[data-agent-category]",
   );
@@ -285,6 +322,7 @@ export function createLegalAgentController(root: ParentNode): () => void {
   form?.addEventListener("submit", onFormSubmit);
 
   return () => {
+    cleanupHistory();
     categoryCards.forEach((card) => {
       card.removeEventListener("click", onCategoryCardClick);
     });

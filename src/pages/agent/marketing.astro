@@ -2,6 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import Aside from "@/components/ui/aside.astro";
 import Card from "@/components/ui/card.astro";
+import History from "@/components/ui/history.astro";
 import AgentHeader from "@/layouts/agent-header.astro";
 import Textarea from "@/components/ui/textarea.astro";
 import {
@@ -19,8 +20,10 @@ import {
 
   <main
     id="agent-main"
-    class="relative flex min-w-0 flex-1 flex-col overflow-hidden md:flex-row"
+    class="relative flex min-w-0 flex-1 overflow-hidden md:flex-row"
   >
+    <History storageKey="marketing" title="History" />
+
     <div
       class="agent-chat-pane relative flex min-w-0 flex-1 flex-col overflow-hidden"
     >
@@ -35,53 +38,56 @@ import {
         </div>
       </div>
 
-      <AgentHeader title="Marketing Engine" />
+      <AgentHeader title="Marketing Engine" showHistory={true} />
 
-      <div
-        id="agent-messages"
-        class="agent-scrollbar relative min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-12 md:px-12"
-      >
-        <div id="agent-thread" class="mx-auto max-w-4xl space-y-16">
-          <div class="py-20 text-center" id="agent-empty-state">
-            <h2
-              class="mb-6 font-display text-5xl font-light opacity-80 italic md:text-6xl"
-            >
-              Grow your <br />
-              <span class="font-bold text-foreground not-italic">audience.</span
+      <div class="agent-chat-body">
+        <div
+          id="agent-messages"
+          class="agent-scrollbar relative min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-12 md:px-12"
+        >
+          <div id="agent-thread" class="mx-auto max-w-7xl space-y-16">
+            <div class="py-20 text-center" id="agent-empty-state">
+              <h2
+                class="mb-6 font-display text-5xl font-light opacity-80 italic md:text-6xl"
               >
-            </h2>
-            <p class="text-lg font-light text-muted-foreground">
-              Ide kampanye digital, konten promosi, dan channel yang tepat untuk
-              menjangkau audiens.
-            </p>
+                Grow your <br />
+                <span class="font-bold text-foreground not-italic"
+                  >audience.</span
+                >
+              </h2>
+              <p class="text-lg font-light text-muted-foreground">
+                Ide kampanye digital, konten promosi, dan channel yang tepat
+                untuk menjangkau audiens.
+              </p>
 
-            <div
-              id="agent-category-cards"
-              class="agent-category-cards mx-auto mt-12 max-w-4xl text-left"
-            >
-              <ul class="agent-category-cards__list">
-                {
-                  MARKETING_CATEGORY_CARDS.map((item) => (
-                    <li>
-                      <Card
-                        variant="select"
-                        title={item.title}
-                        categoryLabel={item.categoryLabel}
-                        description={item.description}
-                        category={item.category}
-                        prompt={item.prompt}
-                      />
-                    </li>
-                  ))
-                }
-              </ul>
+              <div
+                id="agent-category-cards"
+                class="agent-category-cards mx-auto mt-12 max-w-7xl text-left"
+              >
+                <ul class="agent-category-cards__list">
+                  {
+                    MARKETING_CATEGORY_CARDS.map((item) => (
+                      <li>
+                        <Card
+                          variant="select"
+                          title={item.title}
+                          categoryLabel={item.categoryLabel}
+                          description={item.description}
+                          category={item.category}
+                          prompt={item.prompt}
+                        />
+                      </li>
+                    ))
+                  }
+                </ul>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="agent-prompt-dock shrink-0 pb-4 px-6 pt-4 md:px-12">
-        <div class="mx-auto max-w-4xl">
+      <div class="agent-prompt-dock shrink-0 px-6 pt-4 pb-4 md:px-12">
+        <div class="mx-auto max-w-7xl">
           <p
             id="agent-error"
             class="mb-3 hidden rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
@@ -110,8 +116,10 @@ import {
 </Layout>
 
 <script>
+  import { bindAgentHistoryPanel } from "@/service/agent/history.service";
   import { bindMarketingAgent } from "@/service/agent/marketing.service";
 
+  bindAgentHistoryPanel();
   bindMarketingAgent();
 </script>
 

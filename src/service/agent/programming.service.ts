@@ -3,15 +3,23 @@ import {
   buildPromptHistory,
   buildWebPreview,
   formatAgentTime,
+  resolveCanvasPreviewFromMessages,
   sendAgentPrompt,
   shouldShowCanvas,
 } from "@/service/agent.service";
 import { bindUiTabs, setUiTab } from "@/lib/ui-tabs";
 import { highlightCode, toHighlightLanguage } from "@/lib/code-highlight";
-import { saveAgentWebBuild } from "@/service/agent/builds.client";
+import {
+  hideAgentCanvasDetailsLink,
+  notifyAgentCanvasOpen,
+  syncAgentCanvasDetailsLink,
+} from "@/service/agent/canvas-panel.service";
+import { setAgentBusy } from "@/lib/agent-busy";
+import { setupAgentChatSession } from "@/lib/agent-chat-session";
 import { formatAgentMessageHtml } from "@/lib/agent-message";
 
 export const PROGRAMMING_AGENT_CATEGORY: AgentPromptCategory = "programming";
+const CHAT_STORAGE_KEY = "programming";
 
 export const PROGRAMMING_CATEGORY_CARDS: AgentCategoryCard[] = [
   {
@@ -95,6 +103,7 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
 
   const chatMessages: AgentChatMessage[] = [];
   let isSubmitting = false;
+  let sessionCategory: AgentPromptCategory | null = PROGRAMMING_AGENT_CATEGORY;
   let currentCanvasCode = "";
   let currentPreviewDocument = "";
   let currentFiles: AgentWebPreviewFiles = { html: "", css: "", js: "" };
@@ -173,6 +182,7 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
 
   function setLoading(loading: boolean) {
     isSubmitting = loading;
+    setAgentBusy(loading);
     if (input) input.disabled = loading;
     if (sendBtn) sendBtn.disabled = loading;
   }
@@ -190,6 +200,7 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
   }
 
   function applyCategoryPreset(prompt: string) {
+    sessionCategory = PROGRAMMING_AGENT_CATEGORY;
     if (categoryInput) categoryInput.value = PROGRAMMING_AGENT_CATEGORY;
     if (!input) return;
 
@@ -242,21 +253,14 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
     canvas?.classList.add("is-open");
     canvas?.setAttribute("aria-hidden", "false");
     main?.classList.add("agent-main--with-canvas");
-
-    if (!meta) return;
-
-    const build = saveAgentWebBuild({
-      title: preview.title,
-      prompt: meta.prompt,
-      category: meta.category,
-      model: meta.model,
+    notifyAgentCanvasOpen();
+    syncAgentCanvasDetailsLink(
+      canvasDetails,
       preview,
-    });
-
-    if (canvasDetails) {
-      canvasDetails.href = `/agent/${build.id}`;
-      canvasDetails.classList.remove("hidden");
-    }
+      chatMessages,
+      sessionCategory ?? PROGRAMMING_AGENT_CATEGORY,
+      meta,
+    );
   }
 
   function closeCanvas() {
@@ -271,7 +275,20 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
     currentPreviewDocument = "";
     currentFiles = { html: "", css: "", js: "" };
     activeCodeFile = "html";
-    canvasDetails?.classList.add("hidden");
+    hideAgentCanvasDetailsLink(canvasDetails);
+  }
+
+  function onCanvasDetailsClick(event: MouseEvent) {
+    if (!canvasDetails) return;
+
+    const href = canvasDetails.getAttribute("href");
+    if (!href || href === "#") {
+      event.preventDefault();
+      return;
+    }
+
+    event.preventDefault();
+    window.open(href, "_blank", "noopener,noreferrer");
   }
 
   const onCanvasClose = () => closeCanvas();
@@ -428,6 +445,40 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
     root.querySelector("#agent-loading")?.remove();
   }
 
+  function restoreCanvasFromMessages() {
+    const preview = resolveCanvasPreviewFromMessages(
+      chatMessages,
+      sessionCategory ?? PROGRAMMING_AGENT_CATEGORY,
+    );
+    if (preview) openCanvas(preview);
+  }
+
+  const chatSession = setupAgentChatSession({
+    storageKey: CHAT_STORAGE_KEY,
+    defaultCategory: PROGRAMMING_AGENT_CATEGORY,
+    chatMessages,
+    getSessionCategory: () => sessionCategory,
+    setSessionCategory: (category) => {
+      sessionCategory = category;
+    },
+    categoryInput,
+    thread,
+    emptyState,
+    errorEl,
+    renderUserMessage,
+    renderAssistantMessage,
+    appendMessageNode,
+    appendDivider,
+    scrollToBottom,
+    focusInput: () => input?.focus(),
+    onClear: () => closeCanvas(),
+    restoreCanvas: restoreCanvasFromMessages,
+  });
+
+  function persistChat() {
+    chatSession.persist();
+  }
+
   async function onFormSubmit(event: Event) {
     event.preventDefault();
     if (isSubmitting || !input?.value.trim() || !thread) return;
@@ -445,6 +496,7 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
     };
 
     chatMessages.push(userMessage);
+    persistChat();
     const userNode = renderUserMessage(userMessage);
     appendMessageNode(userNode);
     const divider = appendDivider();
@@ -475,6 +527,8 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
       };
 
       chatMessages.push(assistantMessage);
+      sessionCategory = response.category;
+      persistChat();
       appendMessageNode(renderAssistantMessage(assistantMessage));
 
       if (
@@ -492,6 +546,7 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
     } catch (error) {
       removeLoading();
       chatMessages.pop();
+      persistChat();
       userNode.remove();
       divider?.remove();
       input.value = message;
@@ -512,6 +567,9 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
 
   const cleanupTabs = bindUiTabs(root);
 
+  chatSession.renderStoredMessages();
+  const cleanupHistory = chatSession.bind();
+
   const categoryCards = root.querySelectorAll<HTMLButtonElement>(
     "[data-agent-category]",
   );
@@ -520,6 +578,7 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
   });
 
   canvasClose?.addEventListener("click", onCanvasClose);
+  canvasDetails?.addEventListener("click", onCanvasDetailsClick);
   canvasRefresh?.addEventListener("click", onCanvasRefresh);
   canvasCopy?.addEventListener("click", onCanvasCopy);
   canvasCodeCopy?.addEventListener("click", onCodeCopyClick);
@@ -529,10 +588,12 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
 
   return () => {
     cleanupTabs();
+    cleanupHistory();
     categoryCards.forEach((card) => {
       card.removeEventListener("click", onCategoryCardClick);
     });
     canvasClose?.removeEventListener("click", onCanvasClose);
+    canvasDetails?.removeEventListener("click", onCanvasDetailsClick);
     canvasRefresh?.removeEventListener("click", onCanvasRefresh);
     canvasCopy?.removeEventListener("click", onCanvasCopy);
     canvasCodeCopy?.removeEventListener("click", onCodeCopyClick);

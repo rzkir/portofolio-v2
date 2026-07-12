@@ -1,0 +1,35 @@
+---
+import { cn } from "@/lib/utiles";
+
+const {
+  title = "Belum ada riwayat",
+  description = "Mulai percakapan baru untuk melihat riwayat di sini.",
+  class: className,
+} = Astro.props as EmpatyProps;
+---
+
+<div class={cn("agent-empaty", className)}>
+  <div
+    class="agent-empaty__icon mx-auto mb-4 flex size-12 items-center justify-center rounded-2xl border border-border/40 bg-background"
+    aria-hidden="true"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="size-5 text-muted-foreground"
+    >
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+    </svg>
+  </div>
+  <p class="agent-empaty__title font-display text-base font-normal tracking-tight text-foreground">
+    {title}
+  </p>
+  <p class="agent-empaty__description mt-1.5 text-xs font-light leading-relaxed text-muted-foreground">
+    {description}
+  </p>
+</div>

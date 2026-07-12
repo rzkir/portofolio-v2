@@ -1,14 +1,26 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import { getLocale, getMessages } from "@/lib/i18n";
 
+const locale = getLocale(Astro);
+const m = getMessages(locale);
 const { id } = Astro.params;
 
 if (!id) {
   return Astro.redirect("/agent");
 }
+
+const pageTitle = `${m.agentBuild.previewTitle} — Rizki Ramadhan`;
+const pageDescription = m.agentBuild.previewDescription;
 ---
 
-<Layout title="Preview" description="Generated web preview." noIndex={true}>
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  breadcrumbCurrent={m.agentBuild.previewTitle}
+  noIndex={true}
+  noGrabCursor={true}
+>
   <main
     id="agent-build-detail"
     data-build-id={id}
@@ -17,7 +29,7 @@ if (!id) {
     <iframe
       id="agent-build-frame"
       class="block size-full border-0"
-      title="Generated web preview"
+      title={m.agentBuild.previewTitle}
       sandbox="allow-scripts allow-modals allow-forms allow-popups"
     ></iframe>
   </main>

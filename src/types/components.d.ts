@@ -67,6 +67,20 @@ interface SelectProps {
 
 interface Props extends SelectProps { }
 
+//============================ History ============================//
+interface HistoryProps {
+    storageKey: string;
+    title?: string;
+    class?: string;
+}
+
+//============================ Empaty ============================//
+interface EmpatyProps {
+    title?: string;
+    description?: string;
+    class?: string;
+}
+
 //============================ Sidebar ============================//
 interface SidebarNavItem {
     id: string;

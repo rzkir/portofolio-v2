@@ -16,12 +16,36 @@ const tabsId = `${id}-tabs`;
 <aside
   id={id}
   class={cn(
-    "agent-canvas h-full w-full shrink-0 border-border bg-surface md:w-[42%] md:border-l",
+    "agent-canvas h-full w-full shrink-0 border-border bg-surface md:border-l",
     className,
   )}
   aria-label="Web preview canvas"
   aria-hidden="true"
 >
+  <button
+    type="button"
+    id={`${id}-expand`}
+    class="agent-panel-rail agent-canvas-rail"
+    aria-label="Buka canvas"
+    aria-expanded="false"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="size-4"
+      aria-hidden="true"
+    >
+      <path d="m15 18-6-6 6-6"></path>
+    </svg>
+    <span class="agent-panel-rail__label">Canvas</span>
+  </button>
+
+  <div class="agent-canvas__body flex min-h-0 flex-1 flex-col">
   <header
     class="flex h-20 shrink-0 items-center justify-between border-b border-border px-6"
   >
@@ -33,12 +57,34 @@ const tabsId = `${id}-tabs`;
       </p>
       <h2 class="font-display text-xl italic">Web preview</h2>
     </div>
-    <button
-      type="button"
-      id={`${id}-close`}
-      class="flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-foreground/5 hover:text-foreground"
-      aria-label="Close canvas"
-    >
+    <div class="flex items-center gap-1">
+      <button
+        type="button"
+        id={`${id}-collapse`}
+        class="hidden size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-foreground/5 hover:text-foreground md:inline-flex"
+        aria-label="Ciutkan canvas"
+        aria-expanded="true"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="size-4"
+          aria-hidden="true"
+        >
+          <path d="m9 18 6-6-6-6"></path>
+        </svg>
+      </button>
+      <button
+        type="button"
+        id={`${id}-close`}
+        class="flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-foreground/5 hover:text-foreground"
+        aria-label="Close canvas"
+      >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
@@ -54,6 +100,7 @@ const tabsId = `${id}-tabs`;
         <path d="m6 6 12 12"></path>
       </svg>
     </button>
+    </div>
   </header>
 
   <div
@@ -66,10 +113,10 @@ const tabsId = `${id}-tabs`;
       live
     </span>
 
-    <div class="flex items-center gap-4">
+    <div class="flex min-w-0 items-center gap-4 overflow-x-auto">
       <button
         type="button"
-        id={`${id}-expand`}
+        id={`${id}-expand-preview`}
         data-dialog-open="agent-preview-dialog"
         class="flex items-center gap-2 font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase transition-colors hover:text-foreground"
         aria-label="Open full preview"
@@ -104,8 +151,11 @@ const tabsId = `${id}-tabs`;
       <a
         id={`${id}-details`}
         href="#"
-        class="agent-canvas__details hidden items-center gap-2 font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase transition-colors hover:text-foreground"
-        aria-label="Open build details"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="agent-canvas__details pointer-events-auto relative z-10 hidden inline-flex shrink-0 items-center gap-2 font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase transition-colors hover:text-foreground"
+        aria-label="Open build details in a new tab"
+        data-cursor="hover"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -116,7 +166,6 @@ const tabsId = `${id}-tabs`;
           stroke-linecap="round"
           stroke-linejoin="round"
           class="size-4"
-          target="_blank"
           aria-hidden="true"
         >
           <path d="M15 3h6v6"></path>
@@ -318,6 +367,7 @@ const tabsId = `${id}-tabs`;
       </div>
     </Tabs>
   </div>
+  </div>
 </aside>
 
 <PreviewDialog />
@@ -325,6 +375,7 @@ const tabsId = `${id}-tabs`;
 <style is:global>
   .agent-canvas {
     display: none;
+    position: relative;
     flex-direction: column;
     min-height: 0;
     overflow: hidden;
@@ -332,6 +383,12 @@ const tabsId = `${id}-tabs`;
 
   .agent-canvas.is-open {
     display: flex;
+  }
+
+  @media (min-width: 768px) {
+    .agent-canvas.is-open {
+      width: 42%;
+    }
   }
 
   .agent-canvas__viewport {

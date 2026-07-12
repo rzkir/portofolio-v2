@@ -2,16 +2,19 @@ import {
   buildPromptHistory,
   buildWebPreview,
   formatAgentTime,
+  resolveCanvasPreviewFromMessages,
   sendAgentPrompt,
   shouldShowCanvas,
 } from "@/service/agent.service";
 import { bindUiTabs, setUiTab } from "@/lib/ui-tabs";
 import { highlightCode, toHighlightLanguage } from "@/lib/code-highlight";
-import { saveAgentWebBuild } from "@/service/agent/builds.client";
 import {
-  loadAgentChatSession,
-  saveAgentChatSession,
-} from "@/lib/storage";
+  hideAgentCanvasDetailsLink,
+  notifyAgentCanvasOpen,
+  syncAgentCanvasDetailsLink,
+} from "@/service/agent/canvas-panel.service";
+import { setAgentBusy } from "@/lib/agent-busy";
+import { createAgentChatHistoryController } from "@/service/agent/chat-history.controller";
 import { formatAgentMessageHtml } from "@/lib/agent-message";
 
 const CHAT_STORAGE_KEY = "studio";
@@ -58,12 +61,9 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
   const emptyState = root.querySelector<HTMLElement>("#agent-empty-state");
   const errorEl = root.querySelector<HTMLElement>("#agent-error");
 
-  const storedSession = loadAgentChatSession(CHAT_STORAGE_KEY);
-  const chatMessages: AgentChatMessage[] = storedSession?.messages ?? [];
+  const chatMessages: AgentChatMessage[] = [];
   let isSubmitting = false;
-  let sessionCategory: AgentPromptCategory | null =
-    storedSession?.sessionCategory ??
-    ((categoryInput?.value as AgentPromptCategory | "") || defaultCategory);
+  let sessionCategory: AgentPromptCategory | null = defaultCategory;
   let currentCanvasCode = "";
   let currentPreviewDocument = "";
   let currentFiles: AgentWebPreviewFiles = { html: "", css: "", js: "" };
@@ -142,6 +142,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
 
   function setLoading(loading: boolean) {
     isSubmitting = loading;
+    setAgentBusy(loading);
     if (input) input.disabled = loading;
     if (sendBtn) sendBtn.disabled = loading;
   }
@@ -215,21 +216,14 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     canvas?.classList.add("is-open");
     canvas?.setAttribute("aria-hidden", "false");
     main?.classList.add("agent-main--with-canvas");
-
-    if (!meta) return;
-
-    const build = saveAgentWebBuild({
-      title: preview.title,
-      prompt: meta.prompt,
-      category: meta.category,
-      model: meta.model,
+    notifyAgentCanvasOpen();
+    syncAgentCanvasDetailsLink(
+      canvasDetails,
       preview,
-    });
-
-    if (canvasDetails) {
-      canvasDetails.href = `/agent/${build.id}`;
-      canvasDetails.classList.remove("hidden");
-    }
+      chatMessages,
+      sessionCategory ?? defaultCategory,
+      meta,
+    );
   }
 
   function closeCanvas() {
@@ -244,7 +238,20 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     currentPreviewDocument = "";
     currentFiles = { html: "", css: "", js: "" };
     activeCodeFile = "html";
-    canvasDetails?.classList.add("hidden");
+    hideAgentCanvasDetailsLink(canvasDetails);
+  }
+
+  function onCanvasDetailsClick(event: MouseEvent) {
+    if (!canvasDetails) return;
+
+    const href = canvasDetails.getAttribute("href");
+    if (!href || href === "#") {
+      event.preventDefault();
+      return;
+    }
+
+    event.preventDefault();
+    window.open(href, "_blank", "noopener,noreferrer");
   }
 
   const onCanvasClose = () => closeCanvas();
@@ -402,10 +409,31 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
   }
 
   function persistChat() {
-    saveAgentChatSession(CHAT_STORAGE_KEY, chatMessages, sessionCategory);
+    chatHistory.persist();
   }
 
-  function restoreChatFromStorage() {
+  function clearThreadUi() {
+    if (!thread) return;
+
+    thread
+      .querySelectorAll(
+        "[data-message-role], [data-message-divider], #agent-loading",
+      )
+      .forEach((node) => node.remove());
+    emptyState?.classList.remove("hidden");
+    closeCanvas();
+    clearError();
+  }
+
+  function restoreCanvasFromMessages() {
+    const preview = resolveCanvasPreviewFromMessages(
+      chatMessages,
+      sessionCategory ?? defaultCategory,
+    );
+    if (preview) openCanvas(preview);
+  }
+
+  function renderStoredMessages() {
     if (chatMessages.length === 0) return;
 
     chatMessages.forEach((message, index) => {
@@ -422,7 +450,30 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
         appendMessageNode(renderAssistantMessage(message));
       }
     });
+
+    restoreCanvasFromMessages();
   }
+
+  function restoreChatFromStorage() {
+    renderStoredMessages();
+  }
+
+  const chatHistory = createAgentChatHistoryController({
+    storageKey: CHAT_STORAGE_KEY,
+    defaultCategory,
+    chatMessages,
+    getSessionCategory: () => sessionCategory,
+    setSessionCategory: (category) => {
+      sessionCategory = category;
+    },
+    setCategoryInputValue: (category) => {
+      if (categoryInput) categoryInput.value = category;
+    },
+    clearThreadUi,
+    renderStoredMessages,
+    scrollToBottom,
+    focusInput: () => input?.focus(),
+  });
 
   async function onFormSubmit(event: Event) {
     event.preventDefault();
@@ -527,6 +578,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
   }
 
   restoreChatFromStorage();
+  const cleanupHistory = chatHistory.bind();
 
   const categoryCards = root.querySelectorAll<HTMLButtonElement>(
     "[data-agent-category]",
@@ -536,6 +588,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
   });
 
   canvasClose?.addEventListener("click", onCanvasClose);
+  canvasDetails?.addEventListener("click", onCanvasDetailsClick);
   canvasRefresh?.addEventListener("click", onCanvasRefresh);
   canvasCopy?.addEventListener("click", onCanvasCopy);
   canvasCodeCopy?.addEventListener("click", onCodeCopyClick);
@@ -545,10 +598,12 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
 
   return () => {
     cleanupTabs();
+    cleanupHistory();
     categoryCards.forEach((card) => {
       card.removeEventListener("click", onCategoryCardClick);
     });
     canvasClose?.removeEventListener("click", onCanvasClose);
+    canvasDetails?.removeEventListener("click", onCanvasDetailsClick);
     canvasRefresh?.removeEventListener("click", onCanvasRefresh);
     canvasCopy?.removeEventListener("click", onCanvasCopy);
     canvasCodeCopy?.removeEventListener("click", onCodeCopyClick);

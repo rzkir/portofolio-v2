@@ -1,6 +1,9 @@
 import cloudflare from "@astrojs/cloudflare";
+
 import { defineConfig, envField } from "astro/config";
+
 import tailwindcss from "@tailwindcss/vite";
+
 import { fileURLToPath } from "node:url";
 
 import sitemap from "@astrojs/sitemap";

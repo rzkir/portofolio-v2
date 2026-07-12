@@ -7,6 +7,12 @@ function escapeHtml(value: string): string {
     .replaceAll("'", "&#39;");
 }
 
+function isMarkdownTableSeparator(line: string): boolean {
+  const trimmed = line.trim();
+  if (!trimmed.includes("-")) return false;
+  return /^\|?(\s*:?-+:?\s*\|)+\s*:?-+:?\s*\|?\s*$/.test(trimmed);
+}
+
 function formatInline(text: string): string {
   let result = escapeHtml(text);
 
@@ -21,13 +27,109 @@ function formatInline(text: string): string {
   return result;
 }
 
+function parseMarkdownTableRow(line: string): string[] {
+  return line
+    .trim()
+    .replace(/^\|/, "")
+    .replace(/\|$/, "")
+    .split("|")
+    .map((cell) => cell.trim())
+    .filter((cell) => cell.length > 0);
+}
+
+function isMarkdownTableRow(line: string): boolean {
+  return parseMarkdownTableRow(line).length >= 2;
+}
+
+function stripDecorativePipes(line: string): string {
+  const cells = parseMarkdownTableRow(line);
+  if (cells.length === 1 && line.trim().startsWith("|") && line.trim().endsWith("|")) {
+    return cells[0];
+  }
+  return line;
+}
+
+function isMarkdownTableBlock(lines: string[], startIndex: number): boolean {
+  if (!isMarkdownTableRow(lines[startIndex])) return false;
+
+  if (
+    startIndex + 1 < lines.length &&
+    isMarkdownTableSeparator(lines[startIndex + 1])
+  ) {
+    return true;
+  }
+
+  if (
+    startIndex + 1 < lines.length &&
+    isMarkdownTableRow(lines[startIndex + 1])
+  ) {
+    const columnCount = parseMarkdownTableRow(lines[startIndex]).length;
+    return parseMarkdownTableRow(lines[startIndex + 1]).length === columnCount;
+  }
+
+  return false;
+}
+
+function formatMarkdownTable(lines: string[], startIndex: number): {
+  html: string;
+  nextIndex: number;
+} {
+  const rows: string[][] = [parseMarkdownTableRow(lines[startIndex])];
+  let index = startIndex + 1;
+
+  if (index < lines.length && isMarkdownTableSeparator(lines[index])) {
+    index += 1;
+  }
+
+  while (index < lines.length && isMarkdownTableRow(lines[index])) {
+    rows.push(parseMarkdownTableRow(lines[index]));
+    index += 1;
+  }
+
+  const [header, ...body] = rows;
+  const thead = `<thead><tr>${header
+    .map((cell) => `<th>${formatInline(cell)}</th>`)
+    .join("")}</tr></thead>`;
+  const tbody =
+    body.length > 0
+      ? `<tbody>${body
+          .map(
+            (row) =>
+              `<tr>${row
+                .map((cell) => `<td>${formatInline(cell)}</td>`)
+                .join("")}</tr>`,
+          )
+          .join("")}</tbody>`
+      : "";
+
+  return {
+    html: `<div class="agent-message-table-wrap"><table class="agent-message-table">${thead}${tbody}</table></div>`,
+    nextIndex: index,
+  };
+}
+
 function formatBlock(content: string): string {
-  const lines = content.replace(/\r\n/g, "\n").split("\n");
+  const lines = content
+    .replace(/\r\n/g, "\n")
+    .split("\n")
+    .map(stripDecorativePipes);
   const blocks: string[] = [];
   let index = 0;
 
   while (index < lines.length) {
     const line = lines[index];
+
+    if (isMarkdownTableSeparator(line)) {
+      index += 1;
+      continue;
+    }
+
+    if (isMarkdownTableBlock(lines, index)) {
+      const table = formatMarkdownTable(lines, index);
+      blocks.push(table.html);
+      index = table.nextIndex;
+      continue;
+    }
 
     const heading = line.match(/^(#{1,6})\s+(.+)$/);
     if (heading) {
@@ -78,10 +180,17 @@ function formatBlock(content: string): string {
     while (
       index < lines.length &&
       lines[index].trim() !== "" &&
-      !/^(#{1,6}\s|[-*+]\s|\d+\.\s|```)/.test(lines[index])
+      !/^(#{1,6}\s|[-*+]\s|\d+\.\s|```)/.test(lines[index]) &&
+      !isMarkdownTableBlock(lines, index) &&
+      !isMarkdownTableSeparator(lines[index])
     ) {
       paragraph.push(lines[index]);
       index += 1;
+    }
+
+    if (paragraph.length === 0) {
+      index += 1;
+      continue;
     }
 
     blocks.push(

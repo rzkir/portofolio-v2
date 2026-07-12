@@ -1,3 +1,4 @@
+import { applyAgentBuildPageMetadata } from "@/lib/agent-build-metadata";
 import { getAgentWebBuild } from "@/service/agent/builds.client";
 
 function bindBuildDetail(root: ParentNode = document): void {
@@ -19,7 +20,10 @@ function bindBuildDetail(root: ParentNode = document): void {
 
   if (frame) {
     frame.srcdoc = build.preview.document;
+    frame.title = build.title;
   }
+
+  applyAgentBuildPageMetadata(build);
 
   document.addEventListener(
     "astro:before-preparation",
