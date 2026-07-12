@@ -1,0 +1,55 @@
+---
+import { cn } from "@/lib/utiles";
+import type { Locale } from "@/lib/i18n";
+
+interface Props {
+  locale: Locale;
+  class?: string;
+}
+
+const { locale, class: className } = Astro.props;
+
+const flagClass = cn(
+  "lang-flag inline-flex size-4 shrink-0 overflow-hidden rounded-full ring-1 ring-border/40",
+  className,
+);
+---
+
+{
+  locale === "id" && (
+    <span class={flagClass} aria-hidden="true">
+      <svg viewBox="0 0 24 24" class="size-full" xmlns="http://www.w3.org/2000/svg">
+        <rect width="24" height="24" fill="#E70011"></rect>
+      </svg>
+    </span>
+  )
+}
+
+{
+  locale === "en" && (
+    <span class={flagClass} aria-hidden="true">
+      <svg viewBox="0 0 24 24" class="size-full" xmlns="http://www.w3.org/2000/svg">
+        <rect width="24" height="24" fill="#012169"></rect>
+        <path
+          d="M0 0 24 24M24 0 0 24M0 24 24 0M12 0v24M0 12h24"
+          stroke="#fff"
+          stroke-width="4"></path>
+        <path
+          d="M0 0 24 24M24 0 0 24M0 24 24 0M12 0v24M0 12h24"
+          stroke="#C8102E"
+          stroke-width="2.4"></path>
+      </svg>
+    </span>
+  )
+}
+
+{
+  locale === "ja" && (
+    <span class={flagClass} aria-hidden="true">
+      <svg viewBox="0 0 24 24" class="size-full" xmlns="http://www.w3.org/2000/svg">
+        <rect width="24" height="24" fill="#fff"></rect>
+        <circle cx="12" cy="12" r="6" fill="#BC002D"></circle>
+      </svg>
+    </span>
+  )
+}

@@ -6,6 +6,7 @@ import {
 } from "astro:env/server";
 
 import type { Locale, Messages } from "@/lib/i18n";
+import { LOCALES } from "@/lib/i18n";
 import {
   resolveBreadcrumbs,
   serializeBreadcrumbJsonLd,
@@ -82,6 +83,7 @@ const DEFAULT_ROBOTS =
 const OG_LOCALE: Record<Locale, string> = {
   id: "id_ID",
   en: "en_US",
+  ja: "ja_JP",
 };
 
 function resolveSiteOrigin(site: URL | string | undefined): string {
@@ -119,7 +121,7 @@ function buildHomeJsonLd(
         name: SITE_NAME,
         url: `${origin}/`,
         description,
-        inLanguage: ["id-ID", "en-US"],
+        inLanguage: ["id-ID", "en-US", "ja-JP"],
         publisher: { "@id": `${origin}/#person` },
       },
       {
@@ -161,7 +163,8 @@ export function resolvePageMetadata(input: PageMetadataInput): PageMetadata {
   const path = normalizePath(pathname);
   const canonicalUrl = `${origin}${path === "/" ? "/" : path}`;
   const image = toAbsoluteUrl(site, ogImage ?? getDefaultOgImage(site));
-  const alternateLocale: Locale = locale === "id" ? "en" : "id";
+  const alternateLocale: Locale =
+    LOCALES.find((item) => item !== locale) ?? "en";
 
   const breadcrumbs = resolveBreadcrumbs(
     pathname,

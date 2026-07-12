@@ -1,4 +1,5 @@
 /// <reference types="astro/client" />
+/// <reference path="./types/components.d.ts" />
 
 declare namespace App {
   interface Locals {

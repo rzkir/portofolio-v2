@@ -72,6 +72,16 @@ interface HistoryProps {
     storageKey: string;
     title?: string;
     class?: string;
+    newChatLabel?: string;
+    searchPlaceholder?: string;
+    openLabel?: string;
+    collapseLabel?: string;
+    closeLabel?: string;
+    panelLabel?: string;
+    emptyTitle?: string;
+    emptyDescription?: string;
+    emptySearchTitle?: string;
+    emptySearchDescription?: string;
 }
 
 //============================ Empaty ============================//
@@ -105,10 +115,17 @@ interface SidebarNavItem {
     active?: boolean;
 }
 
+interface SidebarLabels {
+    home?: string;
+    agentNavigation?: string;
+    userAlt?: string;
+}
+
 interface SidebarProps {
     class?: string;
     items?: SidebarNavItem[];
     homeHref?: string;
+    labels?: SidebarLabels;
 }
 
 //============================ Tabs ============================//

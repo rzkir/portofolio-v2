@@ -5,7 +5,7 @@ import NotificationContext from "@/layouts/NotificationContext.astro";
 import SettingsContext from "@/layouts/SettingsContext.astro";
 import SplashScreen from "@/components/SplashScreen.astro";
 import { FORCE_MOTION_INLINE_SCRIPT } from "@/lib/force-motion";
-import { absoluteLangHref, getLocale, getMessages } from "@/lib/i18n";
+import { absoluteLangHref, getLocale, getMessages, LOCALES } from "@/lib/i18n";
 import {
   getSiteVerification,
   resolvePageMetadata,
@@ -100,26 +100,20 @@ const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
     <link rel="sitemap" href={sitemapUrl} type="application/xml" />
     {meta.robots && <meta name="robots" content={meta.robots} />}
 
-    <link
-      rel="alternate"
-      hreflang="id"
-      href={absoluteLangHref(
-        siteOrigin,
-        Astro.url.pathname,
-        Astro.url.search,
-        "id",
-      )}
-    />
-    <link
-      rel="alternate"
-      hreflang="en"
-      href={absoluteLangHref(
-        siteOrigin,
-        Astro.url.pathname,
-        Astro.url.search,
-        "en",
-      )}
-    />
+    {
+      LOCALES.map((lang) => (
+        <link
+          rel="alternate"
+          hreflang={lang}
+          href={absoluteLangHref(
+            siteOrigin,
+            Astro.url.pathname,
+            Astro.url.search,
+            lang,
+          )}
+        />
+      ))
+    }
     <link rel="alternate" hreflang="x-default" href={meta.canonicalUrl} />
 
     {
@@ -226,10 +220,12 @@ const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
     <link rel="stylesheet" href="/force-motion.css" />
 
     <script>
+      import { bindLang } from "@/lib/lang";
       import { bindTheme } from "@/lib/theme";
 
       function initTheme() {
         bindTheme();
+        bindLang();
       }
 
       if (document.readyState === "loading") {

@@ -7,9 +7,18 @@ interface Props {
   version?: string;
   showHistory?: boolean;
   class?: string;
+  openHistoryLabel?: string;
+  settingsLabel?: string;
 }
 
-const { title, version = "v4", showHistory = false, class: className } = Astro.props;
+const {
+  title,
+  version = "v4",
+  showHistory = false,
+  class: className,
+  openHistoryLabel = "Open conversation history",
+  settingsLabel = "Settings",
+} = Astro.props;
 ---
 
 <header
@@ -36,7 +45,7 @@ const { title, version = "v4", showHistory = false, class: className } = Astro.p
           type="button"
           id="agent-history-toggle"
           class="text-muted-foreground transition-colors hover:text-foreground md:hidden"
-          aria-label="Buka riwayat percakapan"
+          aria-label={openHistoryLabel}
           aria-controls="agent-history-panel"
           aria-expanded="false"
         >
@@ -65,7 +74,7 @@ const { title, version = "v4", showHistory = false, class: className } = Astro.p
       href="/agent/setting"
       id="header-settings-link"
       class="text-muted-foreground transition-colors hover:text-foreground"
-      aria-label="Settings"
+      aria-label={settingsLabel}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

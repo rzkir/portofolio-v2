@@ -1,7 +1,12 @@
 ---
 import Sidebar from "@/components/ui/sidebar.astro";
-
+import { getAgentSidebarItems } from "@/lib/agent-content";
+import { getLocale, getMessages } from "@/lib/i18n";
 import { cn } from "@/lib/utiles";
+
+const locale = getLocale(Astro);
+const studio = getAgentSidebarItems(locale);
+const { common } = getMessages(locale).agentStudio;
 
 const { class: className, homeHref } = Astro.props as AsideProps;
 ---
@@ -10,9 +15,11 @@ const { class: className, homeHref } = Astro.props as AsideProps;
   type="button"
   id="agent-sidebar-toggle"
   class="agent-sidebar-toggle fixed top-3 left-4 flex size-10 items-center justify-center rounded-xl border border-border bg-surface/95 text-foreground shadow-lg backdrop-blur-md transition-colors hover:bg-surface md:hidden"
-  aria-label="Open navigation"
+  aria-label={common.openNavigation}
   aria-controls="agent-sidebar"
   aria-expanded="false"
+  data-open-label={common.openNavigation}
+  data-close-label={common.closeNavigation}
 >
   <svg
     class="agent-sidebar-toggle__open size-5"
@@ -60,102 +67,12 @@ const { class: className, homeHref } = Astro.props as AsideProps;
   )}
 >
   <slot>
-    <Sidebar homeHref={homeHref} />
+    <Sidebar homeHref={homeHref} items={studio} labels={common} />
   </slot>
 </aside>
 
 <script>
-  function setSidebarToggleIcon(
-    toggle: HTMLButtonElement,
-    isOpen: boolean,
-  ): void {
-    const openIcon = toggle.querySelector<SVGElement>(
-      ".agent-sidebar-toggle__open",
-    );
-    const closeIcon = toggle.querySelector<SVGElement>(
-      ".agent-sidebar-toggle__close",
-    );
-
-    openIcon?.classList.toggle("hidden", isOpen);
-    closeIcon?.classList.toggle("hidden", !isOpen);
-  }
-
-  function bindAgentSidebar(root: ParentNode = document): void {
-    const shell = root.querySelector<HTMLElement>(".agent-shell");
-    if (!shell || shell.dataset.sidebarBound === "true") return;
-    shell.dataset.sidebarBound = "true";
-
-    const toggle = root.querySelector<HTMLButtonElement>(
-      "#agent-sidebar-toggle",
-    );
-    const sidebar = root.querySelector<HTMLElement>("#agent-sidebar");
-    const backdrop = root.querySelector<HTMLElement>("#agent-sidebar-backdrop");
-    if (!toggle || !sidebar || !backdrop) return;
-
-    const open = () => {
-      if (window.matchMedia("(min-width: 768px)").matches) return;
-
-      sidebar.classList.remove("-translate-x-full");
-      sidebar.classList.add("translate-x-0");
-      backdrop.classList.remove("pointer-events-none", "opacity-0");
-      backdrop.classList.add("opacity-100");
-      toggle.setAttribute("aria-expanded", "true");
-      toggle.setAttribute("aria-label", "Close navigation");
-      setSidebarToggleIcon(toggle, true);
-      document.body.classList.add("overflow-hidden");
-    };
-
-    const close = () => {
-      sidebar.classList.add("-translate-x-full");
-      sidebar.classList.remove("translate-x-0");
-      backdrop.classList.add("pointer-events-none", "opacity-0");
-      backdrop.classList.remove("opacity-100");
-      toggle.setAttribute("aria-expanded", "false");
-      toggle.setAttribute("aria-label", "Open navigation");
-      setSidebarToggleIcon(toggle, false);
-      document.body.classList.remove("overflow-hidden");
-    };
-
-    const onToggle = () => {
-      if (toggle.getAttribute("aria-expanded") === "true") close();
-      else open();
-    };
-
-    const onSidebarClick = (event: Event) => {
-      const target = event.target as HTMLElement | null;
-      const link = target?.closest("a[href]");
-      if (!link || !sidebar.contains(link)) return;
-      close();
-    };
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") close();
-    };
-
-    const onResize = () => {
-      if (window.matchMedia("(min-width: 768px)").matches) close();
-    };
-
-    toggle.addEventListener("click", onToggle);
-    backdrop.addEventListener("click", close);
-    sidebar.addEventListener("click", onSidebarClick);
-    document.addEventListener("keydown", onKeyDown);
-    window.addEventListener("resize", onResize);
-
-    document.addEventListener(
-      "astro:before-preparation",
-      () => {
-        toggle.removeEventListener("click", onToggle);
-        backdrop.removeEventListener("click", close);
-        sidebar.removeEventListener("click", onSidebarClick);
-        document.removeEventListener("keydown", onKeyDown);
-        window.removeEventListener("resize", onResize);
-        document.body.classList.remove("overflow-hidden");
-        shell.dataset.sidebarBound = "false";
-      },
-      { once: true },
-    );
-  }
+  import { bindAgentSidebar } from "@/lib/agent-sidebar.client";
 
   bindAgentSidebar();
   document.addEventListener("astro:page-load", () => bindAgentSidebar());

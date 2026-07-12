@@ -1,10 +1,11 @@
 import {
-  AGENT_HISTORY_PERIOD_LABELS,
   deriveThreadPreview,
   formatHistoryTime,
   getAgentHistoryPeriod,
+  getAgentHistoryPeriodLabels,
   groupThreadsByPeriod,
 } from "@/lib/agent-history";
+import { getAgentStudioClient } from "@/lib/agent-i18n.client";
 import {
   deleteAgentChatThread,
   getActiveAgentChatThreadId,
@@ -66,9 +67,11 @@ function renderHistoryEmpty(list: HTMLElement, query: string): void {
     return;
   }
 
+  const { noMatchingConversations, noHistory } = getAgentStudioClient().common;
+
   list.innerHTML = `
     <div class="agent-history-empty px-3 pt-2">
-      <p>${query.trim() ? "Tidak ada percakapan yang cocok." : "Belum ada riwayat."}</p>
+      <p>${query.trim() ? noMatchingConversations : noHistory}</p>
     </div>
   `;
 }
@@ -97,6 +100,8 @@ function renderHistoryItem(
   const period = getAgentHistoryPeriod(thread.updatedAt);
   const preview = deriveThreadPreview(thread.messages);
   const meta = formatHistoryTime(thread.updatedAt, period, isActive);
+  const { pinConversation, unpinConversation, deleteConversation } =
+    getAgentStudioClient().common;
 
   return `
     <div
@@ -116,7 +121,7 @@ function renderHistoryItem(
           type="button"
           class="agent-history-action agent-history-action--pin${isPinned ? " is-pinned" : ""}"
           data-history-pin-id="${escapeHtml(thread.id)}"
-          aria-label="${isPinned ? "Lepas pin" : "Pin percakapan"}"
+          aria-label="${isPinned ? unpinConversation : pinConversation}"
         >
           ${isPinned ? PIN_OFF_ICON : PIN_ICON}
         </button>
@@ -124,7 +129,7 @@ function renderHistoryItem(
           type="button"
           class="agent-history-action agent-history-action--delete"
           data-history-delete-id="${escapeHtml(thread.id)}"
-          aria-label="Hapus percakapan"
+          aria-label="${deleteConversation}"
         >
           ${DELETE_ICON}
         </button>
@@ -156,6 +161,8 @@ function renderHistoryList(
     return;
   }
 
+  const periodLabels = getAgentHistoryPeriodLabels();
+
   list.innerHTML = groups
     .map(({ period, threads: periodThreads }) => {
       const items = sortThreads(periodThreads, pinnedIds)
@@ -164,7 +171,7 @@ function renderHistoryList(
 
       return `
         <section class="agent-history-period">
-          <span class="agent-history-period__label">${AGENT_HISTORY_PERIOD_LABELS[period]}</span>
+          <span class="agent-history-period__label">${periodLabels[period]}</span>
           <div class="agent-history-period__track">${items}</div>
         </section>
       `;

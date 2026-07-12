@@ -1,4 +1,5 @@
 import type { Locale } from "@/lib/i18n";
+import { localeToBcp47 } from "@/lib/i18n";
 import {
   fetchArticleBySlug,
   fetchArticlesContents,
@@ -11,7 +12,7 @@ export function getArticleCategory(article: ArticlesContentProps): string {
 export function formatBlogDate(iso: string, locale: Locale): string {
   const date = new Date(iso);
 
-  return date.toLocaleDateString(locale === "id" ? "id-ID" : "en-US", {
+  return date.toLocaleDateString(localeToBcp47(locale), {
     day: "2-digit",
     month: "short",
     year: "numeric",

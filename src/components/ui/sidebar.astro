@@ -8,80 +8,8 @@ import HoverCard from "@/components/ui/hover-card.astro";
 const {
   class: className,
   homeHref = "/agent",
-  items = [
-    {
-      id: "chat",
-      href: "/agent",
-      label: "Agents",
-      icon: "agent",
-    },
-    {
-      id: "programming",
-      href: "/agent/programming",
-      label: "Programming",
-      icon: "programming",
-    },
-    {
-      id: "seo",
-      href: "/agent/seo",
-      label: "SEO",
-      icon: "seo",
-    },
-    {
-      id: "marketing",
-      href: "/agent/marketing",
-      label: "Marketing",
-      icon: "marketing",
-    },
-    {
-      id: "finance",
-      href: "/agent/finance",
-      label: "Finance",
-      icon: "finance",
-    },
-    {
-      id: "health",
-      href: "/agent/health",
-      label: "Health",
-      icon: "health",
-    },
-    {
-      id: "trivia",
-      href: "/agent/trivia",
-      label: "Trivia",
-      icon: "trivia",
-    },
-    {
-      id: "academia",
-      href: "/agent/academia",
-      label: "Academia",
-      icon: "academia",
-    },
-    {
-      id: "technology",
-      href: "/agent/technology",
-      label: "Technology",
-      icon: "technology",
-    },
-    {
-      id: "science",
-      href: "/agent/science",
-      label: "Science",
-      icon: "science",
-    },
-    {
-      id: "translation",
-      href: "/agent/translation",
-      label: "Translation",
-      icon: "translation",
-    },
-    {
-      id: "legal",
-      href: "/agent/legal",
-      label: "Legal",
-      icon: "legal",
-    },
-  ],
+  items,
+  labels,
 } = Astro.props as SidebarProps;
 
 const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
@@ -104,7 +32,7 @@ function isNavActive(href: string): boolean {
   );
 }
 
-const navItems = items.map((item) => ({
+const navItems = (items ?? []).map((item) => ({
   ...item,
   active: item.active ?? isNavActive(item.href),
 }));
@@ -118,7 +46,7 @@ const iconClass = "size-6";
     className,
   )}
 >
-  <a href={homeHref} class="group mb-8 cursor-pointer" aria-label="Home">
+  <a href={homeHref} class="group mb-8 cursor-pointer" aria-label={labels?.home ?? "Home"}>
     <div
       class="flex size-12 items-center justify-center rounded-2xl bg-foreground transition-transform group-hover:rotate-12"
     >
@@ -128,7 +56,7 @@ const iconClass = "size-6";
 
   <nav
     class="flex min-h-0 w-full flex-1 overflow-visible"
-    aria-label="Agent navigation"
+    aria-label={labels?.agentNavigation ?? "Agent navigation"}
   >
     <div
       class="sidebar-nav-scroll flex min-h-0 w-full flex-1 flex-col items-center gap-6 overflow-y-auto overscroll-contain lg:gap-8"
@@ -418,7 +346,7 @@ const iconClass = "size-6";
         width={40}
         height={40}
         class="size-full rounded-full object-cover"
-        alt="User"
+        alt={labels?.userAlt ?? "User"}
       />
     </div>
   </div>

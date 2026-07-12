@@ -3,12 +3,12 @@ import {
   serializeBreadcrumbJsonLd,
   type BreadcrumbItem,
 } from "@/lib/breadcrumbs";
-import { getMessages, type Locale } from "@/lib/i18n";
+import { getMessages, resolveLocale, type Locale } from "@/lib/i18n";
 
 const SITE_NAME = "Rizki Ramadhan";
 
 function getPageLocale(): Locale {
-  return document.documentElement.lang === "en" ? "en" : "id";
+  return resolveLocale(document.documentElement.lang);
 }
 
 function truncate(text: string, max = 160): string {

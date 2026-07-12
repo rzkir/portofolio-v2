@@ -1,0 +1,506 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/layouts/Header.astro";
+import Footer from "@/layouts/Footer.astro";
+import { contact } from "@/data/portfolio";
+import { getLocale, getMessages } from "@/lib/i18n";
+
+const locale = getLocale(Astro);
+const m = getMessages(locale);
+const h = m.helpCenterPage;
+const l = m.legal;
+
+const supportEmail = contact.email;
+---
+
+<Layout
+  title={m.meta.helpCenterTitle}
+  description={m.meta.helpCenterDescription}
+  breadcrumbCurrent={h.breadcrumb}
+>
+  <Header />
+
+  <main class="pt-28">
+    <nav class="border-b border-border/40 px-4 py-4 md:px-8" aria-label="Breadcrumb">
+      <ol
+        class="mx-auto flex items-center gap-2 text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase"
+      >
+        <li>
+          <a href="/" class="transition-colors hover:text-foreground">{l.breadcrumbHome}</a>
+        </li>
+        <li aria-hidden="true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="size-3"
+          >
+            <path d="m9 18 6-6-6-6" />
+          </svg>
+        </li>
+        <li>
+          <span class="text-foreground" aria-current="page">{h.breadcrumb}</span>
+        </li>
+      </ol>
+    </nav>
+
+    <section class="border-b border-border/40 px-4 pt-12 pb-20 md:px-8">
+      <div class="mx-auto max-w-4xl">
+        <h1
+          class="mb-8 font-display text-6xl font-light tracking-tight md:text-7xl"
+        >
+          {h.titleMain} <span class="italic">{h.titleAccent}</span>
+        </h1>
+        <p class="mb-12 max-w-2xl text-xl font-light text-muted-foreground">
+          {h.subtitle}
+        </p>
+
+        <div class="relative max-w-2xl">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="absolute top-1/2 left-6 size-5 -translate-y-1/2 text-muted-foreground"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input
+            id="help-search"
+            type="search"
+            placeholder={h.searchPlaceholder}
+            class="w-full rounded-2xl border border-border py-6 pr-16 pl-14 text-lg font-light shadow-sm transition-shadow focus:ring-1 focus:ring-foreground/20 focus:outline-none"
+            aria-label={h.searchAria}
+          />
+          <div
+            class="pointer-events-none absolute top-1/2 right-6 flex -translate-y-1/2 items-center gap-2"
+          >
+            <kbd
+              class="rounded border border-border bg-surface px-2 py-1 font-mono text-[10px] text-muted-foreground"
+              >/ </kbd
+            >
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-wrap items-center gap-3">
+          <span
+            class="mr-2 text-[10px] font-bold tracking-widest text-muted-foreground uppercase"
+          >
+            {h.quickLinksLabel}
+          </span>
+          {
+            h.quickLinks.map((link) => (
+              <a
+                href={link.href}
+                class="rounded-full border border-border bg-surface/60 px-3 py-1 text-xs transition-all hover:border-foreground/20 hover:bg-background"
+              >
+                {link.label}
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="px-4 py-20 md:px-8">
+      <div
+        class="mx-auto grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4"
+      >
+        {
+          h.categories.map((category) => (
+            <article
+              id={category.id}
+              class="group scroll-mt-32 rounded-3xl border border-border/60 p-8 transition-all hover:border-foreground/20"
+            >
+              <div
+                class:list={[
+                  "mb-6 flex size-12 items-center justify-center rounded-2xl transition-all group-hover:scale-110",
+                  category.featured
+                    ? "bg-foreground text-background"
+                    : "bg-surface text-foreground group-hover:bg-foreground group-hover:text-background",
+                ]}
+              >
+                {category.icon === "zap" && (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="size-6"
+                    aria-hidden="true"
+                  >
+                    <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" />
+                  </svg>
+                )}
+                {category.icon === "user" && (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="size-6"
+                    aria-hidden="true"
+                  >
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                )}
+                {category.icon === "shield" && (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="size-6"
+                    aria-hidden="true"
+                  >
+                    <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+                    <path d="M12 8v4" />
+                    <path d="M12 16h.01" />
+                  </svg>
+                )}
+                {category.icon === "credit-card" && (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="size-6"
+                    aria-hidden="true"
+                  >
+                    <rect width="20" height="14" x="2" y="5" rx="2" />
+                    <line x1="2" x2="22" y1="10" y2="10" />
+                  </svg>
+                )}
+              </div>
+              <h3 class="mb-2 font-display text-2xl">{category.title}</h3>
+              <p class="text-sm leading-relaxed font-light text-muted-foreground">
+                {category.description}
+              </p>
+              <a
+                href="#faq"
+                class="mt-6 inline-flex items-center text-xs font-bold tracking-widest uppercase transition-all hover:gap-2"
+              >
+                {l.explore}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="ml-1 size-3.5"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </a>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section
+      id="faq"
+      class="scroll-mt-32 border-y border-border/40 bg-surface/40 px-4 py-20 md:px-8"
+    >
+      <div class="mx-auto max-w-4xl">
+        <div class="mb-16 text-center">
+          <span
+            class="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase"
+          >
+            {h.faqEyebrow}
+          </span>
+          <h2 class="mt-4 font-display text-4xl">
+            {h.faqTitleMain} <span class="italic">{h.faqTitleAccent}</span>
+          </h2>
+        </div>
+
+        <div id="faq-list" class="space-y-4">
+          {
+            h.faqItems.map((item) => (
+              <details
+                class="help-faq group overflow-hidden rounded-2xl border border-border/60 bg-background"
+                data-faq-item
+              >
+                <summary class="flex cursor-pointer list-none items-center justify-between p-6 text-left transition-colors hover:text-muted-foreground">
+                  <span class="font-medium">{item.question}</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="help-faq-icon size-4 shrink-0 text-muted-foreground transition-transform duration-300"
+                    aria-hidden="true"
+                  >
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </summary>
+                <div class="px-6 pb-6">
+                  <p class="text-sm leading-relaxed text-muted-foreground">
+                    {item.answer}
+                  </p>
+                </div>
+              </details>
+            ))
+          }
+        </div>
+
+        <p
+          id="faq-empty"
+          class="hidden py-8 text-center text-sm text-muted-foreground"
+          data-empty-message={h.faqEmpty}
+        >
+          {h.faqEmpty}
+        </p>
+      </div>
+    </section>
+
+    <section class="px-4 py-20 md:px-8">
+      <div class="mx-auto">
+        <div class="mb-12 flex items-end justify-between gap-6">
+          <div>
+            <span
+              class="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase"
+            >
+              {h.guidesEyebrow}
+            </span>
+            <h2 class="mt-4 font-display text-4xl">
+              {h.guidesTitleMain} <span class="italic">{h.guidesTitleAccent}</span>
+            </h2>
+          </div>
+          <a
+            href="/blog"
+            class="shrink-0 text-xs font-bold tracking-widest text-muted-foreground uppercase transition-colors hover:text-foreground"
+          >
+            {h.viewAllArticles}
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+          {
+            h.guides.map((guide) => (
+              <a href="/blog" class="group block">
+                <div class="relative mb-6 flex aspect-video items-center justify-center overflow-hidden rounded-2xl bg-surface">
+                  {guide.icon === "play" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="size-10 text-foreground/20 transition-all group-hover:scale-110 group-hover:text-foreground"
+                      aria-hidden="true"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <polygon points="10 8 16 12 10 16 10 8" />
+                    </svg>
+                  )}
+                  {guide.icon === "book" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="size-10 text-foreground/20 transition-all group-hover:scale-110 group-hover:text-foreground"
+                      aria-hidden="true"
+                    >
+                      <path d="M12 7v14" />
+                      <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" />
+                    </svg>
+                  )}
+                  {guide.icon === "file" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="size-10 text-foreground/20 transition-all group-hover:scale-110 group-hover:text-foreground"
+                      aria-hidden="true"
+                    >
+                      <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                      <path d="M10 9H8" />
+                      <path d="M16 13H8" />
+                      <path d="M16 17H8" />
+                    </svg>
+                  )}
+                  {"duration" in guide && guide.duration && (
+                    <span class="absolute top-4 right-4 rounded bg-background/80 px-2 py-1 font-mono text-[10px] tracking-tighter backdrop-blur">
+                      {guide.duration}
+                    </span>
+                  )}
+                </div>
+                <h4 class="mb-2 font-medium transition-colors group-hover:underline">
+                  {guide.title}
+                </h4>
+                <p class="text-xs text-muted-foreground">{guide.meta}</p>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="px-4 py-24 md:px-8">
+      <div
+        class="relative overflow-hidden rounded-[2.5rem] bg-foreground p-12 text-center text-background md:p-20"
+      >
+        <div
+          class="absolute top-0 right-0 size-64 translate-x-1/2 -translate-y-1/2 rounded-full bg-background/5"
+          aria-hidden="true"
+        >
+        </div>
+        <div
+          class="absolute bottom-0 left-0 size-32 -translate-x-1/2 translate-y-1/2 rounded-full bg-background/5"
+          aria-hidden="true"
+        >
+        </div>
+
+        <div class="relative z-10 mx-auto max-w-2xl space-y-6">
+          <h2
+            class="font-display text-4xl leading-tight font-light md:text-5xl"
+          >
+            {h.ctaTitleMain} <span class="italic">{h.ctaTitleAccent}</span>
+          </h2>
+          <p class="font-light text-background/60">
+            {h.ctaBody}
+          </p>
+          <div
+            class="flex flex-col items-center justify-center gap-4 pt-8 sm:flex-row"
+          >
+            <a
+              href={`mailto:${supportEmail}?subject=${encodeURIComponent(h.supportSubject)}`}
+              class="w-full rounded-xl bg-background px-8 py-4 font-medium text-foreground transition-colors hover:bg-background/90 sm:w-auto"
+            >
+              {h.contactSupport}
+            </a>
+            <a
+              href={`mailto:${supportEmail}?subject=${encodeURIComponent(h.liveChatSubject)}`}
+              class="w-full rounded-xl border border-background/20 px-8 py-4 font-medium text-background transition-colors hover:bg-background/10 sm:w-auto"
+            >
+              {h.liveChat}
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="border-t border-border/40 px-4 py-12 md:px-8">
+      <div
+        class="mx-auto flex flex-col items-center justify-between gap-8 md:flex-row"
+      >
+        <div class="flex items-center gap-2">
+          <div
+            class="flex size-8 items-center justify-center rounded bg-foreground font-display text-sm text-background"
+          >
+            R
+          </div>
+          <span class="font-display text-lg tracking-tight">{h.brandName}</span>
+        </div>
+        <nav
+          class="flex gap-8 text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase"
+        >
+          <a href="/terms" class="transition-colors hover:text-foreground">
+            {l.termsShort}
+          </a>
+          <a href="/privacy" class="transition-colors hover:text-foreground">
+            {l.privacyShort}
+          </a>
+          <span class="text-foreground">{l.helpShort}</span>
+        </nav>
+        <p class="font-mono text-[10px] text-muted-foreground">
+          {l.copyright}
+        </p>
+      </div>
+    </footer>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .help-faq > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .help-faq[open] .help-faq-icon {
+    transform: rotate(180deg);
+  }
+</style>
+
+<script>
+  const searchInput = document.getElementById(
+    "help-search",
+  ) as HTMLInputElement | null;
+  const faqList = document.getElementById("faq-list");
+  const faqEmpty = document.getElementById("faq-empty");
+
+  function filterFaqs(query: string) {
+    if (!faqList) return;
+
+    const items = faqList.querySelectorAll<HTMLElement>("[data-faq-item]");
+    const normalized = query.trim().toLowerCase();
+    let visibleCount = 0;
+
+    items.forEach((item) => {
+      const text = item.textContent?.toLowerCase() ?? "";
+      const matches = !normalized || text.includes(normalized);
+      item.classList.toggle("hidden", !matches);
+      if (matches) visibleCount += 1;
+    });
+
+    faqEmpty?.classList.toggle("hidden", visibleCount > 0);
+  }
+
+  searchInput?.addEventListener("input", (event) => {
+    filterFaqs((event.target as HTMLInputElement).value);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (
+      event.key === "/" &&
+      document.activeElement !== searchInput &&
+      !(document.activeElement instanceof HTMLInputElement) &&
+      !(document.activeElement instanceof HTMLTextAreaElement)
+    ) {
+      event.preventDefault();
+      searchInput?.focus();
+    }
+  });
+</script>

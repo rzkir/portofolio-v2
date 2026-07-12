@@ -1,54 +1,19 @@
-import type { AgentCategoryCard } from "@/service/agent.service";
 import {
   buildPromptHistory,
-  formatAgentTime,
   sendAgentPrompt,
 } from "@/service/agent.service";
 import { setAgentBusy } from "@/lib/agent-busy";
 import { setupAgentChatSession } from "@/lib/agent-chat-session";
-import { formatAgentMessageHtml } from "@/lib/agent-message";
+import {
+  getAgentErrorMessage,
+  renderAgentAssistantMessage,
+  renderAgentLoading,
+  renderAgentUserMessage,
+} from "@/lib/agent-chat-ui";
 
 export const TRIVIA_AGENT_CATEGORY: AgentPromptCategory = "trivia";
 const CHAT_STORAGE_KEY = "trivia";
 
-export const TRIVIA_CATEGORY_CARDS: AgentCategoryCard[] = [
-  {
-    title: "Fun Facts",
-    categoryLabel: "Trivia · Facts",
-    description:
-      "Temukan fakta unik dan menarik dari berbagai topik, dari sejarah sampai budaya pop.",
-    category: "trivia",
-    prompt:
-      "Berikan saya 10 fun facts menarik dari topik yang saya pilih, dengan penjelasan singkat tiap fakta.",
-  },
-  {
-    title: "Quiz Challenge",
-    categoryLabel: "Trivia · Quiz",
-    description:
-      "Buat kuis interaktif dengan tingkat kesulitan yang bisa disesuaikan.",
-    category: "trivia",
-    prompt:
-      "Buatkan kuis trivia 10 soal dengan pilihan ganda tentang topik yang saya sebutkan, lalu berikan kunci jawaban.",
-  },
-  {
-    title: "Guess The Answer",
-    categoryLabel: "Trivia · Game",
-    description:
-      "Main tebak-tebakan trivia dengan format clue bertahap agar lebih seru.",
-    category: "trivia",
-    prompt:
-      "Ajak saya bermain tebak-tebakan trivia. Beri clue bertahap dan tunggu jawaban saya sebelum mengungkap jawabannya.",
-  },
-  {
-    title: "Today In History",
-    categoryLabel: "Trivia · History",
-    description:
-      "Lihat momen bersejarah penting yang terjadi pada hari ini dari berbagai era.",
-    category: "trivia",
-    prompt:
-      "Ceritakan peristiwa penting 'hari ini dalam sejarah' secara ringkas dan menarik, lengkap dengan konteksnya.",
-  },
-];
 
 function escapeHtml(value: string): string {
   return value
@@ -120,83 +85,8 @@ export function createTriviaAgentController(root: ParentNode): () => void {
     applyCategoryPreset(prompt);
   }
 
-  function renderUserMessage(message: AgentChatMessage) {
-    const block = document.createElement("div");
-    block.className = "agent-message-reveal flex flex-col items-end space-y-4";
-    block.dataset.messageRole = "user";
-    block.dataset.messageId = message.id;
-    block.innerHTML = `
-      <div class="agent-user-bubble max-w-2xl rounded-3xl rounded-tr-none p-6 leading-relaxed text-foreground/90 shadow-2xl">
-        <p class="whitespace-pre-wrap">${escapeHtml(message.content)}</p>
-      </div>
-      <div class="flex items-center gap-3 opacity-20">
-        <span class="font-mono text-[10px] font-bold tracking-widest uppercase">
-          Sent ${formatAgentTime(message.sentAt)}
-        </span>
-      </div>
-    `;
-    return block;
-  }
 
-  function renderAssistantMessage(message: AgentChatMessage) {
-    const block = document.createElement("div");
-    block.className = "agent-message-reveal flex flex-col items-start space-y-6";
-    block.dataset.messageRole = "assistant";
-    block.dataset.messageId = message.id;
-    block.innerHTML = `
-      <div class="flex items-center gap-4">
-        <div class="flex size-8 items-center justify-center rounded-xl bg-accent shadow-lg shadow-accent/20">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-4 text-accent-foreground" aria-hidden="true">
-            <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" />
-          </svg>
-        </div>
-        <span class="font-mono text-[10px] font-bold tracking-[0.3em] text-accent uppercase">
-          Inference Complete${message.model ? ` · ${escapeHtml(message.model)}` : ""}
-        </span>
-      </div>
-      <div class="agent-ai-bubble max-w-3xl rounded-[40px] rounded-tl-none p-8 shadow-2xl shadow-accent/20">
-        <div class="agent-message-content text-lg leading-relaxed">${formatAgentMessageHtml(message.content)}</div>
-      </div>
-      <div class="flex gap-6 px-4">
-        <button type="button" class="agent-copy-btn flex items-center gap-2 font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase opacity-30 transition-opacity hover:opacity-100">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-4" aria-hidden="true">
-            <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
-            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-          </svg>
-          Copy
-        </button>
-      </div>
-    `;
 
-    block.querySelector(".agent-copy-btn")?.addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText(message.content);
-      } catch {
-        // ignore clipboard errors
-      }
-    });
-
-    return block;
-  }
-
-  function renderLoading() {
-    const block = document.createElement("div");
-    block.id = "agent-loading";
-    block.className = "agent-message-reveal flex flex-col items-start space-y-4";
-    block.innerHTML = `
-      <div class="flex items-center gap-4">
-        <div class="flex size-8 items-center justify-center rounded-xl bg-accent shadow-lg shadow-accent/20">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-4 animate-spin text-accent-foreground" aria-hidden="true">
-            <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-          </svg>
-        </div>
-        <span class="font-mono text-[10px] font-bold tracking-[0.3em] text-accent uppercase">
-          Processing
-        </span>
-      </div>
-    `;
-    return block;
-  }
 
   function appendDivider() {
     if (!thread) return null;
@@ -230,8 +120,8 @@ export function createTriviaAgentController(root: ParentNode): () => void {
     thread,
     emptyState,
     errorEl,
-    renderUserMessage,
-    renderAssistantMessage,
+    renderUserMessage: renderAgentUserMessage,
+    renderAssistantMessage: renderAgentAssistantMessage,
     appendMessageNode,
     appendDivider,
     scrollToBottom,
@@ -260,10 +150,10 @@ export function createTriviaAgentController(root: ParentNode): () => void {
 
     chatMessages.push(userMessage);
     persistChat();
-    const userNode = renderUserMessage(userMessage);
+    const userNode = renderAgentUserMessage(userMessage);
     appendMessageNode(userNode);
     const divider = appendDivider();
-    const loadingNode = renderLoading();
+    const loadingNode = renderAgentLoading();
     appendMessageNode(loadingNode);
 
     input.value = "";
@@ -292,7 +182,7 @@ export function createTriviaAgentController(root: ParentNode): () => void {
       chatMessages.push(assistantMessage);
       sessionCategory = response.category;
       persistChat();
-      appendMessageNode(renderAssistantMessage(assistantMessage));
+      appendMessageNode(renderAgentAssistantMessage(assistantMessage));
     } catch (error) {
       removeLoading();
       chatMessages.pop();
@@ -304,11 +194,7 @@ export function createTriviaAgentController(root: ParentNode): () => void {
       if (chatMessages.length === 0) {
         emptyState?.classList.remove("hidden");
       }
-      showError(
-        error instanceof Error
-          ? error.message
-          : "Gagal memproses prompt. Coba lagi.",
-      );
+      showError(getAgentErrorMessage(error));
     } finally {
       setLoading(false);
       input.focus();

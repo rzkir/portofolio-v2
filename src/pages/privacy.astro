@@ -1,0 +1,198 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/layouts/Header.astro";
+import Footer from "@/layouts/Footer.astro";
+import { getLocale, getMessages } from "@/lib/i18n";
+
+const locale = getLocale(Astro);
+const m = getMessages(locale);
+const p = m.privacyPage;
+const l = m.legal;
+
+const legalEmail = "legal@rizkiramadhan.biz.id";
+const rightsItems = p.rightsItems.map((item) => ({
+  label: item.label,
+  action: item.action,
+  href: `mailto:${legalEmail}?subject=${encodeURIComponent(item.subject)}`,
+}));
+
+const sectionTitleClass =
+  "font-display text-3xl font-light mb-6 flex items-center gap-3";
+const sectionNumberClass =
+  "text-xs font-mono text-muted-foreground/50 group-hover:text-foreground transition-colors";
+const dividerClass = "mt-8 border-b border-border/40";
+---
+
+<Layout
+  title={m.meta.privacyTitle}
+  description={m.meta.privacyDescription}
+  breadcrumbCurrent={p.breadcrumb}
+>
+  <Header />
+
+  <main class="pt-28">
+    <div class="mx-auto max-w-4xl px-4 py-12 md:px-8 md:py-24">
+      <header class="mb-16">
+        <span
+          class="mb-4 block text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase"
+        >
+          {l.legalDocumentation}
+        </span>
+        <h1
+          class="mb-6 font-display text-5xl font-light tracking-tight italic md:text-7xl"
+        >
+          {p.title}
+        </h1>
+        <p class="font-mono text-xs tracking-widest text-muted-foreground uppercase">
+          {l.lastUpdated}
+        </p>
+      </header>
+
+      <div class="space-y-16">
+        <section id="overview" class="group scroll-mt-32">
+          <h2 class={sectionTitleClass}>
+            <span class={sectionNumberClass}>{p.sections[0].number}</span>
+            {p.sections[0].label}
+          </h2>
+          <div
+            class="space-y-4 text-sm leading-relaxed font-light text-foreground/80"
+          >
+            <p>{p.introduction.p1}</p>
+            <p>{p.introduction.p2}</p>
+          </div>
+          <div class={dividerClass}></div>
+        </section>
+
+        <section id="collection" class="group scroll-mt-32">
+          <h2 class={sectionTitleClass}>
+            <span class={sectionNumberClass}>{p.sections[1].number}</span>
+            {p.sections[1].label}
+          </h2>
+          <div class="grid gap-8 font-light md:grid-cols-2">
+            <div class="rounded-2xl border border-border/60 bg-surface/50 p-6">
+              <h3 class="mb-3 font-medium text-foreground">
+                {p.collection.providedTitle}
+              </h3>
+              <p class="text-sm text-foreground/75">
+                {p.collection.providedBody}
+              </p>
+            </div>
+            <div class="rounded-2xl border border-border/60 bg-surface/50 p-6">
+              <h3 class="mb-3 font-medium text-foreground">
+                {p.collection.automatedTitle}
+              </h3>
+              <p class="text-sm text-foreground/75">
+                {p.collection.automatedBody}
+              </p>
+            </div>
+          </div>
+          <div class={dividerClass}></div>
+        </section>
+
+        <section id="usage" class="group scroll-mt-32">
+          <h2 class={sectionTitleClass}>
+            <span class={sectionNumberClass}>{p.sections[2].number}</span>
+            {p.sections[2].label}
+          </h2>
+          <ul class="space-y-4 font-light text-foreground/80">
+            {
+              p.usageItems.map((item) => (
+                <li class="flex items-start gap-4">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="mt-0.5 size-4 shrink-0 text-foreground"
+                    aria-hidden="true"
+                  >
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
+                  <span class="text-sm leading-relaxed">{item}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <div class={dividerClass}></div>
+        </section>
+
+        <section id="security" class="group scroll-mt-32">
+          <h2 class={sectionTitleClass}>
+            <span class={sectionNumberClass}>{p.sections[3].number}</span>
+            {p.sections[3].label}
+          </h2>
+          <p class="text-sm leading-relaxed font-light text-foreground/80">
+            {p.securityBody}
+          </p>
+          <div class={dividerClass}></div>
+        </section>
+
+        <section id="rights" class="group scroll-mt-32">
+          <h2 class={sectionTitleClass}>
+            <span class={sectionNumberClass}>{p.sections[4].number}</span>
+            {p.sections[4].label}
+          </h2>
+          <div class="space-y-4 text-sm font-light">
+            {
+              rightsItems.map((item) => (
+                <div class="flex items-center justify-between rounded-xl border border-border/50 p-4 transition-colors hover:bg-surface/50">
+                  <span class="font-medium text-foreground">{item.label}</span>
+                  <a
+                    href={item.href}
+                    class="text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    {item.action}
+                  </a>
+                </div>
+              ))
+            }
+          </div>
+          <div class={dividerClass}></div>
+        </section>
+
+        <footer
+          class="flex flex-col items-center justify-between gap-6 pt-8 md:flex-row"
+        >
+          <div
+            class="flex gap-8 text-[11px] font-bold tracking-[0.2em] text-muted-foreground uppercase"
+          >
+            <a href="/terms" class="transition-colors hover:text-foreground">
+              {l.termsOfService}
+            </a>
+            <a
+              href="/help-center"
+              class="transition-colors hover:text-foreground"
+            >
+              {l.helpCenter}
+            </a>
+          </div>
+          <div class="flex flex-wrap items-center justify-center gap-3">
+            <p class="font-display text-xs text-muted-foreground">
+              {l.contactLegalTeam}
+            </p>
+            <a
+              href={`mailto:${legalEmail}`}
+              class="font-mono text-xs underline-offset-4 transition-colors hover:text-foreground hover:underline"
+            >
+              {legalEmail}
+            </a>
+          </div>
+        </footer>
+      </div>
+
+      <div class="mt-32 border-t border-border pt-12 text-center">
+        <a
+          href="#overview"
+          class="text-[11px] font-bold tracking-widest uppercase transition-colors hover:text-muted-foreground"
+        >
+          {l.backToTop}
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

@@ -1,10 +1,10 @@
-import { DEFAULT_LOCALE, getMessages, type Locale } from "@/lib/i18n";
+import { DEFAULT_LOCALE, getMessages, localeToBcp47, type Locale } from "@/lib/i18n";
 import { fetchGithubStats } from "@/utils/FetchGithubStats";
 
 type CodingStatsMessages = ReturnType<typeof getMessages>["codingStats"];
 
 function localeTag(locale: Locale): string {
-  return locale === "id" ? "id-ID" : "en-US";
+  return localeToBcp47(locale);
 }
 
 function fill(
