@@ -68,6 +68,8 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
   let currentPreviewDocument = "";
   let currentFiles: AgentWebPreviewFiles = { html: "", css: "", js: "" };
   let activeCodeFile: keyof AgentWebPreviewFiles = "html";
+  let currentBuildId: string | null = null;
+  let getActiveThreadId: () => string = () => "";
 
   function renderCodePanel(
     panel: HTMLElement | null,
@@ -217,13 +219,18 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     canvas?.setAttribute("aria-hidden", "false");
     main?.classList.add("agent-main--with-canvas");
     notifyAgentCanvasOpen();
-    syncAgentCanvasDetailsLink(
-      canvasDetails,
-      preview,
-      chatMessages,
-      sessionCategory ?? defaultCategory,
-      meta,
-    );
+    currentBuildId =
+      syncAgentCanvasDetailsLink(
+        canvasDetails,
+        preview,
+        chatMessages,
+        sessionCategory ?? defaultCategory,
+        meta,
+        {
+          buildId: currentBuildId,
+          threadId: getActiveThreadId(),
+        },
+      ) ?? currentBuildId;
   }
 
   function closeCanvas() {
@@ -415,6 +422,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
   function clearThreadUi() {
     if (!thread) return;
 
+    currentBuildId = null;
     thread
       .querySelectorAll(
         "[data-message-role], [data-message-divider], #agent-loading",
@@ -474,6 +482,7 @@ export function createRoleplayAgentController(root: ParentNode): () => void {
     scrollToBottom,
     focusInput: () => input?.focus(),
   });
+  getActiveThreadId = () => chatHistory.threadId;
 
   async function onFormSubmit(event: Event) {
     event.preventDefault();

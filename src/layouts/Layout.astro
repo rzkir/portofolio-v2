@@ -2,6 +2,7 @@
 import GrabCursor from "@/components/GrabCursor.astro";
 import Announcement from "@/layouts/announcement.astro";
 import NotificationContext from "@/layouts/NotificationContext.astro";
+import SettingsContext from "@/layouts/SettingsContext.astro";
 import SplashScreen from "@/components/SplashScreen.astro";
 import { FORCE_MOTION_INLINE_SCRIPT } from "@/lib/force-motion";
 import { absoluteLangHref, getLocale, getMessages } from "@/lib/i18n";
@@ -211,6 +212,7 @@ const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
     <SplashScreen />
     {!noGrabCursor && <GrabCursor />}
     <NotificationContext />
+    {isAgentRoute && <SettingsContext />}
     {!isAgentRoute && <Announcement />}
     {
       isAgentRoute ? (

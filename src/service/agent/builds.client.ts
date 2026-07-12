@@ -20,15 +20,19 @@ function writeBuilds(builds: AgentWebBuild[]): void {
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(builds));
 }
 
-export function saveAgentWebBuild(input: {
+type AgentWebBuildInput = {
   title: string;
   prompt: string;
   category: AgentPromptCategory;
   model?: string;
   preview: AgentWebPreview;
-}): AgentWebBuild {
+  threadId?: string | null;
+};
+
+export function saveAgentWebBuild(input: AgentWebBuildInput): AgentWebBuild {
   const build: AgentWebBuild = {
     id: crypto.randomUUID(),
+    threadId: input.threadId ?? undefined,
     title: input.title,
     prompt: input.prompt,
     category: input.category,
@@ -44,14 +48,55 @@ export function saveAgentWebBuild(input: {
   return build;
 }
 
+export function updateAgentWebBuild(
+  id: string,
+  input: AgentWebBuildInput,
+): AgentWebBuild | null {
+  const builds = readBuilds();
+  const index = builds.findIndex((item) => item.id === id);
+  if (index < 0) return null;
+
+  const updated: AgentWebBuild = {
+    ...builds[index],
+    threadId: input.threadId ?? builds[index].threadId,
+    title: input.title,
+    prompt: input.prompt,
+    category: input.category,
+    model: input.model,
+    preview: input.preview,
+  };
+
+  builds.splice(index, 1);
+  builds.unshift(updated);
+  writeBuilds(builds.slice(0, MAX_BUILDS));
+
+  return updated;
+}
+
 export function findOrSaveAgentWebBuild(input: {
   title: string;
   prompt: string;
   category: AgentPromptCategory;
   model?: string;
   preview: AgentWebPreview;
+  buildId?: string | null;
+  threadId?: string | null;
 }): AgentWebBuild {
   const builds = readBuilds();
+
+  if (input.buildId) {
+    const updated = updateAgentWebBuild(input.buildId, input);
+    if (updated) return updated;
+  }
+
+  if (input.threadId) {
+    const byThread = builds.find((item) => item.threadId === input.threadId);
+    if (byThread) {
+      const updated = updateAgentWebBuild(byThread.id, input);
+      if (updated) return updated;
+    }
+  }
+
   const existing = builds.find(
     (item) =>
       item.preview.document === input.preview.document &&

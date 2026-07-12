@@ -14,15 +14,19 @@ export function syncAgentCanvasDetailsLink(
   messages: AgentChatMessage[],
   defaultCategory: AgentPromptCategory | null,
   meta?: CanvasBuildMeta,
-): void {
-  if (!link) return;
+  options?: {
+    buildId?: string | null;
+    threadId?: string | null;
+  },
+): string | null {
+  if (!link) return null;
 
   const resolvedMeta =
     meta ?? resolveCanvasMetaFromMessages(messages, defaultCategory);
 
   if (!resolvedMeta) {
     hideAgentCanvasDetailsLink(link);
-    return;
+    return null;
   }
 
   const build = findOrSaveAgentWebBuild({
@@ -31,12 +35,16 @@ export function syncAgentCanvasDetailsLink(
     category: resolvedMeta.category,
     model: resolvedMeta.model,
     preview,
+    buildId: options?.buildId,
+    threadId: options?.threadId,
   });
 
   link.href = `/agent/${build.id}`;
   link.target = "_blank";
   link.rel = "noopener noreferrer";
   link.classList.remove("hidden");
+
+  return build.id;
 }
 
 export function hideAgentCanvasDetailsLink(

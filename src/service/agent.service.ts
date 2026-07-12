@@ -1,6 +1,11 @@
 import {
   createAgentPromptClient,
 } from "@/utils/FetchAgent";
+import {
+  notifyAgentResponseComplete,
+  prepareAgentMessage,
+  resolveAgentHistory,
+} from "@/service/settings.service";
 
 export type AgentCategoryCard = {
   title: string;
@@ -676,14 +681,21 @@ export async function sendAgentPrompt(input: {
   userId?: string;
 }): Promise<AgentPromptResponse> {
   const payload: AgentPromptRequest = {
-    message: input.message,
+    message: prepareAgentMessage(input.message),
     category: input.category,
-    history: input.history,
+    history: resolveAgentHistory(input.history),
   };
 
   if (input.userId) {
     payload.user_id = input.userId;
   }
 
-  return createAgentPromptClient(payload);
+  const response = await createAgentPromptClient(payload);
+
+  notifyAgentResponseComplete({
+    category: response.category,
+    model: response.model,
+  });
+
+  return response;
 }

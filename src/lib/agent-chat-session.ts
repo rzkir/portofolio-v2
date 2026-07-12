@@ -102,5 +102,6 @@ export function setupAgentChatSession(options: AgentChatSessionOptions) {
     persist: () => chatHistory.persist(),
     bind: () => chatHistory.bind(),
     renderStoredMessages,
+    getThreadId: () => chatHistory.threadId,
   };
 }

@@ -108,6 +108,8 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
   let currentPreviewDocument = "";
   let currentFiles: AgentWebPreviewFiles = { html: "", css: "", js: "" };
   let activeCodeFile: keyof AgentWebPreviewFiles = "html";
+  let currentBuildId: string | null = null;
+  let getActiveThreadId: () => string = () => "";
 
   function renderCodePanel(
     panel: HTMLElement | null,
@@ -254,13 +256,18 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
     canvas?.setAttribute("aria-hidden", "false");
     main?.classList.add("agent-main--with-canvas");
     notifyAgentCanvasOpen();
-    syncAgentCanvasDetailsLink(
-      canvasDetails,
-      preview,
-      chatMessages,
-      sessionCategory ?? PROGRAMMING_AGENT_CATEGORY,
-      meta,
-    );
+    currentBuildId =
+      syncAgentCanvasDetailsLink(
+        canvasDetails,
+        preview,
+        chatMessages,
+        sessionCategory ?? PROGRAMMING_AGENT_CATEGORY,
+        meta,
+        {
+          buildId: currentBuildId,
+          threadId: getActiveThreadId(),
+        },
+      ) ?? currentBuildId;
   }
 
   function closeCanvas() {
@@ -471,9 +478,13 @@ export function createProgrammingAgentController(root: ParentNode): () => void {
     appendDivider,
     scrollToBottom,
     focusInput: () => input?.focus(),
-    onClear: () => closeCanvas(),
+    onClear: () => {
+      currentBuildId = null;
+      closeCanvas();
+    },
     restoreCanvas: restoreCanvasFromMessages,
   });
+  getActiveThreadId = () => chatSession.getThreadId();
 
   function persistChat() {
     chatSession.persist();

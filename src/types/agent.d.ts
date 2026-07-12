@@ -66,6 +66,7 @@ interface AgentWebPreview {
 
 interface AgentWebBuild {
   id: string;
+  threadId?: string;
   title: string;
   prompt: string;
   category: AgentPromptCategory;

@@ -1,0 +1,17 @@
+<script>
+  import { bindSettingsContext } from "@/service/settings.service";
+
+  function initSettingsContext() {
+    bindSettingsContext();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initSettingsContext, {
+      once: true,
+    });
+  } else {
+    initSettingsContext();
+  }
+
+  document.addEventListener("astro:page-load", initSettingsContext);
+</script>
