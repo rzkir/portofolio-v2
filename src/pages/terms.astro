@@ -1,0 +1,418 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/layouts/Header.astro";
+import Footer from "@/layouts/Footer.astro";
+import { cn } from "@/lib/utiles";
+
+const pageTitle = "Terms of Service — AI Studio";
+const pageDescription =
+  "Terms of Service for Rizki Ramadhan AI Studio and the Deep Intelligence platform.";
+
+const tocItems = [
+  { id: "introduction", label: "1. Introduction" },
+  { id: "acceptable-use", label: "2. Acceptable Use" },
+  { id: "responsibilities", label: "3. User Responsibilities" },
+  { id: "intellectual-property", label: "4. Intellectual Property" },
+  { id: "liability", label: "5. Liability" },
+  { id: "contact", label: "6. Contact Information" },
+] as const;
+
+const otherDocuments = [
+  {
+    href: "/privacy",
+    label: "Privacy Policy",
+    icon: "shield" as const,
+  },
+  {
+    href: "/help-center",
+    label: "Help Center",
+    icon: "help" as const,
+  },
+] as const;
+
+const navLinkClass =
+  "block py-1 text-[13px] text-foreground transition-colors hover:text-muted-foreground";
+const sectionTitleClass = "font-display text-3xl font-normal";
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  breadcrumbCurrent="Terms of Service"
+>
+  <Header />
+
+  <main class="pt-28">
+    <div class="mx-auto container px-4 md:px-6 pb-10">
+      <div class="flex items-start gap-0 lg:gap-12">
+        <aside
+          class="legal-sidebar sticky top-28 hidden w-72 shrink-0 flex-col self-start lg:flex"
+          aria-label="Legal document navigation"
+        >
+          <div
+            class="flex max-h-[calc(100dvh-7rem)] flex-col overflow-hidden rounded-2xl border border-border bg-surface/40"
+          >
+            <div class="border-b border-border p-6">
+              <h2 class="font-display text-2xl font-normal tracking-tight">
+                Legal
+              </h2>
+              <p
+                class="mt-1 text-[11px] tracking-widest text-muted-foreground uppercase"
+              >
+                Document Navigation
+              </p>
+            </div>
+
+            <div class="legal-scrollbar flex-1 overflow-y-auto p-6">
+              <nav class="space-y-4">
+                <div class="space-y-1">
+                  <span
+                    class="mb-2 block text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase"
+                  >
+                    Table of Contents
+                  </span>
+                  {
+                    tocItems.map((item) => (
+                      <a href={`#${item.id}`} class={navLinkClass}>
+                        {item.label}
+                      </a>
+                    ))
+                  }
+                </div>
+
+                <div class="space-y-3 pt-8">
+                  <span
+                    class="mb-2 block text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase"
+                  >
+                    Other Documents
+                  </span>
+                  {
+                    otherDocuments.map((doc) => (
+                      <a
+                        href={doc.href}
+                        class="flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] transition-colors hover:bg-foreground/5"
+                      >
+                        {doc.icon === "shield" && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.75"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="size-4 shrink-0"
+                            aria-hidden="true"
+                          >
+                            <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+                            <path d="m9 12 2 2 4-4" />
+                          </svg>
+                        )}
+                        {doc.icon === "help" && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.75"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="size-4 shrink-0"
+                            aria-hidden="true"
+                          >
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                            <path d="M12 17h.01" />
+                          </svg>
+                        )}
+                        {doc.label}
+                      </a>
+                    ))
+                  }
+                </div>
+              </nav>
+            </div>
+
+            <div class="border-t border-border bg-background/50 p-6">
+              <p class="text-[10px] leading-relaxed text-muted-foreground">
+                Last Updated: July 2026<br />
+                Effective immediately for all users.
+              </p>
+            </div>
+          </div>
+        </aside>
+
+        <article class="min-w-0 flex-1 py-12 lg:max-w-3xl">
+          <nav
+            class="mb-10 flex flex-wrap gap-2 lg:hidden"
+            aria-label="Table of contents"
+          >
+            {
+              tocItems.map((item) => (
+                <a
+                  href={`#${item.id}`}
+                  class="rounded-full border border-border px-3 py-1 text-[11px] tracking-wide text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {item.label}
+                </a>
+              ))
+            }
+          </nav>
+
+          <header class="mb-16">
+            <h1
+              class="mb-4 font-display text-5xl font-light tracking-tight md:text-6xl"
+            >
+              Terms of <span class="italic">Service</span>
+            </h1>
+            <div class="mb-6 h-px w-24 bg-foreground"></div>
+            <p class="text-lg font-light text-muted-foreground italic">
+              Please read these terms carefully before using the Deep
+              Intelligence v4 platform.
+            </p>
+          </header>
+
+          <div class="space-y-12">
+            <section id="introduction" class="scroll-mt-32">
+              <h2 class={cn(sectionTitleClass, "mb-6")}>1. Introduction</h2>
+              <div
+                class="space-y-4 text-sm leading-relaxed font-light text-foreground/80"
+              >
+                <p>
+                  Welcome to Rizki Ramadhan AI Studio. By accessing or using our
+                  platform, services, or tools (collectively, the "Service"),
+                  you agree to be bound by these Terms of Service. If you do not
+                  agree to these terms, please do not use our Service.
+                </p>
+                <p>
+                  These terms constitute a legally binding agreement between you
+                  and Rizki Ramadhan AI Studio regarding your use of the Deep
+                  Intelligence engine and related features.
+                </p>
+              </div>
+            </section>
+
+            <section id="acceptable-use" class="scroll-mt-32">
+              <h2 class={cn(sectionTitleClass, "mb-6")}>2. Acceptable Use</h2>
+              <div class="space-y-4">
+                <details
+                  class="legal-details group border-b border-border pb-4"
+                  open
+                >
+                  <summary
+                    class="flex cursor-pointer list-none items-center justify-between text-sm font-medium tracking-tight transition-colors hover:text-muted-foreground"
+                  >
+                    Core Usage Principles
+                  </summary>
+                  <div
+                    class="space-y-3 pt-4 text-sm leading-relaxed font-light text-foreground/75"
+                  >
+                    <p>
+                      You may only use the Service for lawful purposes. You
+                      agree not to use the Service in any way that violates any
+                      applicable local or international law or regulation.
+                    </p>
+                    <p>
+                      Specifically, you shall not use the AI engine to generate:
+                    </p>
+                    <ul class="list-disc space-y-2 pl-5">
+                      <li>
+                        Content that is harmful, threatening, or discriminatory.
+                      </li>
+                      <li>Deceptive or fraudulent material.</li>
+                      <li>
+                        Automated spam or large-scale misinformation campaigns.
+                      </li>
+                    </ul>
+                  </div>
+                </details>
+
+                <details
+                  class="legal-details group border-b border-border pb-4"
+                >
+                  <summary
+                    class="flex cursor-pointer list-none items-center justify-between text-sm font-medium tracking-tight transition-colors hover:text-muted-foreground"
+                  >
+                    Technical Restrictions
+                  </summary>
+                  <div
+                    class="pt-4 text-sm leading-relaxed font-light text-foreground/75"
+                  >
+                    <p>
+                      You agree not to attempt to circumvent any technical
+                      limitations of the platform, including reverse engineering
+                      the proprietary
+                      <code
+                        class="rounded bg-foreground/5 px-1 font-mono text-[0.8125rem]"
+                        >Deep-Intell-v4</code
+                      > algorithms or bypassing rate limits.
+                    </p>
+                  </div>
+                </details>
+              </div>
+            </section>
+
+            <section id="responsibilities" class="scroll-mt-32">
+              <h2 class={cn(sectionTitleClass, "mb-6")}>
+                3. User Responsibilities
+              </h2>
+              <div
+                class="rounded-2xl border border-border/70 bg-surface/50 p-8"
+              >
+                <div
+                  class="space-y-6 text-sm leading-relaxed font-light text-foreground/80"
+                >
+                  <div class="flex gap-4">
+                    <span
+                      class="mt-1 font-mono text-[10px] text-muted-foreground"
+                      >03.1</span
+                    >
+                    <p>
+                      <strong>Account Security:</strong> You are responsible for maintaining
+                      the confidentiality of your login credentials and for all activities
+                      that occur under your account.
+                    </p>
+                  </div>
+                  <div class="flex gap-4">
+                    <span
+                      class="mt-1 font-mono text-[10px] text-muted-foreground"
+                      >03.2</span
+                    >
+                    <p>
+                      <strong>Content Accuracy:</strong> While we strive for precision,
+                      AI-generated content may occasionally be inaccurate. You are
+                      responsible for verifying the output before professional execution.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section id="intellectual-property" class="scroll-mt-32">
+              <h2 class={cn(sectionTitleClass, "mb-6")}>
+                4. Intellectual Property
+              </h2>
+              <div
+                class="space-y-4 text-sm leading-relaxed font-light text-foreground/80"
+              >
+                <p>
+                  The Service and its original content, features, and
+                  functionality are and will remain the exclusive property of
+                  Rizki Ramadhan AI Studio. Our trademarks and trade dress may
+                  not be used in connection with any product or service without
+                  prior written consent.
+                </p>
+                <p>
+                  Regarding user inputs and AI outputs, you retain ownership of
+                  the specific prompts you provide. We grant you a perpetual,
+                  irrevocable license to use, modify, and distribute the outputs
+                  generated specifically for your account.
+                </p>
+              </div>
+            </section>
+
+            <section id="liability" class="scroll-mt-32">
+              <h2 class={cn(sectionTitleClass, "mb-6")}>
+                5. Limitations of Liability
+              </h2>
+              <div class="border-l-2 border-foreground py-2 pl-8">
+                <p
+                  class="mb-4 text-sm font-bold tracking-widest text-foreground uppercase"
+                >
+                  Disclaimer
+                </p>
+                <p
+                  class="text-sm leading-relaxed font-light text-foreground/75 italic"
+                >
+                  "In no event shall Rizki Ramadhan AI Studio, nor its
+                  directors, employees, or partners, be liable for any indirect,
+                  incidental, special, consequential or punitive damages,
+                  including without limitation, loss of profits, data, or other
+                  intangible losses."
+                </p>
+              </div>
+            </section>
+
+            <section id="contact" class="scroll-mt-32">
+              <h2 class={cn(sectionTitleClass, "mb-6")}>
+                6. Contact Information
+              </h2>
+              <p
+                class="mb-8 text-sm leading-relaxed font-light text-foreground/80"
+              >
+                If you have any questions about these Terms, please contact our
+                legal department at:
+              </p>
+              <a
+                href="mailto:legal@rizkiramadhan.biz.id"
+                class="inline-flex items-center gap-3 rounded-2xl bg-foreground px-8 py-4 text-background transition-all hover:bg-foreground/85 active:scale-[0.98]"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="size-4"
+                  aria-hidden="true"
+                >
+                  <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                </svg>
+                <span class="font-medium">legal@rizkiramadhan.biz.id</span>
+              </a>
+            </section>
+          </div>
+
+          <div class="mt-32 border-t border-border pt-12 text-center">
+            <a
+              href="#introduction"
+              class="text-[11px] font-bold tracking-widest uppercase transition-colors hover:text-muted-foreground"
+            >
+              Back to Top
+            </a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .legal-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklch, var(--foreground) 18%, transparent)
+      transparent;
+  }
+
+  .legal-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .legal-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .legal-scrollbar::-webkit-scrollbar-thumb {
+    background: color-mix(in oklch, var(--foreground) 14%, transparent);
+    border-radius: 10px;
+  }
+
+  .legal-details > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .legal-details summary::after {
+    content: "+";
+    font-weight: 300;
+    transition: transform 0.3s ease;
+  }
+
+  .legal-details[open] summary::after {
+    content: "−";
+  }
+</style>

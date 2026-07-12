@@ -2,7 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import Aside from "@/components/ui/aside.astro";
 import ThemeSwitch from "@/components/ui/switch.astro";
-import { portrait, contact } from "@/data/portfolio";
+import { portrait, contact, profileSocialLinks } from "@/data/portfolio";
 import { cn } from "@/lib/utiles";
 import {
   DEFAULT_AGENT_SETTINGS,
@@ -13,16 +13,13 @@ const navGroups = [
   {
     label: "General",
     items: [
-      { id: "preferences", label: "Preferences", icon: "settings" },
-      { id: "profile", label: "Profile", icon: "user", active: true },
+      { id: "profile", label: "Profile Saya", icon: "user", active: true },
+      {
+        id: "preferences",
+        label: "Application Preferences",
+        icon: "settings",
+      },
       { id: "notifications", label: "Notifications", icon: "bell" },
-      { id: "security", label: "Security & Access", icon: "shield" },
-    ],
-  },
-  {
-    label: "Extensions",
-    items: [
-      { id: "connected", label: "Connected Accounts", icon: "link" },
       { id: "agent", label: "Agent Personalization", icon: "sparkles" },
     ],
   },
@@ -50,27 +47,6 @@ const preferenceToggles = [
     label: "Beta Features",
     description: "Early access to experimental Agent intelligence tools.",
     checked: DEFAULT_AGENT_SETTINGS.betaFeatures,
-  },
-] as const;
-
-const integrations = [
-  {
-    id: "github",
-    name: "GitHub",
-    description: "Connected as @rzkir",
-    connected: true,
-  },
-  {
-    id: "google",
-    name: "Google Cloud",
-    description: "Sync your cloud deployments",
-    connected: false,
-  },
-  {
-    id: "slack",
-    name: "Slack",
-    description: "Send notifications to your workspace",
-    connected: false,
   },
 ] as const;
 
@@ -184,38 +160,6 @@ const sectionTitleClass = "text-xl font-medium font-display";
                           <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
                         </svg>
                       )}
-                      {item.icon === "shield" && (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="1.75"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="size-4.5 shrink-0"
-                          aria-hidden="true"
-                        >
-                          <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
-                          <path d="m9 12 2 2 4-4" />
-                        </svg>
-                      )}
-                      {item.icon === "link" && (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="1.75"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="size-4.5 shrink-0"
-                          aria-hidden="true"
-                        >
-                          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-                        </svg>
-                      )}
                       {item.icon === "sparkles" && (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -258,30 +202,11 @@ const sectionTitleClass = "text-xl font-medium font-display";
               />
             </div>
             <div class="min-w-0 flex-1">
-              <p class="truncate text-sm font-medium">Rizki R.</p>
-              <p class="truncate text-[11px] text-muted-foreground">Pro Plan</p>
+              <p class="truncate text-sm font-medium">Rizki Ramadhan</p>
+              <p class="truncate text-[11px] text-muted-foreground">
+                Full Stack Developer
+              </p>
             </div>
-            <a
-              href="/"
-              class="text-muted-foreground transition-colors hover:text-destructive"
-              aria-label="Back to portfolio"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.75"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="size-4"
-                aria-hidden="true"
-              >
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                <polyline points="16 17 21 12 16 7"></polyline>
-                <line x1="21" x2="9" y1="12" y2="12"></line>
-              </svg>
-            </a>
           </div>
         </div>
       </aside>
@@ -290,7 +215,7 @@ const sectionTitleClass = "text-xl font-medium font-display";
         class="settings-content min-h-0 flex-1 overflow-y-auto overscroll-contain bg-background"
         data-settings-page
       >
-        <div class="mx-auto max-w-4xl px-6 py-12 md:px-12 md:py-16">
+        <div class="mx-auto container px-6 py-6 md:px-12">
           <header class="mb-16">
             <h1 class="mb-4 font-display text-4xl italic md:text-5xl">
               Settings
@@ -302,16 +227,8 @@ const sectionTitleClass = "text-xl font-medium font-display";
           </header>
 
           <section id="profile" class="settings-section mb-20 scroll-mt-8">
-            <div
-              class="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-4"
-            >
-              <h2 class={sectionTitleClass}>Public Profile</h2>
-              <button
-                type="button"
-                class="rounded-full bg-foreground px-6 py-2 text-xs font-medium text-background transition-colors hover:bg-foreground/85"
-              >
-                Edit Profile
-              </button>
+            <div class="mb-8 border-b border-border pb-4">
+              <h2 class={sectionTitleClass}>Profile Saya</h2>
             </div>
 
             <div class="grid grid-cols-1 gap-12 md:grid-cols-3">
@@ -391,6 +308,110 @@ const sectionTitleClass = "text-xl font-medium font-display";
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <div class="mt-12 border-t border-border pt-12">
+              <div class="mb-6 space-y-1">
+                <p class="text-sm font-medium">Social Links</p>
+                <p class="text-xs text-muted-foreground">
+                  Connect your public profiles across social platforms.
+                </p>
+              </div>
+
+              <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {
+                  profileSocialLinks.map((link) => (
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="group flex w-full items-center gap-3 rounded-xl border border-border px-4 py-3 transition-colors hover:border-accent/40 hover:bg-surface/60"
+                    >
+                      <span class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition-colors group-hover:border-accent/30 group-hover:text-accent">
+                        {link.id === "instagram" && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.75"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="size-4"
+                            aria-hidden="true"
+                          >
+                            <rect
+                              width="20"
+                              height="20"
+                              x="2"
+                              y="2"
+                              rx="5"
+                              ry="5"
+                            />
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                          </svg>
+                        )}
+                        {link.id === "tiktok" && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.75"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="size-4"
+                            aria-hidden="true"
+                          >
+                            <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+                          </svg>
+                        )}
+                        {link.id === "linkedin" && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.75"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="size-4"
+                            aria-hidden="true"
+                          >
+                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                            <rect width="4" height="12" x="2" y="9" />
+                            <circle cx="4" cy="4" r="2" />
+                          </svg>
+                        )}
+                        {link.id === "facebook" && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.75"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="size-4"
+                            aria-hidden="true"
+                          >
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                          </svg>
+                        )}
+                      </span>
+                      <span class="min-w-0 flex-1">
+                        <span class="block text-sm font-medium">
+                          {link.label}
+                        </span>
+                        <span class="block truncate text-xs text-muted-foreground">
+                          {link.handle}
+                        </span>
+                      </span>
+                    </a>
+                  ))
+                }
               </div>
             </div>
           </section>
@@ -614,14 +635,14 @@ const sectionTitleClass = "text-xl font-medium font-display";
           >
             <div>© 2026 R. Ramadhan Studio</div>
             <div class="flex gap-6">
-              <a href="/" class="transition-colors hover:text-foreground">
+              <a href="/privacy" class="transition-colors hover:text-foreground">
                 Privacy
               </a>
-              <a href="/" class="transition-colors hover:text-foreground">
+              <a href="/terms" class="transition-colors hover:text-foreground">
                 Terms
               </a>
               <a
-                href={contact.website}
+                href="/help-center"
                 class="transition-colors hover:text-foreground"
               >
                 Help Center
