@@ -64,7 +64,7 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
 
 <header
   id="site-header"
-  class="group/site-header pointer-events-none fixed inset-x-0 top-0 z-50"
+  class="group/site-header pointer-events-none fixed inset-x-0 z-50"
 >
   <div class={shellClass}>
     <div class="mx-auto container px-4 md:px-6">
@@ -221,6 +221,10 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
 </script>
 
 <style is:global>
+  #site-header {
+    top: 0;
+  }
+
   @keyframes site-header-indicator-in {
     from {
       opacity: 0;

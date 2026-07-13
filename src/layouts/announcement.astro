@@ -14,7 +14,7 @@ const { href = "/agent" } = Astro.props;
 <a
   id="announcement-banner"
   href={href}
-  class="announcement-banner group/announcement pointer-events-none fixed inset-x-0 top-0 z-60 flex h-(--announcement-banner-height) items-center justify-center overflow-hidden border-b border-border bg-background/88 shadow-[0_1px_0_color-mix(in_oklch,var(--foreground)_4%,transparent)] backdrop-blur-md no-underline transition-opacity duration-300 ease-out"
+  class="announcement-banner group/announcement pointer-events-none fixed inset-x-0 top-0 z-60 flex h-(--announcement-banner-height) items-center justify-center overflow-hidden border-b border-border bg-background/88 shadow-[0_1px_0_color-mix(in_oklch,var(--foreground)_4%,transparent)] backdrop-blur-md no-underline transition-[transform,opacity] duration-300 ease-out"
   data-cursor="focus"
   data-cursor-label="AI Studio"
 >
@@ -79,20 +79,27 @@ const { href = "/agent" } = Astro.props;
   }
 
   html.is-announcement-hidden #announcement-banner {
+    transform: translateY(-100%);
     opacity: 0;
     pointer-events: none;
   }
 
-  #site-header {
+  html[data-has-announcement] #site-header {
     top: var(--announcement-banner-height);
+    transition: transform 0.3s ease;
   }
 
-  main.pt-28 {
+  html[data-has-announcement].is-announcement-hidden #site-header {
+    transform: translateY(calc(-1 * var(--announcement-banner-height)));
+  }
+
+  html[data-has-announcement] main.pt-28 {
     padding-top: calc(7rem + var(--announcement-banner-height));
   }
 
   @media (prefers-reduced-motion: reduce) {
-    html.is-announcement-hidden #announcement-banner {
+    html.is-announcement-hidden #announcement-banner,
+    html[data-has-announcement] #site-header {
       transition: none;
     }
   }

@@ -12,8 +12,24 @@ function totalMs(): number {
   return SPLASH_CONFIG.holdMs + SPLASH_CONFIG.exitMs;
 }
 
+function restartSiteHeaderReveal(): void {
+  const header = document.getElementById("site-header");
+  if (!header) return;
+
+  header
+    .querySelectorAll<HTMLElement>(
+      ".animate-focus, .site-header__mobile-dock, .site-header__nav-indicator",
+    )
+    .forEach((el) => {
+      el.style.animation = "none";
+      void el.offsetWidth;
+      el.style.animation = "";
+    });
+}
+
 function unlockPage(): void {
   document.documentElement.classList.remove("splash-pending");
+  restartSiteHeaderReveal();
   syncSiteHeader();
 }
 

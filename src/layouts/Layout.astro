@@ -5,6 +5,11 @@ import NotificationContext from "@/layouts/NotificationContext.astro";
 import SettingsContext from "@/layouts/SettingsContext.astro";
 import SplashScreen from "@/components/SplashScreen.astro";
 import { FORCE_MOTION_INLINE_SCRIPT } from "@/lib/force-motion";
+import {
+  createGtmInlineScript,
+  SPLASH_INLINE_SCRIPT,
+  THEME_INLINE_SCRIPT,
+} from "@/lib/layout";
 import { absoluteLangHref, getLocale, getMessages, LOCALES } from "@/lib/i18n";
 import {
   getSiteVerification,
@@ -12,6 +17,7 @@ import {
   type OgType,
 } from "@/lib/metadata";
 import "@/styles/global.css";
+import { pwaInfo } from "virtual:pwa-info";
 
 interface Props {
   title?: string;
@@ -56,43 +62,27 @@ const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
 ---
 
 <!doctype html>
-<html lang={locale} data-grab-cursor={noGrabCursor ? "off" : undefined}>
+<html
+  lang={locale}
+  data-grab-cursor={noGrabCursor ? "off" : undefined}
+  data-has-announcement={!isAgentRoute ? "" : undefined}
+>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script is:inline set:html={FORCE_MOTION_INLINE_SCRIPT} />
-    <script is:inline>
-      try {
-        var isCrawler =
-          /bot|crawl|spider|slurp|mediapartners|bingpreview|facebookexternalhit/i.test(
-            navigator.userAgent,
-          );
-
-        if (isCrawler || sessionStorage.getItem("splash-seen") === "1") {
-          document.documentElement.classList.add("splash-seen");
-        } else {
-          document.documentElement.classList.add("splash-pending");
-        }
-      } catch (_) {
-        document.documentElement.classList.add("splash-pending");
-      }
-    </script>
-    <script is:inline>
-      (function () {
-        try {
-          var dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-          var root = document.documentElement;
-
-          if (dark) root.classList.add("dark");
-          root.setAttribute("data-theme", "system");
-          root.setAttribute("data-theme-resolved", dark ? "dark" : "light");
-          root.style.colorScheme = dark ? "dark" : "light";
-        } catch (_) {}
-      })();
-    </script>
+    <script is:inline set:html={SPLASH_INLINE_SCRIPT} />
+    <script is:inline set:html={THEME_INLINE_SCRIPT} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
-    <link rel="apple-touch-icon" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="mask-icon" href="/favicon.svg" color="#3d3830" />
+    <meta name="theme-color" content="#3d3830" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="R. Ramadhan" />
+    {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
     <meta name="generator" content={Astro.generator} />
 
     <title>{meta.title}</title>
@@ -169,29 +159,8 @@ const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
       verification.googleTagManagerId && (
         <script
           is:inline
-          define:vars={{ gtmId: verification.googleTagManagerId }}
-        >
-          (function (w, d) {
-            function loadGtm() {
-              w.dataLayer = w.dataLayer || [];
-              w.dataLayer.push({
-                "gtm.start": new Date().getTime(),
-                event: "gtm.js",
-              });
-              var j = d.createElement("script");
-              j.async = true;
-              j.src =
-                "https://www.googletagmanager.com/gtm.js?id=" + gtmId;
-              d.head.appendChild(j);
-            }
-
-            if ("requestIdleCallback" in w) {
-              w.requestIdleCallback(loadGtm, { timeout: 3500 });
-            } else {
-              w.addEventListener("load", loadGtm, { once: true });
-            }
-          })(window, document);
-        </script>
+          set:html={createGtmInlineScript(verification.googleTagManagerId)}
+        />
       )
     }
 
@@ -242,23 +211,9 @@ const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
       )
     }
     <script>
-      import { bindLang } from "@/lib/lang";
-      import { bindTheme } from "@/lib/theme";
+      import { initLayout } from "@/lib/layout";
 
-      function initTheme() {
-        bindTheme();
-        bindLang();
-      }
-
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", initTheme, {
-          once: true,
-        });
-      } else {
-        initTheme();
-      }
-
-      document.addEventListener("astro:page-load", initTheme);
+      initLayout();
     </script>
   </body>
 </html>

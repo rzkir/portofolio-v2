@@ -8,9 +8,14 @@ import { fileURLToPath } from "node:url";
 
 import sitemap from "@astrojs/sitemap";
 
+import AstroPWA from "@vite-pwa/astro";
+
 import { buildAstroSitemapData } from "./src/service/sitemap.service";
 
+import { PWA_MANIFEST } from "./src/lib/pwa-manifest";
+
 const apiUrl = process.env.API_URL ?? "https://api.rizkiramadhan.biz.id";
+
 const siteUrl = "https://www.rizkiramadhan.biz.id";
 
 const { customPages, metadata: sitemapMetadata } =
@@ -101,6 +106,23 @@ export default defineConfig({
         if (meta.priority != null) item.priority = meta.priority;
 
         return item;
+      },
+    }),
+    AstroPWA({
+      registerType: "autoUpdate",
+      includeAssets: ["favicon.svg", "favicon.png", "apple-touch-icon.png"],
+      manifest: PWA_MANIFEST,
+      workbox: {
+        navigateFallback: null,
+        globPatterns: ["**/*.{js,css,svg,png,webp,woff2}"],
+        globIgnores: ["**/_worker.js/**", "**/node_modules/**"],
+      },
+      experimental: {
+        directoryAndTrailingSlashHandler: true,
+      },
+      devOptions: {
+        enabled: true,
+        type: "module",
       },
     }),
   ],

@@ -140,10 +140,8 @@ export function createSiteHeaderController(header: HTMLElement): () => void {
   if (navMobile) resizeObserver?.observe(navMobile);
 
   requestUpdate();
-  requestAnimationFrame(() => {
-    syncNavIndicator();
-    indicatorTimer = window.setTimeout(revealIndicators, 120);
-  });
+  syncNavIndicator();
+  indicatorTimer = window.setTimeout(revealIndicators, 700);
 
   return () => {
     window.clearTimeout(indicatorTimer);
