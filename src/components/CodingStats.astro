@@ -1,5 +1,4 @@
 ---
-import CountUp from "@astroanimate/core/CountUp";
 import FocusIn from "@/components/FocusIn.astro";
 import CommitsRepoDialog from "@/components/dialog/dialog.commit.astro";
 import { getCodingStatsView } from "@/service/github-stats.service";
@@ -16,17 +15,6 @@ const countUpSmClass =
   "font-display text-3xl italic font-normal text-background dark:text-foreground";
 const countUpXsClass =
   "font-display text-2xl italic font-normal text-background dark:text-foreground md:text-3xl";
-
-function parseStatValue(raw: string) {
-  const match = raw.match(/^(\D*)(\d+)(\D*)$/);
-  if (!match) return null;
-
-  return {
-    prefix: match[1] ?? "",
-    value: Number(match[2]),
-    suffix: match[3] ?? "",
-  };
-}
 ---
 
 <section
@@ -145,37 +133,17 @@ function parseStatValue(raw: string) {
       class="mb-6 grid grid-cols-2 gap-px border-y border-background/20 bg-background/20 md:grid-cols-4"
     >
       {
-        stats.summaryStats.map((s, i) => {
-          const parsed = parseStatValue(s.value);
-
-          return (
-            <FocusIn class="bg-accent p-8 md:p-10" delay={i * 90}>
-              <p class="mb-3 font-mono text-xs tracking-widest text-background/50 uppercase">
-                {s.label}
-              </p>
-              {parsed ? (
-                <CountUp
-                  enhance
-                  value={parsed.value}
-                  prefix={parsed.prefix}
-                  suffix={parsed.suffix}
-                  duration={1600}
-                  mainClassName={countUpClass}
-                  fontSize="inherit"
-                  fontFamily="inherit"
-                  textColor="inherit"
-                />
-              ) : (
-                <p class="font-display text-5xl italic text-background md:text-6xl">
-                  {s.value}
-                </p>
-              )}
-              <p class="mt-2 font-mono text-xs tracking-widest text-background/50 uppercase">
-                {s.sub}
-              </p>
-            </FocusIn>
-          );
-        })
+        stats.summaryStats.map((s, i) => (
+          <FocusIn class="bg-accent p-8 md:p-10" delay={i * 90}>
+            <p class="mb-3 font-mono text-xs tracking-widest text-background/50 uppercase">
+              {s.label}
+            </p>
+            <p class={countUpClass}>{s.value}</p>
+            <p class="mt-2 font-mono text-xs tracking-widest text-background/50 uppercase">
+              {s.sub}
+            </p>
+          </FocusIn>
+        ))
       }
     </div>
 
@@ -183,37 +151,17 @@ function parseStatValue(raw: string) {
       class="mb-20 grid grid-cols-2 gap-px border-b border-background/20 bg-background/20 md:grid-cols-4"
     >
       {
-        stats.secondaryStats.map((s, i) => {
-          const parsed = parseStatValue(s.value);
-
-          return (
-            <FocusIn class="bg-accent p-6 md:p-8" delay={360 + i * 70}>
-              <p class="mb-2 font-mono text-xs tracking-widest text-background/50 uppercase">
-                {s.label}
-              </p>
-              {parsed ? (
-                <CountUp
-                  enhance
-                  value={parsed.value}
-                  prefix={parsed.prefix}
-                  suffix={parsed.suffix}
-                  duration={1400}
-                  mainClassName={countUpSmClass}
-                  fontSize="inherit"
-                  fontFamily="inherit"
-                  textColor="inherit"
-                />
-              ) : (
-                <p class="font-display text-2xl italic text-background md:text-3xl">
-                  {s.value}
-                </p>
-              )}
-              <p class="mt-2 font-mono text-xs tracking-widest text-background/50 uppercase">
-                {s.sub}
-              </p>
-            </FocusIn>
-          );
-        })
+        stats.secondaryStats.map((s, i) => (
+          <FocusIn class="bg-accent p-6 md:p-8" delay={360 + i * 70}>
+            <p class="mb-2 font-mono text-xs tracking-widest text-background/50 uppercase">
+              {s.label}
+            </p>
+            <p class={countUpSmClass}>{s.value}</p>
+            <p class="mt-2 font-mono text-xs tracking-widest text-background/50 uppercase">
+              {s.sub}
+            </p>
+          </FocusIn>
+        ))
       }
     </div>
 
@@ -305,40 +253,20 @@ function parseStatValue(raw: string) {
 
           <div class="mt-8 grid grid-cols-2 gap-6">
             {
-              stats.streaks.map((st, i) => {
-                const parsed = parseStatValue(st.value);
-
-                return (
-                  <FocusIn
-                    class="border-t border-background/20 pt-5"
-                    delay={120 + i * 100}
-                  >
-                    <p class="mb-2 font-mono text-xs tracking-widest text-background/50 uppercase">
-                      {st.label}
-                    </p>
-                    {parsed ? (
-                      <CountUp
-                        enhance
-                        value={parsed.value}
-                        prefix={parsed.prefix}
-                        suffix={parsed.suffix}
-                        duration={1400}
-                        mainClassName={countUpSmClass}
-                        fontSize="inherit"
-                        fontFamily="inherit"
-                        textColor="inherit"
-                      />
-                    ) : (
-                      <p class="font-display text-3xl italic text-background">
-                        {st.value}
-                      </p>
-                    )}
-                    <p class="mt-1 font-mono text-xs tracking-widest text-background/60">
-                      {st.desc}
-                    </p>
-                  </FocusIn>
-                );
-              })
+              stats.streaks.map((st, i) => (
+                <FocusIn
+                  class="border-t border-background/20 pt-5"
+                  delay={120 + i * 100}
+                >
+                  <p class="mb-2 font-mono text-xs tracking-widest text-background/50 uppercase">
+                    {st.label}
+                  </p>
+                  <p class={countUpSmClass}>{st.value}</p>
+                  <p class="mt-1 font-mono text-xs tracking-widest text-background/60">
+                    {st.desc}
+                  </p>
+                </FocusIn>
+              ))
             }
           </div>
         </div>

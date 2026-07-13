@@ -91,7 +91,8 @@ const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
       })();
     </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
     <meta name="generator" content={Astro.generator} />
 
     <title>{meta.title}</title>
@@ -170,16 +171,26 @@ const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
           is:inline
           define:vars={{ gtmId: verification.googleTagManagerId }}
         >
-          (function (w, d, s, l, i) {
-            w[l] = w[l] || [];
-            w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-            var f = d.getElementsByTagName(s)[0],
-              j = d.createElement(s),
-              dl = l != "dataLayer" ? "&l=" + l : "";
-            j.async = true;
-            j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-            f.parentNode.insertBefore(j, f);
-          })(window, document, "script", "dataLayer", gtmId);
+          (function (w, d) {
+            function loadGtm() {
+              w.dataLayer = w.dataLayer || [];
+              w.dataLayer.push({
+                "gtm.start": new Date().getTime(),
+                event: "gtm.js",
+              });
+              var j = d.createElement("script");
+              j.async = true;
+              j.src =
+                "https://www.googletagmanager.com/gtm.js?id=" + gtmId;
+              d.head.appendChild(j);
+            }
+
+            if ("requestIdleCallback" in w) {
+              w.requestIdleCallback(loadGtm, { timeout: 3500 });
+            } else {
+              w.addEventListener("load", loadGtm, { once: true });
+            }
+          })(window, document);
         </script>
       )
     }
@@ -187,9 +198,22 @@ const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600;1,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+    <link
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600;1,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600;1,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
   </head>
   <body>
     {
@@ -217,8 +241,6 @@ const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
         <slot />
       )
     }
-    <link rel="stylesheet" href="/force-motion.css" />
-
     <script>
       import { bindLang } from "@/lib/lang";
       import { bindTheme } from "@/lib/theme";
