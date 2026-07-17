@@ -3,6 +3,7 @@ import { bindLang } from "@/lib/lang";
 import { registerPwa } from "@/lib/pwa";
 
 import { bindTheme } from "@/lib/theme";
+import { initChatModal } from "@/service/modal-popup.service";
 
 export const SPLASH_INLINE_SCRIPT = `try {
   var isCrawler =
@@ -58,6 +59,7 @@ export function createGtmInlineScript(gtmId: string): string {
 function initThemeAndLang(): void {
     bindTheme();
     bindLang();
+    initChatModal();
 }
 
 export function initLayout(): void {

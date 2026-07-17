@@ -1,3 +1,17 @@
+//============================ Button ============================//
+interface ButtonProps {
+    type?: "button" | "submit" | "reset";
+    variant?: "primary" | "ghost" | "icon" | "outline" | "quick-reply" | "danger-ghost";
+    size?: "sm" | "md" | "lg" | "icon";
+    id?: string;
+    disabled?: boolean;
+    class?: string;
+    "aria-label"?: string;
+    "aria-expanded"?: "true" | "false";
+    "aria-haspopup"?: "menu" | "listbox" | boolean;
+    "data-chat-action"?: string;
+}
+
 //============================ Alert Dialog ============================//
 interface AlertDialogProps {
     id: string;
@@ -25,7 +39,7 @@ interface CardProps {
     image?: ImageMetadata | string;
     href?: string;
     external?: boolean;
-    variant?: "link" | "select";
+    variant?: "link" | "select" | "surface";
     category?: string;
     categoryLabel?: string;
     prompt?: string;
@@ -154,7 +168,7 @@ interface TextareaProps {
     required?: boolean;
     class?: string;
     textareaClass?: string;
-    variant?: "default" | "prompt";
+    variant?: "default" | "prompt" | "chat";
     sendLabel?: string;
     footerHints?: string[];
 }

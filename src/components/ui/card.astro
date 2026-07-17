@@ -24,9 +24,11 @@ const {
 } = Astro.props;
 const isRemoteImage = typeof image === "string";
 const isSelect = variant === "select";
+const isSurface = variant === "surface";
 const sharedClass = cn(
   "ui-card group",
   isSelect && "ui-card--select",
+  isSurface && "ui-card--surface",
   className,
 );
 const sharedLabel = isSelect
@@ -35,7 +37,11 @@ const sharedLabel = isSelect
 ---
 
 {
-  isSelect ? (
+  isSurface ? (
+    <div class={sharedClass}>
+      <slot />
+    </div>
+  ) : isSelect ? (
     <button
       type="button"
       data-agent-category={category}
@@ -149,6 +155,13 @@ const sharedLabel = isSelect
     flex-direction: column;
     gap: 0.5rem;
     padding: 1.25rem 1.5rem;
+  }
+
+  .ui-card--surface {
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    background-color: var(--card);
+    box-shadow: 0 1px 2px color-mix(in oklch, var(--foreground) 4%, transparent);
   }
 </style>
 

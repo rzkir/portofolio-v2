@@ -1,5 +1,6 @@
 ---
 import GrabCursor from "@/components/GrabCursor.astro";
+import ModalPopup from "@/components/ModalPopup.astro";
 import Announcement from "@/layouts/announcement.astro";
 import NotificationContext from "@/layouts/NotificationContext.astro";
 import SettingsContext from "@/layouts/SettingsContext.astro";
@@ -210,6 +211,7 @@ const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
         <slot />
       )
     }
+    {!isAgentRoute && <ModalPopup />}
     <script>
       import { initLayout } from "@/lib/layout";
 

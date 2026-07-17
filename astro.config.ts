@@ -116,6 +116,45 @@ export default defineConfig({
         navigateFallback: null,
         globPatterns: ["**/*.{js,css,svg,png,webp,woff2}"],
         globIgnores: ["**/_worker.js/**", "**/node_modules/**"],
+        // Required when globPatterns match nothing (SSR/dev): workbox needs
+        // either precache entries or runtimeCaching to generate the SW.
+        runtimeCaching: [
+          {
+            urlPattern: /\.(?:js|css|woff2?)$/i,
+            handler: "StaleWhileRevalidate",
+            options: {
+              cacheName: "static-resources",
+              expiration: {
+                maxEntries: 64,
+                maxAgeSeconds: 60 * 60 * 24 * 7,
+              },
+            },
+          },
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|svg|webp|ico)$/i,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "images",
+              expiration: {
+                maxEntries: 64,
+                maxAgeSeconds: 60 * 60 * 24 * 30,
+              },
+            },
+          },
+          {
+            urlPattern: ({ request, url }) =>
+              request.mode === "navigate" && !url.pathname.startsWith("/api/"),
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "pages",
+              networkTimeoutSeconds: 3,
+              expiration: {
+                maxEntries: 32,
+                maxAgeSeconds: 60 * 60 * 24,
+              },
+            },
+          },
+        ],
       },
       experimental: {
         directoryAndTrailingSlashHandler: true,

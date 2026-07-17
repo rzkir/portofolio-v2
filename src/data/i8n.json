@@ -58,6 +58,29 @@
       "text": "AI Studio kini live — Deep Intelligence untuk eksekusi profesional",
       "textMobile": "AI Studio kini live — Deep Intelligence"
     },
+    "chatModal": {
+      "title": "Corporate Support",
+      "subtitle": "Available now",
+      "welcome": "Selamat datang. Saya asisten korporat Anda. Ada yang bisa kami bantu hari ini?",
+      "placeholder": "Ketik pesan Anda...",
+      "clearConfirm": "Apakah Anda yakin ingin menghapus riwayat percakapan?",
+      "clearHistory": "Hapus Percakapan",
+      "settings": "Pengaturan",
+      "securedBy": "Secured by Rizki Ramadhan",
+      "viewPricing": "View Pricing",
+      "scheduleDemo": "Schedule Demo",
+      "contactSales": "Contact Sales",
+      "replyAck": "Terima kasih atas pesannya. Tim kami akan segera menanggapi pertanyaan Anda.",
+      "historyCleared": "Riwayat dihapus. Ada yang bisa kami bantu hari ini?",
+      "openChat": "Buka chat support",
+      "closeChat": "Tutup chat",
+      "menu": "Menu chat",
+      "send": "Kirim pesan",
+      "system": "System",
+      "you": "You",
+      "justNow": "Baru saja",
+      "errorGeneric": "Gagal mengirim pesan. Coba lagi."
+    },
     "agentBuild": {
       "previewTitle": "Web Preview",
       "previewDescription": "Preview halaman web yang dihasilkan dari AI Studio."
@@ -1341,6 +1364,29 @@
       "text": "AI Studio is now live — Deep Intelligence for professional execution",
       "textMobile": "AI Studio is now live — Deep Intelligence"
     },
+    "chatModal": {
+      "title": "Corporate Support",
+      "subtitle": "Available now",
+      "welcome": "Welcome. I am your corporate assistant. How can we help you today?",
+      "placeholder": "Type your message...",
+      "clearConfirm": "Are you sure you want to clear the conversation history?",
+      "clearHistory": "Clear Conversation",
+      "settings": "Settings",
+      "securedBy": "Secured by Rizki Ramadhan",
+      "viewPricing": "View Pricing",
+      "scheduleDemo": "Schedule Demo",
+      "contactSales": "Contact Sales",
+      "replyAck": "Thank you for your message. Our team will respond to your inquiry shortly.",
+      "historyCleared": "History cleared. How can I help you today?",
+      "openChat": "Open support chat",
+      "closeChat": "Close chat",
+      "menu": "Chat menu",
+      "send": "Send message",
+      "system": "System",
+      "you": "You",
+      "justNow": "Just now",
+      "errorGeneric": "Failed to send message. Please try again."
+    },
     "agentBuild": {
       "previewTitle": "Web Preview",
       "previewDescription": "Generated web preview from AI Studio."
@@ -2623,6 +2669,29 @@
     "announcement": {
       "text": "AI Studio が公開されました — プロフェッショナルな実行のための Deep Intelligence",
       "textMobile": "AI Studio が公開されました — Deep Intelligence"
+    },
+    "chatModal": {
+      "title": "Corporate Support",
+      "subtitle": "Available now",
+      "welcome": "ようこそ。コーポレートアシスタントです。本日はどのようなご用件でしょうか？",
+      "placeholder": "メッセージを入力...",
+      "clearConfirm": "会話履歴を削除してもよろしいですか？",
+      "clearHistory": "会話を削除",
+      "settings": "設定",
+      "securedBy": "Secured by Rizki Ramadhan",
+      "viewPricing": "View Pricing",
+      "scheduleDemo": "Schedule Demo",
+      "contactSales": "Contact Sales",
+      "replyAck": "メッセージありがとうございます。担当チームがまもなくご返信いたします。",
+      "historyCleared": "履歴を削除しました。本日はどのようなご用件でしょうか？",
+      "openChat": "サポートチャットを開く",
+      "closeChat": "チャットを閉じる",
+      "menu": "チャットメニュー",
+      "send": "メッセージを送信",
+      "system": "System",
+      "you": "You",
+      "justNow": "たった今",
+      "errorGeneric": "メッセージの送信に失敗しました。もう一度お試しください。"
     },
     "agentBuild": {
       "previewTitle": "Webプレビュー",
