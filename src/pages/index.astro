@@ -9,7 +9,6 @@ import GuestNotesTeaser from "@/components/GuestNotesTeaser.astro";
 import Marquee from "@/components/Marquee.astro";
 import FocusIn from "@/components/FocusIn.astro";
 import WorksScroll from "@/components/WorksScroll.astro";
-import ArchivmentsLayout from "@/components/ArchivmentsLayout.astro";
 import CareerLayout from "@/components/CareerLayout.astro";
 import { getCredentialsCount } from "@/service/archivments.service";
 import { getSkills } from "@/service/skills.service";
@@ -224,7 +223,6 @@ const [projectCount, certificationCount, skills] = await Promise.all([
     </section>
 
     <CareerLayout />
-    <ArchivmentsLayout />
     <CodingStats />
     <GuestNotesTeaser />
   </main>

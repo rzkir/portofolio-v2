@@ -197,9 +197,14 @@ const remainingCredentials = credentials.length - featuredCredentials.length;
               as="li"
               delay={160 + featuredCredentials.length * 35}
               duration={0.8}
-              class="pt-1 font-mono text-xs tracking-widest text-accent uppercase"
+              class="pt-1"
             >
-              {m.cv.moreCerts.replace("{count}", String(remainingCredentials))}
+              <a
+                href="/achievements"
+                class="font-mono text-xs tracking-widest text-accent uppercase transition-colors hover:text-foreground"
+              >
+                {m.cv.moreCerts.replace("{count}", String(remainingCredentials))} →
+              </a>
             </FocusIn>
           )
         }

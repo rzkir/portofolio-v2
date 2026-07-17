@@ -1,5 +1,4 @@
 ---
-import GrabCursor from "@/components/GrabCursor.astro";
 import ModalPopup from "@/components/ModalPopup.astro";
 import Announcement from "@/layouts/announcement.astro";
 import NotificationContext from "@/layouts/NotificationContext.astro";
@@ -27,7 +26,6 @@ interface Props {
   ogType?: OgType;
   breadcrumbCurrent?: string;
   noIndex?: boolean;
-  noGrabCursor?: boolean;
 }
 
 const locale = getLocale(Astro);
@@ -40,7 +38,6 @@ const {
   ogType,
   breadcrumbCurrent,
   noIndex,
-  noGrabCursor = false,
 } = Astro.props;
 
 const meta = resolvePageMetadata({
@@ -65,7 +62,6 @@ const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
 <!doctype html>
 <html
   lang={locale}
-  data-grab-cursor={noGrabCursor ? "off" : undefined}
   data-has-announcement={!isAgentRoute ? "" : undefined}
 >
   <head>
@@ -198,7 +194,6 @@ const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
       )
     }
     <SplashScreen />
-    {!noGrabCursor && <GrabCursor />}
     <NotificationContext />
     {isAgentRoute && <SettingsContext />}
     {!isAgentRoute && <Announcement />}
