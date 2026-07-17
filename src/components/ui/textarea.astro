@@ -21,22 +21,46 @@ const fieldClass =
 
 {
   variant === "chat" ? (
-    <div class={cn("chat-input group relative", className)}>
-      <textarea
-        id={id}
-        name={name}
-        rows={1}
-        placeholder={placeholder}
-        maxlength={maxlength}
-        required={required}
-        autocomplete="off"
-        data-chat-input
-        class={cn(
-          "chat-input__field w-full resize-none rounded-xl border border-border bg-surface/70 py-3.5 pr-12 pl-4 text-sm leading-relaxed text-foreground outline-none transition-all placeholder:text-muted-foreground focus:border-accent/50 focus:bg-background focus:ring-2 focus:ring-accent/15",
-          textareaClass,
-        )}
-      />
-      <slot name="send" />
+    <div class={cn("chat-prompt flex items-center gap-2", className)}>
+      <div class="relative min-w-0 flex-1">
+        <label class="sr-only" for={id}>
+          {label}
+        </label>
+        <textarea
+          id={id}
+          name={name}
+          rows={1}
+          placeholder={label}
+          maxlength={maxlength}
+          required={required}
+          autocomplete="off"
+          class={cn(
+            "chat-prompt__input block w-full max-h-32 resize-none overflow-y-hidden rounded-2xl border-none bg-muted py-3.5 px-4 text-sm text-foreground ring-1 ring-border transition-all placeholder:text-muted-foreground focus:ring-2 focus:ring-foreground focus:outline-none",
+            textareaClass,
+          )}
+        />
+      </div>
+      <button
+        type="submit"
+        id={`${id}-send`}
+        class="chat-prompt__send flex size-12 shrink-0 items-center justify-center rounded-2xl bg-foreground text-background shadow-lg transition-colors hover:opacity-90"
+        aria-label={sendLabel}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="size-5 translate-x-px"
+          aria-hidden="true"
+        >
+          <path d="m22 2-7 20-4-9-9-4Z" />
+          <path d="M22 2 11 13" />
+        </svg>
+      </button>
     </div>
   ) : variant === "prompt" ? (
     <div class={cn("agent-prompt group relative", className)}>
@@ -106,8 +130,13 @@ const fieldClass =
 
 <script>
   const PROMPT_MAX_HEIGHT = 192;
+  const CHAT_MAX_HEIGHT = 128;
 
   function resizePromptField(field: HTMLTextAreaElement) {
+    const maxHeight = field.classList.contains("chat-prompt__input")
+      ? CHAT_MAX_HEIGHT
+      : PROMPT_MAX_HEIGHT;
+
     if (!field.value.trim()) {
       field.style.height = "";
       field.style.overflowY = "hidden";
@@ -115,68 +144,56 @@ const fieldClass =
     }
 
     field.style.height = "auto";
-    const nextHeight = Math.min(field.scrollHeight, PROMPT_MAX_HEIGHT);
+    const nextHeight = Math.min(field.scrollHeight, maxHeight);
     field.style.height = `${nextHeight}px`;
     field.style.overflowY =
-      field.scrollHeight > PROMPT_MAX_HEIGHT ? "auto" : "hidden";
+      field.scrollHeight > maxHeight ? "auto" : "hidden";
+  }
+
+  function bindAutoResizeField(field: HTMLTextAreaElement) {
+    if (field.dataset.bound === "true") return;
+    field.dataset.bound = "true";
+
+    const shell = field.closest(".agent-prompt__shell");
+
+    const onInput = () => resizePromptField(field);
+    const onFocus = () => {
+      if (field.value.trim()) resizePromptField(field);
+    };
+    const onBlur = () => {
+      if (!field.value.trim()) {
+        field.style.height = "";
+        field.style.overflowY = "hidden";
+      }
+    };
+    const onKeydown = (event: KeyboardEvent) => {
+      if (event.key !== "Enter" || event.shiftKey) return;
+      event.preventDefault();
+      field.closest("form")?.requestSubmit();
+    };
+    const onShellClick = (event: Event) => {
+      const target = event.target as HTMLElement | null;
+      if (!target || target.closest("button")) return;
+      field.focus();
+    };
+
+    field.addEventListener("input", onInput);
+    field.addEventListener("focus", onFocus);
+    field.addEventListener("blur", onBlur);
+    field.addEventListener("keydown", onKeydown);
+    shell?.addEventListener("click", onShellClick);
   }
 
   function bindPromptTextareas(root: ParentNode = document) {
-    root.querySelectorAll<HTMLTextAreaElement>(".agent-prompt__input").forEach((field) => {
-      if (field.dataset.bound === "true") return;
-      field.dataset.bound = "true";
-
-      const shell = field.closest(".agent-prompt__shell");
-
-      const onInput = () => resizePromptField(field);
-      const onFocus = () => {
-        if (field.value.trim()) resizePromptField(field);
-      };
-      const onBlur = () => {
-        if (!field.value.trim()) {
-          field.style.height = "";
-          field.style.overflowY = "hidden";
-        }
-      };
-      const onKeydown = (event: KeyboardEvent) => {
-        if (event.key !== "Enter" || event.shiftKey) return;
-        event.preventDefault();
-        field.closest("form")?.requestSubmit();
-      };
-      const onShellClick = (event: Event) => {
-        const target = event.target as HTMLElement | null;
-        if (!target || target.closest("button")) return;
-        field.focus();
-      };
-
-      field.addEventListener("input", onInput);
-      field.addEventListener("focus", onFocus);
-      field.addEventListener("blur", onBlur);
-      field.addEventListener("keydown", onKeydown);
-      shell?.addEventListener("click", onShellClick);
-    });
+    root
+      .querySelectorAll<HTMLTextAreaElement>(
+        ".agent-prompt__input, .chat-prompt__input",
+      )
+      .forEach(bindAutoResizeField);
   }
 
   bindPromptTextareas();
   document.addEventListener("astro:page-load", () => bindPromptTextareas());
-
-  function bindChatTextareas(root: ParentNode = document) {
-    root.querySelectorAll<HTMLTextAreaElement>(".chat-input__field").forEach((field) => {
-      if (field.dataset.bound === "true") return;
-      field.dataset.bound = "true";
-
-      const onKeydown = (event: KeyboardEvent) => {
-        if (event.key !== "Enter" || event.shiftKey) return;
-        event.preventDefault();
-        field.closest("form")?.requestSubmit();
-      };
-
-      field.addEventListener("keydown", onKeydown);
-    });
-  }
-
-  bindChatTextareas();
-  document.addEventListener("astro:page-load", () => bindChatTextareas());
 </script>
 
 <style>

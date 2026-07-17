@@ -1,7 +1,9 @@
 import { createAgentPromptClient } from "@/utils/FetchAgent";
+import { formatAgentMessageHtml } from "@/lib/agent-message";
 
 const CHAT_CATEGORY: AgentPromptCategory = "marketing";
 const STORAGE_KEY = "corporate-chat-modal";
+const PANEL_CLOSE_MS = 300;
 
 interface ChatModalStrings {
   welcome: string;
@@ -9,7 +11,6 @@ interface ChatModalStrings {
   replyAck: string;
   historyCleared: string;
   system: string;
-  you: string;
   justNow: string;
   errorGeneric: string;
 }
@@ -42,26 +43,14 @@ function writeHistory(history: AgentHistoryItem[]) {
   sessionStorage.setItem(STORAGE_KEY, JSON.stringify(history.slice(-20)));
 }
 
-function renderBotAvatar(): string {
-  return `
-    <div class="flex size-8 shrink-0 items-center justify-center rounded-full bg-surface">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-4 text-muted-foreground" aria-hidden="true">
-        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-        <circle cx="12" cy="7" r="4" />
-      </svg>
-    </div>
-  `;
-}
-
 function renderBotMessage(text: string, meta: string): string {
   return `
-    <div class="chat-modal__message chat-modal__message--bot flex items-start gap-3">
-      ${renderBotAvatar()}
-      <div class="max-w-[80%]">
-        <div class="rounded-2xl rounded-tl-none border border-border bg-card p-3.5 text-[13.5px] leading-relaxed text-foreground shadow-sm">
-          ${escapeHtml(text)}
+    <div class="chat-modal__message flex max-w-[85%]">
+      <div class="space-y-1.5">
+        <div class="chat-modal__bubble chat-modal__bubble--ai agent-message-content rounded-2xl px-4 py-3 text-sm leading-relaxed">
+          ${formatAgentMessageHtml(text)}
         </div>
-        <span class="mt-1.5 ml-1 block text-[10px] tracking-wider text-muted-foreground uppercase">${escapeHtml(meta)}</span>
+        <span class="ml-1 block text-[10px] text-muted-foreground">${escapeHtml(meta)}</span>
       </div>
     </div>
   `;
@@ -69,18 +58,18 @@ function renderBotMessage(text: string, meta: string): string {
 
 function renderUserMessage(text: string, meta: string): string {
   return `
-    <div class="chat-modal__message chat-modal__message--user flex flex-col items-end gap-2">
-      <div class="max-w-[80%]">
-        <div class="rounded-2xl rounded-tr-none bg-accent p-3.5 text-[13.5px] leading-relaxed text-accent-foreground shadow-sm">
+    <div class="chat-modal__message ml-auto flex max-w-[85%] flex-row-reverse">
+      <div class="flex flex-col items-end space-y-1.5">
+        <div class="chat-modal__bubble chat-modal__bubble--user rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap">
           ${escapeHtml(text)}
         </div>
-        <span class="mt-1.5 mr-1 block text-right text-[10px] tracking-wider text-muted-foreground uppercase">${escapeHtml(meta)}</span>
+        <span class="mr-1 block text-[10px] text-muted-foreground">${escapeHtml(meta)}</span>
       </div>
     </div>
   `;
 }
 
-export function bindChatModal(root: ParentNode = document) {
+function bindChatModal(root: ParentNode = document) {
   const widget = root.querySelector<HTMLElement>("[data-chat-modal]");
   if (!widget || widget.dataset.bound === "true") return;
 
@@ -89,24 +78,24 @@ export function bindChatModal(root: ParentNode = document) {
   ) as ChatModalStrings;
 
   const modal = widget.querySelector<HTMLElement>("[data-chat-panel]");
+  const backdrop = widget.querySelector<HTMLElement>("[data-chat-backdrop]");
   const fab = widget.querySelector<HTMLButtonElement>("[data-chat-fab]");
   const closeBtn = widget.querySelector<HTMLButtonElement>("[data-chat-close]");
-  const menuBtn = widget.querySelector<HTMLButtonElement>("[data-chat-menu-btn]");
-  const menu = widget.querySelector<HTMLElement>("[data-chat-menu]");
   const clearBtn = widget.querySelector<HTMLButtonElement>("[data-chat-clear]");
   const form = widget.querySelector<HTMLFormElement>("[data-chat-form]");
-  const input = widget.querySelector<HTMLTextAreaElement>("[data-chat-input]");
-  const sendBtn = widget.querySelector<HTMLButtonElement>("[data-chat-send]");
+  const input = widget.querySelector<HTMLTextAreaElement>("#chat-modal-input");
+  const sendBtn = widget.querySelector<HTMLButtonElement>("#chat-modal-input-send");
   const messageArea = widget.querySelector<HTMLElement>("[data-chat-messages]");
-  const typingIndicator = widget.querySelector<HTMLElement>("[data-chat-typing]");
-  const quickReplies = widget.querySelectorAll<HTMLButtonElement>("[data-chat-quick]");
+  const typingIndicator =
+    widget.querySelector<HTMLElement>("[data-chat-typing]");
+  const quickReplies =
+    widget.querySelectorAll<HTMLButtonElement>("[data-chat-quick]");
 
   if (
     !modal ||
+    !backdrop ||
     !fab ||
     !closeBtn ||
-    !menuBtn ||
-    !menu ||
     !clearBtn ||
     !form ||
     !input ||
@@ -123,67 +112,86 @@ export function bindChatModal(root: ParentNode = document) {
   let isSubmitting = false;
   let history = readHistory();
 
-  function scrollToBottom() {
+  const scrollToBottom = () => {
     messageArea.scrollTop = messageArea.scrollHeight;
-  }
+  };
 
-  function setOpen(next: boolean) {
+  const setOpen = (next: boolean) => {
     isOpen = next;
-    fab.setAttribute("aria-expanded", next ? "true" : "false");
+    fab.setAttribute("aria-expanded", String(next));
+    document.body.classList.toggle("overflow-hidden", next);
 
     if (next) {
       modal.hidden = false;
-      modal.classList.remove("chat-modal__panel--hidden");
-      modal.classList.add("chat-modal__panel--visible");
-      input.focus();
-    } else {
-      modal.classList.remove("chat-modal__panel--visible");
-      modal.classList.add("chat-modal__panel--hidden");
+      backdrop.hidden = false;
+      // Opening click (and mobile ghost-clicks) can land on the backdrop
+      // after the FAB leaves hit-testing — ignore those briefly.
+      backdrop.style.pointerEvents = "none";
+      void modal.offsetWidth;
+      widget.classList.add("chat-modal--open");
+      fab.hidden = true;
       window.setTimeout(() => {
-        if (!isOpen) modal.hidden = true;
-      }, 300);
-      menu.classList.add("hidden");
+        if (isOpen) backdrop.style.pointerEvents = "";
+      }, 350);
+      input.focus();
+      return;
     }
-  }
 
-  function appendMessage(text: string, isUser: boolean, meta?: string) {
+    widget.classList.remove("chat-modal--open");
+    fab.hidden = false;
+    backdrop.style.pointerEvents = "";
+    window.setTimeout(() => {
+      if (!isOpen) {
+        modal.hidden = true;
+        backdrop.hidden = true;
+      }
+    }, PANEL_CLOSE_MS);
+  };
+
+  const appendMessage = (text: string, isUser: boolean, meta?: string) => {
     const wrapper = document.createElement("div");
     wrapper.innerHTML = isUser
       ? renderUserMessage(text, meta ?? strings.justNow)
-      : renderBotMessage(text, meta ?? `${strings.system} • ${formatTime()}`);
+      : renderBotMessage(
+          text,
+          meta ?? `${strings.system} • ${formatTime()}`,
+        );
     const node = wrapper.firstElementChild;
     if (!node) return;
     messageArea.insertBefore(node, typingIndicator);
     scrollToBottom();
-  }
+  };
 
-  function renderWelcome() {
+  const renderWelcome = () => {
     messageArea
       .querySelectorAll(".chat-modal__message")
       .forEach((node) => node.remove());
-    appendMessage(strings.welcome, false, `${strings.system} • ${formatTime()}`);
-  }
+    appendMessage(
+      strings.welcome,
+      false,
+      `${strings.system} • ${formatTime()}`,
+    );
+  };
 
-  if (history.length === 0) {
+  try {
+    if (history.length === 0) {
+      renderWelcome();
+    } else {
+      history.forEach((item) => {
+        appendMessage(item.content, item.role === "user", strings.justNow);
+      });
+    }
+  } catch {
     renderWelcome();
-  } else {
-    history.forEach((item) => {
-      appendMessage(item.content, item.role === "user", strings.justNow);
-    });
   }
 
   fab.addEventListener("click", () => setOpen(!isOpen));
-  closeBtn.addEventListener("click", (event) => {
-    event.stopPropagation();
-    setOpen(false);
-  });
+  closeBtn.addEventListener("click", () => setOpen(false));
+  backdrop.addEventListener("click", () => setOpen(false));
 
-  menuBtn.addEventListener("click", (event) => {
-    event.stopPropagation();
-    menu.classList.toggle("hidden");
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && isOpen) setOpen(false);
   });
-
-  document.addEventListener("click", () => menu.classList.add("hidden"));
 
   clearBtn.addEventListener("click", () => {
     if (!confirm(strings.clearConfirm)) return;
@@ -191,10 +199,9 @@ export function bindChatModal(root: ParentNode = document) {
     writeHistory([]);
     renderWelcome();
     appendMessage(strings.historyCleared, false, strings.system);
-    menu.classList.add("hidden");
   });
 
-  async function handleSend(message: string) {
+  const handleSend = async (message: string) => {
     const value = message.trim();
     if (!value || isSubmitting) return;
 
@@ -206,6 +213,9 @@ export function bindChatModal(root: ParentNode = document) {
     history.push({ role: "user", content: value });
     writeHistory(history);
     input.value = "";
+    input.dispatchEvent(new Event("input"));
+    input.style.height = "";
+    input.style.overflowY = "hidden";
 
     typingIndicator.classList.remove("hidden");
     scrollToBottom();
@@ -217,9 +227,10 @@ export function bindChatModal(root: ParentNode = document) {
         history: history.slice(0, -1),
       });
 
+      const reply = response.reply || strings.replyAck;
       typingIndicator.classList.add("hidden");
-      appendMessage(response.reply || strings.replyAck, false);
-      history.push({ role: "assistant", content: response.reply || strings.replyAck });
+      appendMessage(reply, false);
+      history.push({ role: "assistant", content: reply });
       writeHistory(history);
     } catch {
       typingIndicator.classList.add("hidden");
@@ -230,7 +241,7 @@ export function bindChatModal(root: ParentNode = document) {
       input.disabled = false;
       input.focus();
     }
-  }
+  };
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -239,8 +250,7 @@ export function bindChatModal(root: ParentNode = document) {
 
   quickReplies.forEach((button) => {
     button.addEventListener("click", () => {
-      const action = button.dataset.chatQuick;
-      if (action === "pricing") {
+      if (button.dataset.chatQuick === "pricing") {
         window.location.href = "/layanan";
         return;
       }
@@ -249,23 +259,15 @@ export function bindChatModal(root: ParentNode = document) {
   });
 }
 
-let chatModalListenersReady = false;
+let cleanupBound = false;
 
 export function initChatModal() {
-  const run = () => bindChatModal();
-
-  if (!chatModalListenersReady) {
-    chatModalListenersReady = true;
-
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", run, { once: true });
-    } else {
-      run();
-    }
-
-    document.addEventListener("astro:page-load", run);
-    return;
+  if (!cleanupBound) {
+    cleanupBound = true;
+    document.addEventListener("astro:before-preparation", () => {
+      document.body.classList.remove("overflow-hidden");
+    });
   }
 
-  run();
+  bindChatModal();
 }

@@ -12,19 +12,19 @@ export const DEFAULT_AGENT_SETTINGS: AgentSettings = {
   weeklyDigest: false,
   conciseResponses: false,
   rememberContext: true,
-  notificationSound: "computer",
+  notificationSound: "iphone",
 };
 
 export const NOTIFICATION_SOUNDS: NotificationSoundOption[] = [
   {
-    id: "computer",
-    label: "Computer",
-    src: "/notifications/Computer_Notification.mp3",
-  },
-  {
     id: "iphone",
     label: "iPhone",
     src: "/notifications/IPHONE_NOTIFICATION.mp3",
+  },
+  {
+    id: "computer",
+    label: "Computer",
+    src: "/notifications/Computer_Notification.mp3",
   },
   {
     id: "off",

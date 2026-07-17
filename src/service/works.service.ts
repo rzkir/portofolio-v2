@@ -29,6 +29,7 @@ export type ArchiveWork = {
 
 export type FeaturedWork = ArchiveWork & {
   desc: string;
+  viewCount: number;
 };
 
 function formatArchiveIndex(index: number): string {

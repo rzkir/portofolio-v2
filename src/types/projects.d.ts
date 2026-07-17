@@ -13,6 +13,7 @@ interface ProjectsContentProps {
   category: string;
   categoryId?: string;
   categoryDetail: ProjectCategoryDetail;
+  viewCount?: number;
   createdAt: string;
   updatedAt: string;
 }

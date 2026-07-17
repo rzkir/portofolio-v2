@@ -1,7 +1,7 @@
 //============================ Button ============================//
 interface ButtonProps {
     type?: "button" | "submit" | "reset";
-    variant?: "primary" | "ghost" | "icon" | "outline" | "quick-reply" | "danger-ghost";
+    variant?: "primary" | "ghost" | "icon" | "outline" | "quick-reply";
     size?: "sm" | "md" | "lg" | "icon";
     id?: string;
     disabled?: boolean;
@@ -9,7 +9,6 @@ interface ButtonProps {
     "aria-label"?: string;
     "aria-expanded"?: "true" | "false";
     "aria-haspopup"?: "menu" | "listbox" | boolean;
-    "data-chat-action"?: string;
 }
 
 //============================ Alert Dialog ============================//
@@ -170,5 +169,4 @@ interface TextareaProps {
     textareaClass?: string;
     variant?: "default" | "prompt" | "chat";
     sendLabel?: string;
-    footerHints?: string[];
 }

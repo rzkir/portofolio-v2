@@ -560,6 +560,15 @@ html.splash-pending .animate-focus {
 .prose-editorial.prose-editorial--work :is(ul, ol) {
   margin: 0 0 1.25rem;
   padding-left: 1.25rem;
+  list-style-position: outside;
+}
+
+.prose-editorial.prose-editorial--work ul {
+  list-style-type: disc;
+}
+
+.prose-editorial.prose-editorial--work ol {
+  list-style-type: decimal;
 }
 
 .prose-editorial.prose-editorial--work li {
@@ -576,6 +585,24 @@ html.splash-pending .animate-focus {
   color: color-mix(in oklch, var(--foreground) 85%, transparent);
   font-size: 0.9375rem;
   line-height: 1.8;
+}
+
+.prose-editorial :is(ul, ol) {
+  margin: 0.75rem 0 1.25rem;
+  padding-left: 1.5rem;
+  list-style-position: outside;
+}
+
+.prose-editorial ul {
+  list-style-type: disc;
+}
+
+.prose-editorial ol {
+  list-style-type: decimal;
+}
+
+.prose-editorial li + li {
+  margin-top: 0.35rem;
 }
 
 .prose-editorial > :first-child {
