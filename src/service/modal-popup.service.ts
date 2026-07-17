@@ -1,7 +1,7 @@
 import { createAgentPromptClient } from "@/utils/FetchAgent";
 import { formatAgentMessageHtml } from "@/lib/agent-message";
 
-const CHAT_CATEGORY: AgentPromptCategory = "marketing";
+const CHAT_CATEGORY: AgentPromptCategory = "customers_services";
 const STORAGE_KEY = "corporate-chat-modal";
 const PANEL_CLOSE_MS = 300;
 
@@ -45,26 +45,22 @@ function writeHistory(history: AgentHistoryItem[]) {
 
 function renderBotMessage(text: string, meta: string): string {
   return `
-    <div class="chat-modal__message flex max-w-[85%]">
-      <div class="space-y-1.5">
-        <div class="chat-modal__bubble chat-modal__bubble--ai agent-message-content rounded-2xl px-4 py-3 text-sm leading-relaxed">
-          ${formatAgentMessageHtml(text)}
-        </div>
-        <span class="ml-1 block text-[10px] text-muted-foreground">${escapeHtml(meta)}</span>
+    <div class="chat-modal__message chat-modal__message--bot">
+      <div class="chat-modal__bubble chat-modal__bubble--ai agent-message-content">
+        ${formatAgentMessageHtml(text)}
       </div>
+      <span class="chat-modal__meta">${escapeHtml(meta)}</span>
     </div>
   `;
 }
 
 function renderUserMessage(text: string, meta: string): string {
   return `
-    <div class="chat-modal__message ml-auto flex max-w-[85%] flex-row-reverse">
-      <div class="flex flex-col items-end space-y-1.5">
-        <div class="chat-modal__bubble chat-modal__bubble--user rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap">
-          ${escapeHtml(text)}
-        </div>
-        <span class="mr-1 block text-[10px] text-muted-foreground">${escapeHtml(meta)}</span>
+    <div class="chat-modal__message chat-modal__message--user">
+      <div class="chat-modal__bubble chat-modal__bubble--user">
+        ${escapeHtml(text)}
       </div>
+      <span class="chat-modal__meta">${escapeHtml(meta)}</span>
     </div>
   `;
 }

@@ -3,6 +3,7 @@ type AgentPromptCategory =
   | "technology"
   | "seo"
   | "marketing"
+  | "customers_services"
   | "science"
   | "translation"
   | "legal"
