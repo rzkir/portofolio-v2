@@ -130,6 +130,7 @@ interface SidebarNavItem {
 
 interface SidebarLabels {
     home?: string;
+    backHome?: string;
     agentNavigation?: string;
     userAlt?: string;
 }

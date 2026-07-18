@@ -225,6 +225,7 @@ export function bindAgentHistory(root: ParentNode, storageKey: string): () => vo
   }
 
   let searchQuery = "";
+  let wasDesktop = window.matchMedia("(min-width: 768px)").matches;
 
   const refresh = () => {
     renderHistoryList(
@@ -337,13 +338,14 @@ export function bindAgentHistory(root: ParentNode, storageKey: string): () => vo
   };
 
   const onResize = () => {
-    if (window.matchMedia("(min-width: 768px)").matches) {
+    const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+    if (isDesktop) {
       document.body.classList.remove("overflow-hidden");
       open();
-    } else if (!historyRoot.classList.contains("is-open")) {
-      panel.classList.remove("is-open");
-      backdrop.classList.remove("is-open");
+    } else if (wasDesktop) {
+      close();
     }
+    wasDesktop = isDesktop;
   };
 
   const onBusy = (event: Event) => {

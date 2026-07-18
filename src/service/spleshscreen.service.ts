@@ -18,7 +18,7 @@ function restartSiteHeaderReveal(): void {
 
   header
     .querySelectorAll<HTMLElement>(
-      ".animate-focus, .site-header__mobile-dock, .site-header__nav-indicator",
+      ".animate-focus, .site-header__nav-indicator",
     )
     .forEach((el) => {
       el.style.animation = "none";

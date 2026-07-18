@@ -877,6 +877,10 @@ html.splash-pending .animate-focus {
   opacity: 1;
 }
 
+.agent-history-root.is-open .agent-history-panel {
+  pointer-events: auto;
+}
+
 .agent-history-panel.is-open {
   transform: translateX(0);
 }

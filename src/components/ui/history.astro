@@ -23,10 +23,10 @@ const {
   id="agent-history-root"
   data-agent-history={storageKey}
   class={cn(
-    "agent-history-root fixed inset-0 z-30 md:relative md:z-auto md:flex md:h-full md:shrink-0 md:flex-col md:overflow-hidden",
+    "agent-history-root pointer-events-none fixed inset-0 z-30 md:relative md:z-auto md:flex md:h-full md:shrink-0 md:flex-col md:overflow-hidden md:pointer-events-auto",
     className,
   )}
-  aria-hidden="false"
+  aria-hidden="true"
 >
   <button
     type="button"

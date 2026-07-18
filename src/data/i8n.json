@@ -36,7 +36,10 @@
     },
     "nav": {
       "main": "Navigasi utama",
-      "mobile": "Navigasi mobile",
+      "mobile": "Menu navigasi",
+      "menu": "Menu",
+      "openMenu": "Buka menu navigasi",
+      "closeMenu": "Tutup menu navigasi",
       "home": "Beranda",
       "works": "Karya",
       "blog": "Blog",
@@ -47,7 +50,7 @@
       "shortHome": "Home",
       "shortWorks": "Karya",
       "shortBlog": "Blog",
-      "shortServices": "Layanan",
+      "shortServices": "Jasa",
       "shortAchievements": "Sertif",
       "shortGuestNotes": "Notes"
     },
@@ -733,6 +736,7 @@
         "openNavigation": "Buka navigasi",
         "closeNavigation": "Tutup navigasi",
         "home": "Beranda",
+        "backHome": "Kembali ke beranda",
         "agentNavigation": "Navigasi agent",
         "userAlt": "Pengguna"
       },
@@ -1339,7 +1343,10 @@
     },
     "nav": {
       "main": "Main navigation",
-      "mobile": "Mobile navigation",
+      "mobile": "Navigation menu",
+      "menu": "Menu",
+      "openMenu": "Open navigation menu",
+      "closeMenu": "Close navigation menu",
       "home": "Home",
       "works": "Works",
       "blog": "Blog",
@@ -2036,6 +2043,7 @@
         "openNavigation": "Open navigation",
         "closeNavigation": "Close navigation",
         "home": "Home",
+        "backHome": "Back home",
         "agentNavigation": "Agent navigation",
         "userAlt": "User"
       },
@@ -2642,7 +2650,10 @@
     },
     "nav": {
       "main": "メインナビゲーション",
-      "mobile": "モバイルナビゲーション",
+      "mobile": "ナビゲーションメニュー",
+      "menu": "メニュー",
+      "openMenu": "ナビゲーションメニューを開く",
+      "closeMenu": "ナビゲーションメニューを閉じる",
       "home": "ホーム",
       "works": "作品",
       "blog": "ブログ",
@@ -3339,6 +3350,7 @@
         "openNavigation": "ナビゲーションを開く",
         "closeNavigation": "ナビゲーションを閉じる",
         "home": "ホーム",
+        "backHome": "ホームに戻る",
         "agentNavigation": "エージェントナビゲーション",
         "userAlt": "ユーザー"
       },

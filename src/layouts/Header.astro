@@ -8,27 +8,12 @@ const locale = getLocale(Astro);
 const m = getMessages(locale);
 
 const navItems = [
-  { index: "00", href: "/", label: m.nav.home, shortLabel: m.nav.shortHome },
-  { index: "01", href: "/works", label: m.nav.works, shortLabel: m.nav.shortWorks },
-  { index: "02", href: "/blog", label: m.nav.blog, shortLabel: m.nav.shortBlog },
-  {
-    index: "03",
-    href: "/layanan",
-    label: m.nav.services,
-    shortLabel: m.nav.shortServices,
-  },
-  {
-    index: "04",
-    href: "/achievements",
-    label: m.nav.achievements,
-    shortLabel: m.nav.shortAchievements,
-  },
-  {
-    index: "05",
-    href: "/guest-notes",
-    label: m.nav.guestNotes,
-    shortLabel: m.nav.shortGuestNotes,
-  },
+  { index: "00", href: "/", label: m.nav.home },
+  { index: "01", href: "/works", label: m.nav.works },
+  { index: "02", href: "/blog", label: m.nav.blog },
+  { index: "03", href: "/layanan", label: m.nav.services },
+  { index: "04", href: "/achievements", label: m.nav.achievements },
+  { index: "05", href: "/guest-notes", label: m.nav.guestNotes },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -46,10 +31,6 @@ const desktopNavPillClass = cn(
   "group-[.is-inverse]/site-header:border-background/18 group-[.is-inverse]/site-header:bg-background/8",
 );
 
-const mobileNavPillClass = cn(
-  "relative m-0 flex list-none items-center gap-0.5 rounded-full border border-border bg-background/92 p-0.5 shadow-[0_10px_40px_color-mix(in_oklch,var(--foreground)_10%,transparent)] backdrop-blur-md",
-);
-
 const shellClass = cn(
   "pointer-events-auto transition-[background-color,box-shadow,backdrop-filter] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
   "group-[.is-scrolled]/site-header:bg-background/88 group-[.is-scrolled]/site-header:backdrop-blur-md",
@@ -60,6 +41,13 @@ const shellClass = cn(
 
 const inverseText = "group-[.is-inverse]/site-header:text-background";
 const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
+
+const menuToggleClass = cn(
+  "inline-flex items-center gap-2 rounded-full border border-border bg-surface/55 px-2.5 py-1.5 xl:hidden",
+  "transition-colors duration-350 ease-cinematic",
+  inverseText,
+  "group-[.is-inverse]/site-header:border-background/18 group-[.is-inverse]/site-header:bg-background/8",
+);
 ---
 
 <header
@@ -69,7 +57,7 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
   <div class={shellClass}>
     <div class="mx-auto container px-4 md:px-6">
       <div
-        class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-4 py-4 lg:grid-cols-[minmax(0,1.1fr)_auto_minmax(0,auto)_auto] lg:gap-x-6 lg:py-5"
+        class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-4 py-4 sm:gap-x-4 xl:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] xl:gap-x-6 xl:py-5"
       >
         <a
           href="/"
@@ -82,7 +70,7 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
         >
           <span
             class={cn(
-              "font-display text-[clamp(1.35rem,2vw,1.75rem)] leading-none italic transition-colors duration-350 ease-cinematic",
+              "font-display text-[clamp(1.35rem,2vw,1.75rem)] leading-none whitespace-nowrap italic transition-colors duration-350 ease-cinematic",
               "group-hover/brand:text-accent",
               "group-[.is-inverse]/site-header:group-hover/brand:text-foreground",
             )}
@@ -91,7 +79,7 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
           </span>
           <span
             class={cn(
-              "font-mono text-[0.5625rem] tracking-[0.22em] uppercase text-muted-foreground transition-colors duration-350 ease-cinematic",
+              "font-mono text-[0.5625rem] tracking-[0.18em] uppercase text-muted-foreground whitespace-nowrap transition-colors duration-350 ease-cinematic sm:tracking-[0.22em]",
               "group-hover/brand:text-accent/70",
               inverseMuted,
               "group-[.is-inverse]/site-header:group-hover/brand:text-foreground/65",
@@ -102,20 +90,22 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
         </a>
 
         <nav
-          class="site-header__nav animate-focus hidden [animation-delay:120ms] lg:block lg:justify-self-center"
+          class="site-header__nav animate-focus hidden [animation-delay:120ms] xl:block xl:justify-self-center"
           aria-label={m.nav.main}
         >
           <ul data-header-nav class={desktopNavPillClass}>
-            <span
+            <li
               data-header-nav-indicator
               aria-hidden="true"
               class={cn(
-                "site-header__nav-indicator pointer-events-none absolute top-0 left-0 z-0 rounded-full",
+                "site-header__nav-indicator pointer-events-none absolute top-0 left-0 z-0 h-0 w-0 overflow-hidden rounded-full",
                 "bg-foreground/6 group-[.is-inverse]/site-header:bg-background/12",
-              )}></span>
+              )}
+            >
+            </li>
             {
               navItems.map((item) => (
-                <li class="shrink-0">
+                <li class="relative z-10 shrink-0">
                   <a
                     href={item.href}
                     data-header-nav-link
@@ -149,57 +139,85 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
         </nav>
 
         <div
-          class="site-header__actions animate-focus flex [animation-delay:200ms] items-center justify-end gap-3"
+          class="site-header__actions animate-focus flex [animation-delay:200ms] items-center justify-end gap-2 sm:gap-3 xl:justify-self-end"
         >
           <ThemeSwitch />
           <LangSwitcher />
+          <button
+            type="button"
+            data-header-menu-toggle
+            aria-expanded="false"
+            aria-controls="site-header-menu"
+            aria-label={m.nav.openMenu}
+            data-label-open={m.nav.openMenu}
+            data-label-close={m.nav.closeMenu}
+            class={menuToggleClass}
+          >
+            <span class="font-mono text-[0.5625rem] tracking-[0.2em] uppercase">
+              {m.nav.menu}
+            </span>
+            <span class="relative h-[0.55rem] w-3.5" aria-hidden="true">
+              <span
+                class="absolute top-0 left-0 h-px w-full rounded-full bg-current transition-transform duration-350 ease-cinematic group-[.is-menu-open]/site-header:top-1/2 group-[.is-menu-open]/site-header:-translate-y-1/2 group-[.is-menu-open]/site-header:rotate-45"
+              ></span>
+              <span
+                class="absolute bottom-0 left-0 h-px w-full rounded-full bg-current transition-transform duration-350 ease-cinematic group-[.is-menu-open]/site-header:bottom-1/2 group-[.is-menu-open]/site-header:translate-y-1/2 group-[.is-menu-open]/site-header:-rotate-45"
+              ></span>
+            </span>
+          </button>
         </div>
       </div>
     </div>
-  </div>
 
-  <nav
-    class="site-header__mobile-dock pointer-events-auto fixed inset-x-0 bottom-[max(0.85rem,env(safe-area-inset-bottom))] z-50 px-4 lg:hidden"
-    aria-label={m.nav.mobile}
-  >
-    <ul
-      data-header-nav-mobile
-      class={cn(mobileNavPillClass, "site-header__mobile-pill flex w-full")}
+    <nav
+      id="site-header-menu"
+      data-header-menu
+      aria-label={m.nav.mobile}
+      aria-hidden="true"
+      class={cn(
+        "pointer-events-auto overflow-hidden max-h-0 border-b border-transparent transition-[max-height,border-color,background-color,backdrop-filter] duration-500 ease-cinematic xl:hidden",
+        "group-[.is-menu-open]/site-header:max-h-[min(32rem,80dvh)] group-[.is-menu-open]/site-header:border-border group-[.is-menu-open]/site-header:bg-background/94 group-[.is-menu-open]/site-header:backdrop-blur-md",
+        "group-[.is-inverse.is-menu-open]/site-header:border-background/12 group-[.is-inverse.is-menu-open]/site-header:bg-accent/96",
+      )}
     >
-      <span
-        data-header-nav-indicator
-        aria-hidden="true"
-        class="site-header__nav-indicator pointer-events-none absolute top-0 left-0 z-0 rounded-full bg-foreground/6"
-      ></span>
-      {
-        navItems.map((item) => (
-          <li class="min-w-0 flex-1">
-            <a
-              href={item.href}
-              data-header-nav-link
-              data-cursor="focus"
-              data-cursor-label="Go"
-              aria-current={isNavActive(item.href) ? "page" : undefined}
-              aria-label={item.label}
-              class={cn(
-                "relative z-10 flex w-full flex-col items-center gap-0.5 rounded-full px-1 py-2 no-underline",
-                "transition-colors duration-350 ease-cinematic",
-                "text-foreground/72 hover:text-accent focus-visible:text-accent",
-                isNavActive(item.href) && "text-accent",
-              )}
-            >
-              <span class="font-mono text-[0.5rem] tracking-[0.14em] text-accent/80">
-                {item.index}
-              </span>
-              <span class="w-full truncate text-center text-[0.5625rem] font-medium tracking-widest uppercase">
-                {item.shortLabel}
-              </span>
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </nav>
+      <div class="mx-auto container px-4 md:px-6">
+        <ul class="m-0 list-none overflow-y-auto pt-2 pb-5">
+          {
+            navItems.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  data-header-menu-link
+                  aria-current={isNavActive(item.href) ? "page" : undefined}
+                  class={cn(
+                    "grid grid-cols-[2.5rem_1fr] items-baseline gap-3 border-b border-border py-3.5 no-underline transition-colors duration-350 ease-cinematic",
+                    inverseText,
+                    "hover:text-accent",
+                    "group-[.is-inverse]/site-header:hover:text-background",
+                    isNavActive(item.href) && "text-accent",
+                    isNavActive(item.href) &&
+                      "group-[.is-inverse]/site-header:text-background",
+                  )}
+                >
+                  <span
+                    class={cn(
+                      "font-mono text-[0.625rem] tracking-[0.16em] text-accent",
+                      "group-[.is-inverse]/site-header:text-background/72",
+                    )}
+                  >
+                    {item.index}
+                  </span>
+                  <span class="font-display text-[1.75rem] leading-none italic">
+                    {item.label}
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </nav>
+  </div>
 </header>
 
 <script>
@@ -234,17 +252,6 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
     }
   }
 
-  @keyframes site-header-dock-in {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
   .site-header__nav-indicator {
     opacity: 0;
     animation: site-header-indicator-in 0.55s var(--ease-cinematic) 680ms both;
@@ -263,29 +270,8 @@ const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
     animation-play-state: paused;
   }
 
-  .site-header__mobile-dock {
-    opacity: 0;
-    transform: translateY(16px);
-    animation: site-header-dock-in 0.72s var(--ease-cinematic) 260ms both;
-  }
-
-  html.splash-pending .site-header__mobile-dock {
-    animation-play-state: paused;
-  }
-
-  .site-header__mobile-pill {
-    width: 100%;
-  }
-
-  @media (max-width: 1023px) {
-    body {
-      padding-bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px));
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    .site-header__nav-indicator,
-    .site-header__mobile-dock {
+    .site-header__nav-indicator {
       animation: none;
       opacity: 1;
       transform: none;

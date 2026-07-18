@@ -76,14 +76,8 @@ const { href = "/agent" } = Astro.props;
 <style is:global>
   :root {
     --announcement-banner-height: 3.125rem;
-    --site-mobile-dock-offset: 5.75rem;
+    --site-mobile-dock-offset: 1rem;
     --chat-layer: 70;
-  }
-
-  @media (min-width: 1024px) {
-    :root {
-      --site-mobile-dock-offset: 2.5rem;
-    }
   }
 
   html.is-announcement-hidden #announcement-banner {
@@ -94,11 +88,11 @@ const { href = "/agent" } = Astro.props;
 
   html[data-has-announcement] #site-header {
     top: var(--announcement-banner-height);
-    transition: transform 0.3s ease;
+    transition: top 0.3s ease;
   }
 
   html[data-has-announcement].is-announcement-hidden #site-header {
-    transform: translateY(calc(-1 * var(--announcement-banner-height)));
+    top: 0;
   }
 
   html[data-has-announcement] main.pt-28 {
