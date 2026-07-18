@@ -3,8 +3,11 @@ import { syncSiteHeader } from "@/service/header.service";
 export const SPLASH_CONFIG = {
   splashId: "splash-screen",
   progressId: "splash-progress",
+  statusId: "splash-status",
   holdMs: 900,
   exitMs: 350,
+  /** Keep "preparing" label visible until progress moves past this. */
+  preparingUntil: 8,
   sessionKey: "splash-seen",
 } as const;
 
@@ -33,11 +36,17 @@ function unlockPage(): void {
   syncSiteHeader();
 }
 
+function setSplashStatus(value: number): void {
+  const statusEl = document.getElementById(SPLASH_CONFIG.statusId);
+  if (!statusEl) return;
+  statusEl.dataset.state =
+    value < SPLASH_CONFIG.preparingUntil ? "preparing" : "ready";
+}
+
 function setSplashProgress(progressEl: HTMLElement, value: number): void {
-  progressEl.textContent = String(Math.min(100, Math.max(0, value))).padStart(
-    3,
-    "0",
-  );
+  const clamped = Math.min(100, Math.max(0, value));
+  progressEl.textContent = String(clamped).padStart(3, "0");
+  setSplashStatus(clamped);
 }
 
 function animateSplashProgress(

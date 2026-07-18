@@ -42,10 +42,10 @@ const category = work.categoryDetail?.name ?? work.category;
 >
   <Header />
 
-  <main class="min-h-screen bg-background pt-24 text-foreground">
+  <main class="min-h-screen bg-background pt-32 text-foreground">
     <section class="border-b border-border">
       <div
-        class="mx-auto container w-full grid grid-cols-2 gap-x-10 gap-y-8 px-4 py-5 md:grid-cols-4 md:px-6"
+        class="mx-auto container w-full grid grid-cols-2 gap-x-10 gap-y-8 px-4 py-5 md:grid-cols-5 md:px-6"
       >
         <div>
           <p
@@ -70,6 +70,16 @@ const category = work.categoryDetail?.name ?? work.category;
             {m.workDetail.updated}
           </p>
           <p class="mt-2 text-sm">{formatWorkDate(work.updatedAt)}</p>
+        </div>
+        <div>
+          <p
+            class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+          >
+            {m.workDetail.views}
+          </p>
+          <p class="mt-2 text-sm">
+            {(work.viewCount ?? 0).toLocaleString(locale)}
+          </p>
         </div>
         <div>
           <p

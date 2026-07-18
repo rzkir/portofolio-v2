@@ -21,7 +21,7 @@ const fieldClass =
 
 {
   variant === "chat" ? (
-    <div class={cn("chat-prompt flex items-center gap-2", className)}>
+    <div class={cn("chat-prompt flex items-end gap-2", className)}>
       <div class="relative min-w-0 flex-1">
         <label class="sr-only" for={id}>
           {label}
@@ -35,7 +35,7 @@ const fieldClass =
           required={required}
           autocomplete="off"
           class={cn(
-            "chat-prompt__input block w-full max-h-32 resize-none overflow-y-hidden rounded-2xl border-none bg-muted py-3.5 px-4 text-sm text-foreground ring-1 ring-border transition-all placeholder:text-muted-foreground focus:ring-2 focus:ring-foreground focus:outline-none",
+            "chat-prompt__input block w-full max-h-32 resize-none overflow-y-hidden rounded-2xl border-none bg-muted py-3.5 px-4 text-sm leading-normal text-foreground ring-1 ring-border transition-[box-shadow] placeholder:text-muted-foreground focus:ring-2 focus:ring-foreground focus:outline-none",
             textareaClass,
           )}
         />
@@ -132,22 +132,17 @@ const fieldClass =
   const PROMPT_MAX_HEIGHT = 192;
   const CHAT_MAX_HEIGHT = 128;
 
-  function resizePromptField(field: HTMLTextAreaElement) {
-    const maxHeight = field.classList.contains("chat-prompt__input")
-      ? CHAT_MAX_HEIGHT
-      : PROMPT_MAX_HEIGHT;
+  function isChatInput(field: HTMLTextAreaElement) {
+    return field.classList.contains("chat-prompt__input");
+  }
 
-    if (!field.value.trim()) {
-      field.style.height = "";
-      field.style.overflowY = "hidden";
-      return;
-    }
+  function resizeField(field: HTMLTextAreaElement) {
+    const maxHeight = isChatInput(field) ? CHAT_MAX_HEIGHT : PROMPT_MAX_HEIGHT;
 
-    field.style.height = "auto";
-    const nextHeight = Math.min(field.scrollHeight, maxHeight);
-    field.style.height = `${nextHeight}px`;
-    field.style.overflowY =
-      field.scrollHeight > maxHeight ? "auto" : "hidden";
+    field.style.height = "0px";
+    const nextHeight = Math.min(Math.max(field.scrollHeight, 0), maxHeight);
+    field.style.height = field.value ? `${nextHeight}px` : "";
+    field.style.overflowY = field.scrollHeight > maxHeight ? "auto" : "hidden";
   }
 
   function bindAutoResizeField(field: HTMLTextAreaElement) {
@@ -156,32 +151,27 @@ const fieldClass =
 
     const shell = field.closest(".agent-prompt__shell");
 
-    const onInput = () => resizePromptField(field);
-    const onFocus = () => {
-      if (field.value.trim()) resizePromptField(field);
-    };
-    const onBlur = () => {
+    field.addEventListener("input", () => resizeField(field));
+    field.addEventListener("focus", () => {
+      if (field.value) resizeField(field);
+    });
+    field.addEventListener("blur", () => {
       if (!field.value.trim()) {
         field.style.height = "";
         field.style.overflowY = "hidden";
       }
-    };
-    const onKeydown = (event: KeyboardEvent) => {
+    });
+    field.addEventListener("keydown", (event) => {
       if (event.key !== "Enter" || event.shiftKey) return;
       event.preventDefault();
       field.closest("form")?.requestSubmit();
-    };
-    const onShellClick = (event: Event) => {
+    });
+
+    shell?.addEventListener("click", (event) => {
       const target = event.target as HTMLElement | null;
       if (!target || target.closest("button")) return;
       field.focus();
-    };
-
-    field.addEventListener("input", onInput);
-    field.addEventListener("focus", onFocus);
-    field.addEventListener("blur", onBlur);
-    field.addEventListener("keydown", onKeydown);
-    shell?.addEventListener("click", onShellClick);
+    });
   }
 
   function bindPromptTextareas(root: ParentNode = document) {
@@ -238,5 +228,11 @@ const fieldClass =
     filter: drop-shadow(
       0 0 15px color-mix(in oklch, var(--accent) 40%, transparent)
     );
+  }
+
+  .chat-prompt__input {
+    field-sizing: content;
+    min-height: 3rem;
+    height: auto;
   }
 </style>

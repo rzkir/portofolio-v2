@@ -38,6 +38,7 @@ const DRAFT_DEBOUNCE_MS = 600;
 
 let cachedSettings: AgentSettings | null = null;
 let audioContext: HTMLAudioElement | null = null;
+let audioUnlocked = false;
 let draftTimer: number | null = null;
 let autosaveTimer: number | null = null;
 let isContextBound = false;
@@ -135,6 +136,44 @@ export function applyAgentSettings(settings: AgentSettings = getAgentSettings())
     : "false";
 }
 
+function ensureNotificationAudio(): HTMLAudioElement {
+  if (!audioContext) {
+    audioContext = new Audio();
+    audioContext.preload = "auto";
+  }
+  return audioContext;
+}
+
+/**
+ * Browsers block Audio.play() outside a user gesture. Call this on
+ * pointer/keydown or when submitting a prompt so later notifications work.
+ */
+export function unlockNotificationAudio(): void {
+  if (!isBrowser() || audioUnlocked) return;
+
+  const sound = NOTIFICATION_SOUNDS.find((item) => item.src);
+  if (!sound?.src) return;
+
+  try {
+    const audio = ensureNotificationAudio();
+    audio.src = sound.src;
+    audio.volume = 0;
+    void audio
+      .play()
+      .then(() => {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.volume = 1;
+        audioUnlocked = true;
+      })
+      .catch(() => {
+        // still blocked — will retry on next user gesture
+      });
+  } catch {
+    // ignore unlock failures
+  }
+}
+
 export function playNotificationSound(
   soundId: NotificationSoundId = getAgentSettings().notificationSound,
 ): void {
@@ -144,13 +183,14 @@ export function playNotificationSound(
   if (!sound?.src) return;
 
   try {
-    if (!audioContext) {
-      audioContext = new Audio();
-    }
-
-    audioContext.src = sound.src;
-    audioContext.currentTime = 0;
-    void audioContext.play();
+    const audio = ensureNotificationAudio();
+    audio.volume = 1;
+    audio.src = sound.src;
+    audio.currentTime = 0;
+    void audio.play().catch(() => {
+      // autoplay still blocked — unlock on next interaction
+      audioUnlocked = false;
+    });
   } catch {
     // ignore autoplay restrictions
   }
@@ -461,6 +501,13 @@ export function bindSettingsContext(root: ParentNode = document): void {
   if (isContextBound) return;
   isContextBound = true;
 
+  const unlockOnGesture = () => {
+    unlockNotificationAudio();
+  };
+
+  window.addEventListener("pointerdown", unlockOnGesture, { once: true });
+  window.addEventListener("keydown", unlockOnGesture, { once: true });
+
   const onSettingsChange = (event: Event) => {
     const detail = (event as CustomEvent<{ settings?: AgentSettings }>).detail;
     applyAgentSettings(detail?.settings ?? getAgentSettings());
@@ -472,6 +519,8 @@ export function bindSettingsContext(root: ParentNode = document): void {
     "astro:before-preparation",
     () => {
       window.removeEventListener(SETTINGS_CHANGE_EVENT, onSettingsChange);
+      window.removeEventListener("pointerdown", unlockOnGesture);
+      window.removeEventListener("keydown", unlockOnGesture);
       isContextBound = false;
     },
     { once: true },

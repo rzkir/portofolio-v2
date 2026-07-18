@@ -150,8 +150,15 @@ const inViewMargin = "-12%";
                       <span class="text-background/90 dark:text-foreground/90">
                         {work.tag}
                       </span>
-                      <span class="text-xs uppercase tracking-[0.18em] text-background/45 dark:text-foreground/55">
-                        {work.year}
+                      <span class="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-background/45 dark:text-foreground/55">
+                        <span>{work.year}</span>
+                        <span aria-hidden="true">·</span>
+                        <span>
+                          {m.worksScroll.views.replace(
+                            "{count}",
+                            work.viewCount.toLocaleString(locale),
+                          )}
+                        </span>
                       </span>
                     </FadeInText>
                     <FadeInText

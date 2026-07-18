@@ -12,6 +12,8 @@ const {
   title,
   tag = "",
   year = "",
+  viewCount,
+  viewsLabel = "",
   description = "",
   image,
   href = "#",
@@ -25,6 +27,13 @@ const {
 const isRemoteImage = typeof image === "string";
 const isSelect = variant === "select";
 const isSurface = variant === "surface";
+const viewsText =
+  typeof viewCount === "number" && viewsLabel
+    ? viewsLabel.replace("{count}", viewCount.toLocaleString())
+    : typeof viewCount === "number"
+      ? viewCount.toLocaleString()
+      : "";
+const yearMeta = [year, viewsText].filter(Boolean).join(" · ");
 const sharedClass = cn(
   "ui-card group",
   isSelect && "ui-card--select",
@@ -98,7 +107,7 @@ const sharedLabel = isSelect
             {no}
           </span>
           <span class="ui-card__year font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            {year}
+            {yearMeta}
           </span>
         </div>
 

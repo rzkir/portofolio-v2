@@ -1,5 +1,9 @@
 import { createAgentPromptClient } from "@/utils/FetchAgent";
 import { formatAgentMessageHtml } from "@/lib/agent-message";
+import {
+  playNotificationSound,
+  unlockNotificationAudio,
+} from "@/service/settings.service";
 
 const CHAT_CATEGORY: AgentPromptCategory = "customers_services";
 const STORAGE_KEY = "corporate-chat-modal";
@@ -13,15 +17,6 @@ interface ChatModalStrings {
   system: string;
   justNow: string;
   errorGeneric: string;
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
 }
 
 function formatTime(date = new Date()): string {
@@ -43,26 +38,38 @@ function writeHistory(history: AgentHistoryItem[]) {
   sessionStorage.setItem(STORAGE_KEY, JSON.stringify(history.slice(-20)));
 }
 
-function renderBotMessage(text: string, meta: string): string {
-  return `
-    <div class="chat-modal__message chat-modal__message--bot">
-      <div class="chat-modal__bubble chat-modal__bubble--ai agent-message-content">
-        ${formatAgentMessageHtml(text)}
-      </div>
-      <span class="chat-modal__meta">${escapeHtml(meta)}</span>
-    </div>
-  `;
+function createMessageNode(
+  text: string,
+  isUser: boolean,
+  meta: string,
+): HTMLElement {
+  const root = document.createElement("div");
+  root.className = `chat-modal__message chat-modal__message--${isUser ? "user" : "bot"}`;
+
+  const bubble = document.createElement("div");
+  bubble.className = isUser
+    ? "chat-modal__bubble chat-modal__bubble--user"
+    : "chat-modal__bubble chat-modal__bubble--ai agent-message-content";
+
+  if (isUser) {
+    bubble.textContent = text;
+  } else {
+    bubble.innerHTML = formatAgentMessageHtml(text);
+  }
+
+  const metaEl = document.createElement("span");
+  metaEl.className = "chat-modal__meta";
+  metaEl.textContent = meta;
+
+  root.append(bubble, metaEl);
+  return root;
 }
 
-function renderUserMessage(text: string, meta: string): string {
-  return `
-    <div class="chat-modal__message chat-modal__message--user">
-      <div class="chat-modal__bubble chat-modal__bubble--user">
-        ${escapeHtml(text)}
-      </div>
-      <span class="chat-modal__meta">${escapeHtml(meta)}</span>
-    </div>
-  `;
+function resetChatInput(input: HTMLTextAreaElement) {
+  input.value = "";
+  input.style.height = "";
+  input.style.overflowY = "hidden";
+  input.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
 function bindChatModal(root: ParentNode = document) {
@@ -80,7 +87,9 @@ function bindChatModal(root: ParentNode = document) {
   const clearBtn = widget.querySelector<HTMLButtonElement>("[data-chat-clear]");
   const form = widget.querySelector<HTMLFormElement>("[data-chat-form]");
   const input = widget.querySelector<HTMLTextAreaElement>("#chat-modal-input");
-  const sendBtn = widget.querySelector<HTMLButtonElement>("#chat-modal-input-send");
+  const sendBtn = widget.querySelector<HTMLButtonElement>(
+    "#chat-modal-input-send",
+  );
   const messageArea = widget.querySelector<HTMLElement>("[data-chat-messages]");
   const typingIndicator =
     widget.querySelector<HTMLElement>("[data-chat-typing]");
@@ -118,10 +127,9 @@ function bindChatModal(root: ParentNode = document) {
     document.body.classList.toggle("overflow-hidden", next);
 
     if (next) {
+      unlockNotificationAudio();
       modal.hidden = false;
       backdrop.hidden = false;
-      // Opening click (and mobile ghost-clicks) can land on the backdrop
-      // after the FAB leaves hit-testing — ignore those briefly.
       backdrop.style.pointerEvents = "none";
       void modal.offsetWidth;
       widget.classList.add("chat-modal--open");
@@ -145,15 +153,14 @@ function bindChatModal(root: ParentNode = document) {
   };
 
   const appendMessage = (text: string, isUser: boolean, meta?: string) => {
-    const wrapper = document.createElement("div");
-    wrapper.innerHTML = isUser
-      ? renderUserMessage(text, meta ?? strings.justNow)
-      : renderBotMessage(
-          text,
-          meta ?? `${strings.system} • ${formatTime()}`,
-        );
-    const node = wrapper.firstElementChild;
-    if (!node) return;
+    const node = createMessageNode(
+      text,
+      isUser,
+      meta ??
+        (isUser
+          ? strings.justNow
+          : `${strings.system} • ${formatTime()}`),
+    );
     messageArea.insertBefore(node, typingIndicator);
     scrollToBottom();
   };
@@ -201,6 +208,8 @@ function bindChatModal(root: ParentNode = document) {
     const value = message.trim();
     if (!value || isSubmitting) return;
 
+    unlockNotificationAudio();
+
     isSubmitting = true;
     sendBtn.disabled = true;
     input.disabled = true;
@@ -208,10 +217,7 @@ function bindChatModal(root: ParentNode = document) {
     appendMessage(value, true);
     history.push({ role: "user", content: value });
     writeHistory(history);
-    input.value = "";
-    input.dispatchEvent(new Event("input"));
-    input.style.height = "";
-    input.style.overflowY = "hidden";
+    resetChatInput(input);
 
     typingIndicator.classList.remove("hidden");
     scrollToBottom();
@@ -228,6 +234,7 @@ function bindChatModal(root: ParentNode = document) {
       appendMessage(reply, false);
       history.push({ role: "assistant", content: reply });
       writeHistory(history);
+      playNotificationSound();
     } catch {
       typingIndicator.classList.add("hidden");
       appendMessage(strings.errorGeneric, false, strings.system);

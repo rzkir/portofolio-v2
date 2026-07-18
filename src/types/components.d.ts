@@ -34,6 +34,8 @@ interface CardProps {
     title: string;
     tag?: string;
     year?: string;
+    viewCount?: number;
+    viewsLabel?: string;
     description?: string;
     image?: ImageMetadata | string;
     href?: string;

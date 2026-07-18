@@ -20,7 +20,9 @@
       "privacyTitle": "Kebijakan Privasi — AI Studio",
       "privacyDescription": "Kebijakan Privasi untuk Rizki Ramadhan AI Studio dan platform Deep Intelligence.",
       "helpCenterTitle": "Pusat Bantuan — AI Studio",
-      "helpCenterDescription": "Pusat Bantuan Rizki Ramadhan AI Studio — panduan, FAQ, dan dukungan untuk platform Deep Intelligence."
+      "helpCenterDescription": "Pusat Bantuan Rizki Ramadhan AI Studio — panduan, FAQ, dan dukungan untuk platform Deep Intelligence.",
+      "notFoundTitle": "Halaman tidak ditemukan — Rizki Ramadhan",
+      "notFoundDescription": "Halaman yang Anda cari tidak ada atau sudah dipindahkan."
     },
     "lang": {
       "label": "Bahasa",
@@ -99,6 +101,17 @@
       "positions": "{count} Posisi",
       "portraitAlt": "R. Ramadhan — Studio, 2026"
     },
+    "notFound": {
+      "badge": "Error 404",
+      "code": "404",
+      "title": "Halaman ini",
+      "titleAccent": "tidak ditemukan.",
+      "body": "URL yang Anda buka tidak ada, sudah dipindahkan, atau mungkin salah ketik. Silakan kembali ke beranda atau jelajahi karya dan catatan terbaru.",
+      "backHome": "Kembali ke beranda →",
+      "browseWorks": "Lihat karya",
+      "browseBlog": "Baca blog",
+      "hint": "Atau coba navigasi di atas."
+    },
     "home": {
       "badge": "Tersedia untuk proyek 2026",
       "title": "Fullstack Developer",
@@ -111,6 +124,15 @@
       "statProjects": "Proyek selesai",
       "statCerts": "Sertifikasi",
       "statStatus": "Status",
+      "marquee": [
+        "TERBUKA UNTUK KERJA",
+        "PENGEMBANGAN FULL STACK",
+        "APLIKASI MOBILE",
+        "SIAP WEB3",
+        "AKSESIBEL",
+        "CEPAT",
+        "AMAN"
+      ],
       "testimonialsSection": "Suara Klien / 05",
       "testimonialsTitle": "Apa kata mereka yang pernah berkolaborasi.",
       "testimonialsAria": "Testimoni klien",
@@ -140,12 +162,13 @@
       "viewAll": "Lihat semua karya →",
       "workNo": "Karya {no}",
       "detail": "Detail",
-      "viewWork": "Lihat {title}"
+      "viewWork": "Lihat {title}",
+      "views": "{count} dilihat"
     },
     "career": {
       "eyebrow": "Pengalaman / 06",
       "positions": "{count} Posisi",
-      "title": "Jejak karier yang terukur — dari magang hingga klien independen."
+      "title": "Jejak karier yang terukur — dari pengalaman kerja hingga klien independen."
     },
     "achievementsSection": {
       "eyebrow": "Kredensial / 07",
@@ -394,6 +417,7 @@
       "updated": "Diperbarui",
       "live": "Live",
       "visit": "Kunjungi",
+      "views": "Dilihat",
       "stack": "Stack",
       "project": "Proyek",
       "type": "Tipe",
@@ -1327,7 +1351,9 @@
       "privacyTitle": "Privacy Policy — AI Studio",
       "privacyDescription": "Privacy Policy for Rizki Ramadhan AI Studio and the Deep Intelligence platform.",
       "helpCenterTitle": "Help Center — AI Studio",
-      "helpCenterDescription": "Help Center for Rizki Ramadhan AI Studio — guides, FAQs, and support for the Deep Intelligence platform."
+      "helpCenterDescription": "Help Center for Rizki Ramadhan AI Studio — guides, FAQs, and support for the Deep Intelligence platform.",
+      "notFoundTitle": "Page not found — Rizki Ramadhan",
+      "notFoundDescription": "The page you are looking for does not exist or has been moved."
     },
     "lang": {
       "label": "Language",
@@ -1406,6 +1432,17 @@
       "positions": "{count} Roles",
       "portraitAlt": "R. Ramadhan — Studio, 2026"
     },
+    "notFound": {
+      "badge": "Error 404",
+      "code": "404",
+      "title": "This page",
+      "titleAccent": "could not be found.",
+      "body": "The URL you opened does not exist, has been moved, or may be mistyped. Head back home or browse recent works and notes.",
+      "backHome": "Back to home →",
+      "browseWorks": "View works",
+      "browseBlog": "Read the blog",
+      "hint": "Or use the navigation above."
+    },
     "home": {
       "badge": "Available for 2026 projects",
       "title": "Fullstack Developer",
@@ -1418,6 +1455,15 @@
       "statProjects": "Projects delivered",
       "statCerts": "Certifications",
       "statStatus": "Status",
+      "marquee": [
+        "OPEN FOR WORK",
+        "FULL STACK DEVELOPMENT",
+        "MOBILE APPS",
+        "WEB3 READY",
+        "ACCESSIBLE",
+        "FAST",
+        "SECURE"
+      ],
       "testimonialsSection": "Client Voices / 05",
       "testimonialsTitle": "What collaborators say about working together.",
       "testimonialsAria": "Client testimonials",
@@ -1447,12 +1493,13 @@
       "viewAll": "View all works →",
       "workNo": "Work {no}",
       "detail": "Detail",
-      "viewWork": "View {title}"
+      "viewWork": "View {title}",
+      "views": "{count} views"
     },
     "career": {
       "eyebrow": "Experience / 06",
       "positions": "{count} Roles",
-      "title": "A measured career path — from internship to independent clients."
+      "title": "A measured career path — from work experience to independent clients."
     },
     "achievementsSection": {
       "eyebrow": "Credentials / 07",
@@ -1701,6 +1748,7 @@
       "updated": "Updated",
       "live": "Live",
       "visit": "Visit",
+      "views": "Views",
       "stack": "Stack",
       "project": "Project",
       "type": "Type",
@@ -2634,7 +2682,9 @@
       "privacyTitle": "プライバシーポリシー — AI Studio",
       "privacyDescription": "Rizki Ramadhan AI Studio および Deep Intelligence プラットフォームのプライバシーポリシー。",
       "helpCenterTitle": "ヘルプセンター — AI Studio",
-      "helpCenterDescription": "Rizki Ramadhan AI Studio ヘルプセンター — Deep Intelligence プラットフォームのガイド、よくある質問、サポート。"
+      "helpCenterDescription": "Rizki Ramadhan AI Studio ヘルプセンター — Deep Intelligence プラットフォームのガイド、よくある質問、サポート。",
+      "notFoundTitle": "ページが見つかりません — Rizki Ramadhan",
+      "notFoundDescription": "お探しのページは存在しないか、移動された可能性があります。"
     },
     "lang": {
       "label": "言語",
@@ -2713,6 +2763,17 @@
       "positions": "{count} 件のポジション",
       "portraitAlt": "R. Ramadhan — スタジオ, 2026"
     },
+    "notFound": {
+      "badge": "Error 404",
+      "code": "404",
+      "title": "このページは",
+      "titleAccent": "見つかりません。",
+      "body": "開いたURLは存在しないか、移動されたか、入力ミスの可能性があります。ホームに戻るか、最近の作品やノートをご覧ください。",
+      "backHome": "ホームに戻る →",
+      "browseWorks": "作品を見る",
+      "browseBlog": "ブログを読む",
+      "hint": "または上のナビゲーションをご利用ください。"
+    },
     "home": {
       "badge": "2026年のプロジェクト受付中",
       "title": "フルスタック開発者",
@@ -2725,6 +2786,15 @@
       "statProjects": "納品プロジェクト",
       "statCerts": "認定資格",
       "statStatus": "ステータス",
+      "marquee": [
+        "仕事募集中",
+        "フルスタック開発",
+        "モバイルアプリ",
+        "WEB3対応",
+        "アクセシブル",
+        "高速",
+        "セキュア"
+      ],
       "testimonialsSection": "クライアントの声 / 05",
       "testimonialsTitle": "一緒に仕事をした方々の声。",
       "testimonialsAria": "クライアントの声",
@@ -2754,12 +2824,13 @@
       "viewAll": "すべての作品を見る →",
       "workNo": "作品 {no}",
       "detail": "詳細",
-      "viewWork": "{title} を見る"
+      "viewWork": "{title} を見る",
+      "views": "{count} 回表示"
     },
     "career": {
       "eyebrow": "経験 / 06",
       "positions": "{count} 件のポジション",
-      "title": "インターンから独立クライアントまで — 着実に積み上げたキャリア。"
+      "title": "職務経験から独立クライアントまで — 着実に積み上げたキャリア。"
     },
     "achievementsSection": {
       "eyebrow": "資格 / 07",
@@ -3008,6 +3079,7 @@
       "updated": "更新日",
       "live": "公開中",
       "visit": "訪問",
+      "views": "表示回数",
       "stack": "スタック",
       "project": "プロジェクト",
       "type": "タイプ",

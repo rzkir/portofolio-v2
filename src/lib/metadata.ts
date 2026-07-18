@@ -1,4 +1,5 @@
 import { contact, project1, socialLinks } from "@/data/portfolio";
+
 import {
   BING_VERIFICATION,
   GOOGLE_SEARCH_CONSOLE_ID,
@@ -6,7 +7,9 @@ import {
 } from "astro:env/server";
 
 import type { Locale, Messages } from "@/lib/i18n";
+
 import { LOCALES } from "@/lib/i18n";
+
 import {
   resolveBreadcrumbs,
   serializeBreadcrumbJsonLd,
@@ -14,6 +17,7 @@ import {
 } from "@/lib/breadcrumbs";
 
 export type { BreadcrumbItem };
+
 export { resolveBreadcrumbs };
 
 export type OgType = "website" | "article";

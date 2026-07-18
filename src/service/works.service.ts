@@ -25,11 +25,11 @@ export type ArchiveWork = {
   slug: string;
   image: ImageMetadata | string;
   previewUrl: string;
+  viewCount: number;
 };
 
 export type FeaturedWork = ArchiveWork & {
   desc: string;
-  viewCount: number;
 };
 
 function formatArchiveIndex(index: number): string {
@@ -75,6 +75,7 @@ export async function getWorksArchive(): Promise<ArchiveWork[]> {
     slug: item.slug,
     image: detail?.thumbnail ?? project1.src,
     previewUrl: item.previewLink,
+    viewCount: detail?.viewCount ?? item.viewCount ?? 0,
   }));
 }
 
@@ -92,6 +93,7 @@ export async function getFeaturedWorks(limit = 6): Promise<FeaturedWork[]> {
     image: detail?.thumbnail ?? project1.src,
     previewUrl: item.previewLink,
     desc: detail?.description ?? "",
+    viewCount: detail?.viewCount ?? item.viewCount ?? 0,
   }));
 }
 

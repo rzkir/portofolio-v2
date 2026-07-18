@@ -7,6 +7,75 @@ function escapeHtml(value: string): string {
     .replaceAll("'", "&#39;");
 }
 
+function escapeAttr(value: string): string {
+  return escapeHtml(value);
+}
+
+function isSameSiteUrl(href: string): boolean {
+  try {
+    const host = new URL(href).hostname.replace(/^www\./, "");
+    return host === "rizkiramadhan.biz.id";
+  } catch {
+    return false;
+  }
+}
+
+function toWhatsAppHref(phone: string): string {
+  let digits = phone.replace(/\D/g, "");
+  if (digits.startsWith("0")) digits = `62${digits.slice(1)}`;
+  else if (!digits.startsWith("62")) digits = `62${digits}`;
+  return `https://wa.me/${digits}`;
+}
+
+function splitTrailingPunctuation(value: string): {
+  core: string;
+  trailing: string;
+} {
+  let core = value;
+  let trailing = "";
+  while (/[.,;:!?)]$/.test(core)) {
+    trailing = `${core.slice(-1)}${trailing}`;
+    core = core.slice(0, -1);
+  }
+  return { core, trailing };
+}
+
+function linkifyUrls(text: string): string {
+  return text.replace(/https?:\/\/[^\s<]+/gi, (raw) => {
+    const { core, trailing } = splitTrailingPunctuation(raw);
+    if (!core) return raw;
+
+    const href = core.replaceAll("&amp;", "&");
+    const sameSite = isSameSiteUrl(href);
+    const attrs = sameSite
+      ? `href="${escapeAttr(href)}" class="agent-message-link"`
+      : `href="${escapeAttr(href)}" class="agent-message-link" target="_blank" rel="noopener noreferrer"`;
+
+    return `<a ${attrs}>${core}</a>${trailing}`;
+  });
+}
+
+function linkifyPhones(text: string): string {
+  return text.replace(
+    /(?<![\w+])(?:\+62|62|0)8[\d-]{7,14}\d(?![\w-])/g,
+    (phone) => {
+      const href = toWhatsAppHref(phone);
+      return `<a href="${escapeAttr(href)}" class="agent-message-link" target="_blank" rel="noopener noreferrer">${phone}</a>`;
+    },
+  );
+}
+
+function mapTextOutsideTags(html: string, map: (text: string) => string): string {
+  return html
+    .split(/(<[^>]+>)/g)
+    .map((part) => (part.startsWith("<") ? part : map(part)))
+    .join("");
+}
+
+function linkifyInline(html: string): string {
+  return mapTextOutsideTags(html, (text) => linkifyPhones(linkifyUrls(text)));
+}
+
 function isMarkdownTableSeparator(line: string): boolean {
   const trimmed = line.trim();
   if (!trimmed.includes("-")) return false;
@@ -24,7 +93,7 @@ function formatInline(text: string): string {
     "<em>$1</em>",
   );
 
-  return result;
+  return linkifyInline(result);
 }
 
 function parseMarkdownTableRow(line: string): string[] {

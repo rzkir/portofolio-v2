@@ -5,6 +5,7 @@ import {
   notifyAgentResponseComplete,
   prepareAgentMessage,
   resolveAgentHistory,
+  unlockNotificationAudio,
 } from "@/service/settings.service";
 
 export type AgentCategoryCard = {
@@ -14,7 +15,7 @@ export type AgentCategoryCard = {
   category: AgentPromptCategory;
   prompt: string;
 };
-
+
 
 /** Backend rejects history items longer than this (see /api/v1/prompt). */
 const MAX_HISTORY_CHARS_PER_ITEM = 4_000;
@@ -647,6 +648,9 @@ export async function sendAgentPrompt(input: {
   category: AgentPromptCategory;
   userId?: string;
 }): Promise<AgentPromptResponse> {
+  // Unlock during the submit gesture so the completion sound can play later.
+  unlockNotificationAudio();
+
   const payload: AgentPromptRequest = {
     message: prepareAgentMessage(input.message),
     category: input.category,

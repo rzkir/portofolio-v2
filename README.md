@@ -1,241 +1,150 @@
 # Rizki Ramadhan — Portfolio
 
-Portfolio personal fullstack developer yang dibangun dengan **Astro 6**, **Tailwind CSS 4**, dan **Cloudflare Workers**. Menampilkan karya, karier, sertifikasi, statistik coding, blog, buku tamu, dan AI Studio.
+Personal portfolio of **Rizki Ramadhan**, a fullstack developer based in Bogor, Indonesia. Built for performance, clarity, and a product-like experience — not a static brochure.
 
-**Live:** [rizkiramadhan.biz.id](https://rizkiramadhan.biz.id)
-
----
-
-## Fitur
-
-- **Homepage** — hero, CV dialog, marquee skills, karya pilihan, testimoni, timeline karier, sertifikasi, coding stats
-- **Works** — arsip proyek dengan detail per slug
-- **Blog** — daftar artikel & halaman detail
-- **Achievements** — arsip sertifikasi & kredensial
-- **Layanan** — halaman layanan & FAQ
-- **Guest Notes** — buku tamu interaktif
-- **AI Studio** (`/agent`) — chat AI multi-kategori (programming, SEO, legal, dll.)
-- **i18n** — Bahasa Indonesia & English (cookie + query `?lang=`)
-- **Dark mode** — mengikuti preferensi sistem
-- **SEO** — sitemap, robots.txt, JSON-LD, Open Graph, Google/Bing verification
-- **Analytics** — Google Tag Manager
+**Live:** [https://www.rizkiramadhan.biz.id](https://www.rizkiramadhan.biz.id)  
+**Contact:** [hello@rizkiramadhan.biz.id](mailto:hello@rizkiramadhan.biz.id)
 
 ---
 
-## Tech Stack
+## Overview
 
-| Layer | Teknologi |
-|-------|-----------|
-| Framework | [Astro 6](https://astro.build) (SSR) |
-| Styling | Tailwind CSS 4 |
-| Deployment | Cloudflare Workers + Assets |
-| Runtime | Node.js ≥ 22.12 |
-| Package manager | pnpm |
-| Animasi | @astroanimate/core, GSAP-style utilities |
-| Image | Sharp (compile-time optimization) |
+This site presents work, career, writing, and an embedded AI Studio. Content is served via SSR on Cloudflare Workers and hydrated where interaction matters (grids, chat, guest notes, settings).
+
+Default locale is Indonesian (`id`), with English (`en`) and Japanese (`ja`) supported.
 
 ---
 
-## Struktur Proyek
+## Features
+
+| Area | What it does |
+|------|----------------|
+| **Home** | Hero, about, selected works carousel, testimonials, career timeline, live GitHub / WakaTime coding stats |
+| **Works** | Project archive with detail pages (`/works`, `/works/[slug]`) |
+| **Blog** | Essays & tutorials (`/blog`, `/blog/[slug]`) |
+| **Achievements** | Certifications & milestones (`/achievements`) |
+| **Guest notes** | Public guestbook (`/guest-notes`) |
+| **AI Studio** | Multi-domain agents — programming, SEO, marketing, health, science, finance, legal, trivia, academia, translation, technology (`/agent`) |
+| **Services** | Offerings overview (`/layanan`) |
+| **PWA** | Installable app with Workbox caching |
+| **i18n** | ID / EN / JA via cookie + message catalog |
+| **Settings** | Theme, language, and UX preferences |
+
+---
+
+## Tech stack
+
+- **Framework:** [Astro 7](https://astro.build) (SSR)
+- **Runtime:** [Cloudflare Workers](https://workers.cloudflare.com) via `@astrojs/cloudflare`
+- **Styling:** Tailwind CSS 4
+- **PWA:** `@vite-pwa/astro` + Workbox
+- **Motion:** `@astroanimate/core`, `tw-animate-css`
+- **Images:** Sharp (compile-time image service)
+- **Package manager:** pnpm
+- **Node:** `>=22.12.0`
+
+---
+
+## Project structure
 
 ```
-portofolio/
-├── public/              # Asset statis (favicon, PDF CV, dll.)
+├── public/              # Static assets (favicon, CV, PWA icons, sounds)
 ├── src/
-│   ├── assets/          # Gambar (portrait, project cover)
-│   ├── components/      # Komponen UI & section
-│   ├── data/            # Data statis (portfolio, i18n)
-│   ├── layouts/         # Layout, Header, Footer
-│   ├── lib/             # Utilitas (metadata, i18n, theme, SEO)
-│   ├── pages/           # Route Astro
-│   ├── service/         # Layer data & API client
+│   ├── assets/          # Images processed by Astro
+│   ├── components/      # UI & page sections
+│   ├── data/            # Portfolio constants & i18n messages
+│   ├── lib/             # Shared helpers (i18n, metadata, PWA, agent UI)
+│   ├── pages/           # Routes (Astro + sitemap/robots endpoints)
+│   ├── service/         # Data & domain services (works, blogs, agent, stats)
 │   ├── styles/          # Global CSS
-│   ├── types/           # TypeScript definitions
-│   └── utils/           # Fetch helpers
-├── worker/              # Cloudflare Worker entry (API proxy + SSR)
+│   ├── types/           # TypeScript declarations
+│   └── utils/           # Fetch helpers & shared pagination
+├── worker/              # Cloudflare Worker entry
 ├── astro.config.ts
-├── wrangler.jsonc       # Konfigurasi Cloudflare
-└── package.json
+└── wrangler.jsonc
 ```
 
 ---
 
-## Prasyarat
+## Getting started
 
-- **Node.js** ≥ 22.12
-- **pnpm** (disarankan)
-- Akun **Cloudflare** (untuk deploy)
-- Backend API di `api.rizkiramadhan.biz.id` (untuk data dinamis)
+### Prerequisites
 
----
+- Node.js **22.12+**
+- [pnpm](https://pnpm.io)
 
-## Instalasi & Development
+### Install
 
 ```bash
-# Clone repository
-git clone https://github.com/rzkir/portofolio-v2.git
-cd portofolio-v2
-
-# Install dependencies
 pnpm install
-
-# Salin environment variables
-cp .env.example .env.local
 ```
 
-Edit `.env.local` sesuai kebutuhan, lalu jalankan dev server:
+### Environment
+
+Copy the example env file and adjust if needed:
 
 ```bash
-pnpm dev
+cp .env.example .env
 ```
 
-Buka [http://localhost:4321](http://localhost:4321).
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `GOOGLE_SEARCH_CONSOLE_ID` | No | Google site verification |
+| `GOOGLE_TAG_MANAGER_ID` | No | GTM container ID |
+| `BING_VERIFICATION` | No | Bing Webmaster verification |
 
-### Preview production lokal
+### Scripts
 
-```bash
-pnpm preview
-# atau preview dengan Wrangler (Cloudflare runtime)
-pnpm preview:cf
-```
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Local Astro dev server |
+| `pnpm build` | Production build |
+| `pnpm preview` | Preview the Astro build locally |
+| `pnpm preview:cf` | Build + run with Wrangler (Cloudflare-like) |
+| `pnpm deploy` | Build and deploy to Cloudflare Workers |
 
 ---
 
-## Environment Variables
+## Deployment
 
-| Variable | Wajib | Deskripsi |
-|----------|-------|-----------|
-| `API_URL` | ✅ | Base URL backend API |
-| `API_SECRET` | ❌ | Bearer token untuk API (production) |
-| `GOOGLE_SEARCH_CONSOLE_ID` | ❌ | Meta verification Google Search Console |
-| `GOOGLE_TAG_MANAGER_ID` | ❌ | ID Google Tag Manager |
-| `BING_VERIFICATION` | ❌ | Meta verification Bing Webmaster |
-
-Contoh `.env.local`:
-
-```env
-API_URL=https://api.rizkiramadhan.biz.id
-API_SECRET=
-GOOGLE_SEARCH_CONSOLE_ID=
-GOOGLE_TAG_MANAGER_ID=
-BING_VERIFICATION=
-```
-
----
-
-## Build & Deploy
-
-### Build
-
-```bash
-pnpm build
-```
-
-Output ada di folder `dist/`:
-- `dist/client/` — static assets
-- `dist/server/` — SSR bundle
-
-### Deploy ke Cloudflare
+Deployed as a Cloudflare Worker (`portofolio-v2`) with static assets from `dist/client`.
 
 ```bash
 pnpm deploy
 ```
 
-Set secret API (jika diperlukan):
-
-```bash
-wrangler secret put API_SECRET
-```
-
-Pastikan KV namespace `SESSION` sudah ter-bind di `wrangler.jsonc` untuk session Astro.
+Config lives in `wrangler.jsonc` (`BASE_URL`, verification vars, KV `SESSION` binding).
 
 ---
 
-## Halaman & Route
+## Key routes
 
-| Route | Deskripsi |
-|-------|-----------|
-| `/` | Homepage |
-| `/works` | Daftar karya |
-| `/works/[slug]` | Detail proyek |
-| `/blog` | Daftar blog |
-| `/blog/[slug]` | Detail artikel |
-| `/achievements` | Sertifikasi & kredensial |
-| `/layanan` | Layanan & FAQ |
-| `/guest-notes` | Buku tamu |
-| `/agent` | AI Studio (noindex) |
-| `/agent/*` | Kategori AI (programming, seo, legal, dll.) |
-| `/sitemap.xml` | Sitemap dinamis |
-| `/robots.txt` | Robots rules |
-
----
-
-## Integrasi API
-
-Data dinamis di-fetch dari backend `API_URL`:
-
-| Endpoint API | Digunakan untuk |
-|--------------|-----------------|
-| `/api/v1/sitemap` | Sitemap routes |
-| `/api/v1/messages` | Guest notes |
-| `/api/v1/prompt` | AI Studio chat |
-
-Worker mem-proxy request client-side:
-
-- `POST /api/guest-notes` → backend messages
-- `POST /api/agent/prompt` → backend prompt
-
-Layer `src/service/` menangani fetching dengan cache TTL per jenis data (static, content, stats, dynamic).
+| Path | Page |
+|------|------|
+| `/` | Home |
+| `/works` | Works index |
+| `/works/[slug]` | Work detail |
+| `/blog` | Blog index |
+| `/blog/[slug]` | Blog post |
+| `/achievements` | Achievements |
+| `/guest-notes` | Guestbook |
+| `/agent` | AI Studio hub |
+| `/agent/[domain]` | Domain agents (programming, seo, …) |
+| `/layanan` | Services |
+| `/help-center` | Help |
+| `/privacy` · `/terms` | Legal |
 
 ---
 
-## SEO
+## Links
 
-- Meta tags, canonical, Open Graph, Twitter Card
-- JSON-LD `Person` + `WebSite` di homepage
-- JSON-LD `BreadcrumbList` di halaman dalam
-- Sitemap dinamis dengan fallback ke route statis
-- Route `/agent/*` memakai `noindex, nofollow`
-- Crawler/bot otomatis skip splash screen
+- Website: [rizkiramadhan.biz.id](https://www.rizkiramadhan.biz.id)
+- GitHub: [github.com/rzkir](https://github.com/rzkir)
+- LinkedIn: [rizki-ramadhan](https://www.linkedin.com/in/rizki-ramadhan12)
+- CV: [/cv-rizkiramadhan.pdf](https://www.rizkiramadhan.biz.id/cv-rizkiramadhan.pdf)
 
 ---
 
-## i18n
+## License
 
-Bahasa default: **Indonesia (`id`)**.
-
-Ganti bahasa via:
-- Query: `?lang=en` atau `?lang=id`
-- Cookie: `lang` (persist 1 tahun)
-
-Terjemahan ada di `src/data/i8n.json`.
-
----
-
-## Scripts
-
-| Command | Fungsi |
-|---------|--------|
-| `pnpm dev` | Development server |
-| `pnpm build` | Production build |
-| `pnpm preview` | Preview build lokal |
-| `pnpm preview:cf` | Preview dengan Wrangler |
-| `pnpm deploy` | Build + deploy ke Cloudflare |
-
----
-
-## Kontak
-
-**Rizki Ramadhan** — Fullstack Developer
-
-- Website: [rizkiramadhan.biz.id](https://rizkiramadhan.biz.id)
-- Email: hello@rizkiramadhan.biz.id
-- GitHub: [@rzkir](https://github.com/rzkir)
-- LinkedIn: [rizki-ramadhan](https://www.linkedin.com/in/rizki-ramadhan-83a17027b)
-- Lokasi: Bogor, Indonesia
-
----
-
-## Lisensi
-
-Proyek ini bersifat personal. Hubungi pemilik repository sebelum menggunakan ulang kode atau desain secara komersial.
+Private portfolio project. All rights reserved unless otherwise noted.
