@@ -230,25 +230,39 @@ export function showDesktopNotification(
   }
 }
 
+function truncateNotifyText(value: string, max: number): string {
+  const text = value.replace(/\s+/g, " ").trim();
+  if (text.length <= max) return text;
+  return `${text.slice(0, max - 1).trimEnd()}…`;
+}
+
 export function notifyAgentResponseComplete(options: {
   category: string;
   model?: string;
+  message?: string;
+  reply?: string;
 }): void {
   const settings = getAgentSettings();
   if (!settings.agentResponses) return;
 
-  const description = options.model
-    ? `${options.category} · ${options.model}`
-    : options.category;
+  const title = options.message?.trim()
+    ? truncateNotifyText(options.message, 72)
+    : truncateNotifyText(options.reply ?? "Balasan siap", 72);
 
-  toast.success("Agent response ready", description);
+  const description = options.reply?.trim()
+    ? truncateNotifyText(options.reply, 120)
+    : options.model
+      ? `${options.category} · ${options.model}`
+      : options.category;
+
+  toast.success(title, description);
 
   if (settings.notificationSound !== "off") {
     playNotificationSound(settings.notificationSound);
   }
 
   if (settings.desktopNotifications) {
-    showDesktopNotification("Agent response ready", {
+    showDesktopNotification(title, {
       body: description,
       tag: "agent-response",
     });

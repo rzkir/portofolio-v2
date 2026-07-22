@@ -1,6 +1,7 @@
 import {
   createAgentPromptClient,
 } from "@/utils/FetchAgent";
+
 import {
   notifyAgentResponseComplete,
   prepareAgentMessage,
@@ -497,14 +498,14 @@ export function buildWebPreview(content: string): AgentWebPreview | null {
   const document =
     raw.html && isFullHtmlDocument(raw.html)
       ? preparePreviewDocument(raw.html, {
-          css: raw.css,
-          js: raw.js,
-        })
+        css: raw.css,
+        js: raw.js,
+      })
       : composeWebDocument({
-          html: raw.html ?? "",
-          css: raw.css ?? "",
-          js: raw.js ?? "",
-        });
+        html: raw.html ?? "",
+        css: raw.css ?? "",
+        js: raw.js ?? "",
+      });
 
   return {
     title: "Web Preview",
@@ -666,6 +667,8 @@ export async function sendAgentPrompt(input: {
   notifyAgentResponseComplete({
     category: response.category,
     model: response.model,
+    message: input.message,
+    reply: response.reply,
   });
 
   return response;
