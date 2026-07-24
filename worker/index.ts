@@ -49,12 +49,35 @@ function buildProxyHeaders(request: Request): HeadersInit {
 
   const cfIp = request.headers.get("cf-connecting-ip");
   const forwardedFor = request.headers.get("x-forwarded-for");
+  const trueClientIp = request.headers.get("true-client-ip");
+  const realIp = request.headers.get("x-real-ip");
 
+  // Forward visitor IP so BE can resolve geo + ownership.
   if (cfIp) headers["cf-connecting-ip"] = cfIp;
+  if (trueClientIp) headers["true-client-ip"] = trueClientIp;
+  if (realIp) headers["x-real-ip"] = realIp;
   if (forwardedFor) {
     headers["x-forwarded-for"] = forwardedFor;
   } else if (cfIp) {
     headers["x-forwarded-for"] = cfIp;
+  }
+
+  // Forward visitor device signals — without these, BE stores "Unknown Device".
+  const userAgent = request.headers.get("user-agent");
+  if (userAgent) headers["user-agent"] = userAgent;
+
+  const clientHints = [
+    "sec-ch-ua",
+    "sec-ch-ua-mobile",
+    "sec-ch-ua-platform",
+    "sec-ch-ua-model",
+    "sec-ch-ua-full-version-list",
+    "sec-ch-ua-platform-version",
+  ] as const;
+
+  for (const name of clientHints) {
+    const value = request.headers.get(name);
+    if (value) headers[name] = value;
   }
 
   return headers;

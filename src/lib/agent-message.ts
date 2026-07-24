@@ -83,8 +83,19 @@ function isMarkdownTableSeparator(line: string): boolean {
 }
 
 function formatInline(text: string): string {
-  let result = escapeHtml(text);
+  const images: string[] = [];
+  let result = text.replace(
+    /!\[([^\]]*)\]\((https?:\/\/[^)\s]+)(?:\s+"([^"]*)")?\)/g,
+    (_match, alt: string, src: string) => {
+      const index = images.length;
+      images.push(
+        `<img src="${escapeAttr(src)}" alt="${escapeAttr(alt)}" class="agent-message-image" loading="lazy" referrerpolicy="no-referrer" />`,
+      );
+      return `\u0000IMG${index}\u0000`;
+    },
+  );
 
+  result = escapeHtml(result);
   result = result.replace(/`([^`\n]+)`/g, "<code>$1</code>");
   result = result.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
   result = result.replace(/__(.+?)__/g, "<strong>$1</strong>");
@@ -92,6 +103,9 @@ function formatInline(text: string): string {
     /(?<!\*)\*([^*\n]+)\*(?!\*)/g,
     "<em>$1</em>",
   );
+  result = result.replace(/\u0000IMG(\d+)\u0000/g, (_match, index: string) => {
+    return images[Number(index)] ?? "";
+  });
 
   return linkifyInline(result);
 }

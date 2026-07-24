@@ -16,6 +16,22 @@ interface NotedIpAddress {
   longitude?: number;
 }
 
+/** Client signals for BE device_name resolution (Postman: Create/Update Message). */
+interface NotedDeviceInfo {
+  platform?: string;
+  language?: string;
+  languages?: string[];
+  screen_width?: number;
+  screen_height?: number;
+  viewport_width?: number;
+  viewport_height?: number;
+  device_pixel_ratio?: number;
+  timezone?: string;
+  user_agent?: string;
+  /** Resolved by BE from UA + platform/screen — never send from client. */
+  device_name?: string;
+}
+
 interface NotedMessageProps {
   _id: string;
   name: string;
@@ -24,12 +40,14 @@ interface NotedMessageProps {
   createdAt: string;
   updatedAt: string;
   ip_address?: NotedIpAddress;
+  device_info?: NotedDeviceInfo;
 }
 
 interface CreateNotedPayload {
   name: string;
   description: string;
   provider: MessageProvider;
+  device_info?: NotedDeviceInfo;
 }
 
 interface UpdateNotedPayload {
@@ -37,6 +55,7 @@ interface UpdateNotedPayload {
   name?: string;
   description?: string;
   provider?: MessageProvider;
+  device_info?: NotedDeviceInfo;
 }
 
 type GuestNote = {

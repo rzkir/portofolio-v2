@@ -3,12 +3,12 @@ import Layout from "@/layouts/Layout.astro";
 import Header from "@/layouts/Header.astro";
 import Footer from "@/layouts/Footer.astro";
 import FocusIn from "@/components/FocusIn.astro";
-import { project1 } from "@/data/portfolio";
 import { getLocale, getMessages } from "@/lib/i18n";
+import { getDefaultOgImage } from "@/lib/metadata";
 
 const locale = getLocale(Astro);
 const m = getMessages(locale);
-const ogImage = new URL(project1.src, Astro.site).href;
+const ogImage = getDefaultOgImage(Astro.site);
 ---
 
 <Layout

@@ -803,18 +803,18 @@
           "category": "roleplay",
           "cards": [
             {
-              "title": "Programming",
-              "categoryLabel": "Programming · Build Web",
-              "description": "Tulis kode, debug error, bangun fitur, dan buat halaman web HTML/CSS/JS dengan preview langsung.",
-              "category": "programming",
-              "prompt": "Bantu saya membangun halaman web. Jelaskan struktur HTML/CSS/JS-nya dan berikan contoh kode lengkapnya."
+              "title": "Academia",
+              "categoryLabel": "Academia",
+              "description": "Dapatkan bantuan riset, literature review, writing akademik, dan strategi belajar yang terstruktur.",
+              "category": "academia",
+              "prompt": "Bantu saya merumuskan topik dan pertanyaan penelitian yang kuat untuk bidang yang saya sebutkan."
             },
             {
-              "title": "SEO",
-              "categoryLabel": "SEO",
-              "description": "Rancang strategi ranking, keyword research, dan optimasi on-page untuk website Anda.",
-              "category": "seo",
-              "prompt": "Buatkan strategi SEO untuk meningkatkan ranking halaman saya, termasuk keyword research dan optimasi on-page."
+              "title": "Finance",
+              "categoryLabel": "Finance",
+              "description": "Susun budget, audit cashflow, rencana investasi, dan strategi pelunasan utang dengan bantuan AI.",
+              "category": "finance",
+              "prompt": "Bantu saya bikin budget bulanan. Saya punya pemasukan Rp..., pengeluaran wajib Rp..., dan target tabungan Rp...; buat alokasi yang masuk akal."
             },
             {
               "title": "Marketing",
@@ -824,11 +824,11 @@
               "prompt": "Rancang kampanye marketing digital untuk produk saya, lengkap dengan ide konten dan channel promosi."
             },
             {
-              "title": "Health",
-              "categoryLabel": "Health",
-              "description": "Saran gaya hidup sehat, nutrisi, dan kebiasaan harian yang mudah diterapkan.",
-              "category": "health",
-              "prompt": "Berikan saran kesehatan dan gaya hidup sehat yang bisa saya terapkan sehari-hari."
+              "title": "Programming",
+              "categoryLabel": "Programming · Build Web",
+              "description": "Tulis kode, debug error, bangun fitur, dan buat halaman web HTML/CSS/JS dengan preview langsung.",
+              "category": "programming",
+              "prompt": "Bantu saya membangun halaman web. Jelaskan struktur HTML/CSS/JS-nya dan berikan contoh kode lengkapnya."
             }
           ]
         },
@@ -2134,18 +2134,18 @@
           "category": "roleplay",
           "cards": [
             {
-              "title": "Programming",
-              "categoryLabel": "Programming · Build Web",
-              "description": "Write code, debug errors, build features, and create HTML/CSS/JS web pages with live preview.",
-              "category": "programming",
-              "prompt": "Help me build a web page. Explain its HTML/CSS/JS structure and provide complete code examples."
+              "title": "Academia",
+              "categoryLabel": "Academia",
+              "description": "Get research help, literature reviews, academic writing, and structured study strategies.",
+              "category": "academia",
+              "prompt": "Help me formulate a strong research topic and question for the field I mentioned."
             },
             {
-              "title": "SEO",
-              "categoryLabel": "SEO",
-              "description": "Design a ranking strategy, keyword research, and on-page optimization for your website.",
-              "category": "seo",
-              "prompt": "Create an SEO strategy to increase my page ranking, including keyword research and on-page optimization."
+              "title": "Finance",
+              "categoryLabel": "Finance",
+              "description": "Plan budgets, audit cashflow, investment plans, and debt payoff strategies with AI assistance.",
+              "category": "finance",
+              "prompt": "Help me make a monthly budget. I have an income of IDR..., mandatory expenses of IDR..., and a savings target of IDR...; make reasonable allocations."
             },
             {
               "title": "Marketing",
@@ -2155,11 +2155,11 @@
               "prompt": "Design a digital marketing campaign for my product, complete with content ideas and promotional channels."
             },
             {
-              "title": "Health",
-              "categoryLabel": "Health",
-              "description": "Easy-to-implement healthy lifestyle, nutrition and daily habits advice.",
-              "category": "health",
-              "prompt": "Give me health advice and a healthy lifestyle that I can apply every day."
+              "title": "Programming",
+              "categoryLabel": "Programming · Build Web",
+              "description": "Write code, debug errors, build features, and create HTML/CSS/JS web pages with live preview.",
+              "category": "programming",
+              "prompt": "Help me build a web page. Explain its HTML/CSS/JS structure and provide complete code examples."
             }
           ]
         },
@@ -3465,32 +3465,32 @@
           "category": "roleplay",
           "cards": [
             {
+              "title": "アカデミア",
+              "categoryLabel": "Academia",
+              "description": "研究支援、文献レビュー、学術ライティング、構造化された学習戦略。",
+              "category": "academia",
+              "prompt": "私が言及した分野に関する強力な研究テーマと質問を作成するのを手伝ってください。"
+            },
+            {
+              "title": "ファイナンス",
+              "categoryLabel": "Finance",
+              "description": "予算計画、キャッシュフロー監査、投資計画、返済戦略をAIの支援で。",
+              "category": "finance",
+              "prompt": "毎月の予算を立てるのを手伝ってください。私には IDR の収入があり、IDR の義務的支出があり、IDR の貯蓄目標があります。合理的な配分を行う。"
+            },
+            {
+              "title": "マーケティング",
+              "categoryLabel": "Marketing",
+              "description": "デジタルキャンペーンのアイデア、プロモーションコンテンツ、適切なチャネル。",
+              "category": "marketing",
+              "prompt": "コンテンツのアイデアとプロモーション チャネルを備えた、製品のデジタル マーケティング キャンペーンをデザインします。"
+            },
+            {
               "title": "プログラミング",
               "categoryLabel": "Programming · Build Web",
               "description": "コードを記述し、エラーをデバッグし、機能を構築し、ライブ プレビューを使用して HTML/CSS/JS Web ページを作成します。",
               "category": "programming",
               "prompt": "ウェブページの作成を手伝ってください。 HTML/CSS/JS 構造を説明し、完全なコード例を提供します。"
-            },
-            {
-              "title": "SEO",
-              "categoryLabel": "SEO",
-              "description": "Web サイトのランキング戦略、キーワード調査、ページ上の最適化を設計します。",
-              "category": "seo",
-              "prompt": "キーワード調査やページ上の最適化など、ページのランキングを上げるための SEO 戦略を作成します。"
-            },
-            {
-              "title": "マーケティング",
-              "categoryLabel": "Marketing",
-              "description": "デジタル キャンペーンのアイデア、プロモーション コンテンツ、視聴者にリーチするための適切なチャネル。",
-              "category": "marketing",
-              "prompt": "コンテンツのアイデアとプロモーション チャネルを備えた、製品のデジタル マーケティング キャンペーンをデザインします。"
-            },
-            {
-              "title": "健康",
-              "categoryLabel": "Health",
-              "description": "簡単に実践できる健康的なライフスタイル、栄養、日常習慣のアドバイス。",
-              "category": "health",
-              "prompt": "毎日実践できる健康上のアドバイスと健康的なライフスタイルを教えてください。"
             }
           ]
         },

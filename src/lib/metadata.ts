@@ -1,4 +1,4 @@
-import { contact, project1, socialLinks } from "@/data/portfolio";
+import { contact, socialLinks } from "@/data/portfolio";
 
 import {
   BING_VERIFICATION,
@@ -96,11 +96,22 @@ function resolveSiteOrigin(site: URL | string | undefined): string {
 }
 
 export function getDefaultOgImage(site: URL | string | undefined): string {
-  return new URL(project1.src, resolveSiteOrigin(site)).href;
+  return `${resolveSiteOrigin(site)}/og-default.jpg`;
 }
 
 function toAbsoluteUrl(site: URL | string | undefined, value: string): string {
   if (value.startsWith("http://") || value.startsWith("https://")) return value;
+
+  // Vite @fs / filesystem paths must never be absolutized against the public site.
+  if (
+    value.includes("/@fs/") ||
+    value.startsWith("@fs") ||
+    value.startsWith("file:") ||
+    /^[A-Za-z]:[\\/]/.test(value)
+  ) {
+    return getDefaultOgImage(site);
+  }
+
   return new URL(value, resolveSiteOrigin(site)).href;
 }
 

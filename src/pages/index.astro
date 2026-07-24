@@ -13,12 +13,13 @@ import CareerLayout from "@/components/CareerLayout.astro";
 import { getCredentialsCount } from "@/service/archivments.service";
 import { getWorksCount } from "@/service/works.service";
 import { getLocale, getMessages } from "@/lib/i18n";
-import { portrait, project1 } from "@/data/portfolio";
+import { getDefaultOgImage } from "@/lib/metadata";
+import { portrait } from "@/data/portfolio";
 
 const locale = getLocale(Astro);
 const m = getMessages(locale);
 
-const ogImage = new URL(project1.src, Astro.site).href;
+const ogImage = getDefaultOgImage(Astro.site);
 
 const [projectCount, certificationCount] = await Promise.all([
   getWorksCount(),

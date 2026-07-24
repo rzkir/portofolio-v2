@@ -225,6 +225,112 @@ function resourceBasename(href: string): string {
   return href.split(/[?#]/)[0].split("/").pop() || href;
 }
 
+function previewPlaceholderUrl(
+  seed: string,
+  width = 1200,
+  height = 800,
+): string {
+  const base = seed.replace(/\.[a-z0-9]+$/i, "").trim() || "preview";
+  const safe = encodeURIComponent(base.slice(0, 64));
+  return `https://picsum.photos/seed/${safe}/${width}/${height}`;
+}
+
+function rewriteRelativeUrl(href: string): string {
+  const trimmed = href.trim();
+  if (!trimmed || isAbsoluteResource(trimmed)) return trimmed;
+  return previewPlaceholderUrl(resourceBasename(trimmed));
+}
+
+function rewriteSrcset(value: string): string {
+  return value
+    .split(",")
+    .map((part) => {
+      const trimmed = part.trim();
+      if (!trimmed) return trimmed;
+      const [url, ...descriptors] = trimmed.split(/\s+/);
+      return [rewriteRelativeUrl(url), ...descriptors].join(" ");
+    })
+    .join(", ");
+}
+
+const PREVIEW_IMAGE_FALLBACK_SCRIPT = `<script data-preview-image-fallback>
+(function () {
+  function placeholder(seed) {
+    var safe = encodeURIComponent(String(seed || "preview").slice(0, 64));
+    return "https://picsum.photos/seed/" + safe + "/1200/800";
+  }
+  function harden(img) {
+    if (!img || img.tagName !== "IMG" || img.dataset.previewHardened) return;
+    img.dataset.previewHardened = "1";
+    if (!img.getAttribute("referrerpolicy")) {
+      img.setAttribute("referrerpolicy", "no-referrer");
+    }
+    img.addEventListener("error", function onError() {
+      img.removeEventListener("error", onError);
+      if (img.dataset.previewFallback) return;
+      img.dataset.previewFallback = "1";
+      img.src = placeholder(img.getAttribute("alt") || "fallback");
+    });
+  }
+  document.querySelectorAll("img").forEach(harden);
+  new MutationObserver(function (mutations) {
+    mutations.forEach(function (m) {
+      m.addedNodes.forEach(function (node) {
+        if (node.nodeType !== 1) return;
+        if (node.tagName === "IMG") harden(node);
+        else if (node.querySelectorAll) node.querySelectorAll("img").forEach(harden);
+      });
+    });
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+<\/script>`;
+
+function rewriteRelativeMedia(html: string): string {
+  let doc = html;
+
+  doc = doc.replace(/<img\b[^>]*>/gi, (tag) => {
+    let next = tag.replace(/\bsrc=(["'])([^"']*)\1/i, (_match, q, src) => {
+      return `src=${q}${rewriteRelativeUrl(src)}${q}`;
+    });
+    next = next.replace(/\bsrcset=(["'])([^"']*)\1/i, (_match, q, srcset) => {
+      return `srcset=${q}${rewriteSrcset(srcset)}${q}`;
+    });
+    if (!/\breferrerpolicy=/i.test(next)) {
+      next = next.replace(/<img\b/i, '<img referrerpolicy="no-referrer"');
+    }
+    return next;
+  });
+
+  doc = doc.replace(/<source\b[^>]*>/gi, (tag) => {
+    let next = tag.replace(/\bsrcset=(["'])([^"']*)\1/i, (_match, q, srcset) => {
+      return `srcset=${q}${rewriteSrcset(srcset)}${q}`;
+    });
+    next = next.replace(/\bsrc=(["'])([^"']*)\1/i, (_match, q, src) => {
+      return `src=${q}${rewriteRelativeUrl(src)}${q}`;
+    });
+    return next;
+  });
+
+  doc = doc.replace(
+    /\b(?:poster|data-src)=(["'])([^"']*)\1/gi,
+    (full, q, src) => {
+      if (isAbsoluteResource(src)) return full;
+      return full.replace(`${q}${src}${q}`, `${q}${rewriteRelativeUrl(src)}${q}`);
+    },
+  );
+
+  doc = doc.replace(
+    /url\(\s*(['"]?)([^"')]+)\1\s*\)/gi,
+    (full, _q, raw) => {
+      const href = String(raw).trim();
+      if (!href || isAbsoluteResource(href)) return full;
+      return `url("${rewriteRelativeUrl(href)}")`;
+    },
+  );
+
+  return doc;
+}
+
 function resolveAssetContent(
   href: string,
   assets: Map<string, string>,
@@ -374,7 +480,9 @@ function preparePreviewDocument(
   if (!isFullHtmlDocument(html)) return html;
 
   let document = inlineRelativeAssets(html, assets);
+  document = rewriteRelativeMedia(document);
   document = injectTailwindCdnIntoHead(document);
+  document = injectBeforeBodyEnd(document, PREVIEW_IMAGE_FALLBACK_SCRIPT);
   return document;
 }
 
@@ -399,6 +507,7 @@ function composeWebDocument(parts: {
   ${hoisted.headAssets ? `  ${hoisted.headAssets}\n` : ""}  <style>
     *, *::before, *::after { box-sizing: border-box; }
     body { margin: 0; font-family: system-ui, sans-serif; }
+    img { max-width: 100%; height: auto; }
   </style>
 </head>
 <body>
@@ -406,7 +515,9 @@ function composeWebDocument(parts: {
 </body>
 </html>`;
 
-  return inlineRelativeAssets(shell, { css: parts.css, js: parts.js });
+  let document = inlineRelativeAssets(shell, { css: parts.css, js: parts.js });
+  document = rewriteRelativeMedia(document);
+  return injectBeforeBodyEnd(document, PREVIEW_IMAGE_FALLBACK_SCRIPT);
 }
 
 function escapePreviewHtml(value: string): string {

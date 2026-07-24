@@ -3,6 +3,7 @@ import {
   mapNotedMessage,
   sortNotedMessages,
 } from "@/utils/noted.shared";
+import { collectClientDeviceInfo } from "@/utils/device-info";
 
 const OWNED_NOTE_KEY = "guest-note-owned-id";
 
@@ -19,6 +20,22 @@ async function parseNotedError(
     // ignore parse errors
   }
   return fallback;
+}
+
+/** Attach browser device_info; BE resolves device_name from UA + platform/screen. */
+function withDeviceInfo<T extends { device_info?: NotedDeviceInfo }>(
+  payload: T,
+): T & { device_info: NotedDeviceInfo } {
+  const { device_name: _ignored, ...existing } = payload.device_info ?? {};
+  const { device_name: _clientName, ...collected } = collectClientDeviceInfo();
+
+  return {
+    ...payload,
+    device_info: {
+      ...collected,
+      ...existing,
+    },
+  };
 }
 
 export async function fetchNotedMessagesClient(): Promise<NotedMessageProps[]> {
@@ -39,7 +56,7 @@ export async function createNotedMessageClient(
   const response = await fetch(GUEST_NOTES_PROXY, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(withDeviceInfo(payload)),
   });
 
   if (!response.ok) {
@@ -57,7 +74,7 @@ export async function updateNotedMessageClient(
   const response = await fetch(GUEST_NOTES_PROXY, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(withDeviceInfo(payload)),
   });
 
   if (!response.ok) {

@@ -4,13 +4,13 @@ import Header from "@/layouts/Header.astro";
 import Footer from "@/layouts/Footer.astro";
 import FocusIn from "@/components/FocusIn.astro";
 import CredentialsGrid from "@/components/CredentialsGrid.astro";
-import { project1 } from "@/data/portfolio";
 import { getLocale, getMessages } from "@/lib/i18n";
+import { getDefaultOgImage } from "@/lib/metadata";
 import { getCredentialsArchive } from "@/service/archivments.service";
 
 const locale = getLocale(Astro);
 const m = getMessages(locale);
-const ogImage = new URL(project1.src, Astro.site).href;
+const ogImage = getDefaultOgImage(Astro.site);
 const credentials = await getCredentialsArchive();
 ---
 

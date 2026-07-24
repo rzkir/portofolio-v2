@@ -445,14 +445,24 @@ export function initGuestNotes(
       });
       const mapped = mapNotedMessage(created);
 
+      // Same IP → BE updates existing note (200); new IP → create (201).
       setOwnedNoteId(mapped.id);
-      notes = [mapped, ...notes];
+      const existingIdx = notes.findIndex((note) => note.id === mapped.id);
+      notes =
+        existingIdx >= 0
+          ? notes.map((note) => (note.id === mapped.id ? mapped : note))
+          : [mapped, ...notes];
       nameInput.value = "";
       providerInput.value = "website";
       messageInput.value = "";
       if (countEl) countEl.textContent = "0/280";
       renderNotes();
-      toast.success("Catatan terkirim", "Terima kasih sudah meninggalkan pesan.");
+      toast.success(
+        existingIdx >= 0 ? "Catatan diperbarui" : "Catatan terkirim",
+        existingIdx >= 0
+          ? "Pesan dari perangkat ini sudah diganti."
+          : "Terima kasih sudah meninggalkan pesan.",
+      );
       void refreshGuestNotes();
     } catch (error) {
       const message =

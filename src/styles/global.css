@@ -1097,16 +1097,16 @@ html.splash-pending .animate-focus {
   padding-top: 2rem;
 }
 
-.agent-empaty {
+.agent-empty {
   padding: 1.5rem 0.75rem;
   text-align: center;
 }
 
-.agent-empaty__title {
+.agent-empty__title {
   margin: 0;
 }
 
-.agent-empaty__description {
+.agent-empty__description {
   margin: 0;
   max-width: 14rem;
   margin-inline: auto;
@@ -1129,6 +1129,15 @@ html.splash-pending .animate-focus {
   overflow-x: auto;
   overflow-wrap: anywhere;
   word-break: break-word;
+}
+
+.agent-message-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0.75rem 0;
+  border-radius: 0.75rem;
+  border: 1px solid color-mix(in oklch, var(--border) 80%, transparent);
 }
 
 .agent-message-content > :first-child {
