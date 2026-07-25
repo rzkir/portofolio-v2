@@ -5,6 +5,8 @@ import Footer from "@/layouts/Footer.astro";
 import Input from "@/components/ui/input.astro";
 import Select from "@/components/ui/select.astro";
 import Textarea from "@/components/ui/textarea.astro";
+import Button from "@/components/ui/button.astro";
+import Spiner from "@/components/ui/spiner.astro";
 import DialogNoted from "@/components/dialog/dialog.noted.astro";
 import {
   GUEST_NOTE_PROVIDERS,
@@ -33,6 +35,10 @@ const bootstrap = {
     archiveNo: m.guestNotesPage.archiveNo,
     edit: m.guestNotesPage.edit,
     delete: m.guestNotesPage.delete,
+    submit: m.guestNotesPage.submit,
+    submitLoading: m.guestNotesPage.submitLoading,
+    editDialogSubmit: m.guestNotesPage.editDialogSubmit,
+    editDialogSubmitLoading: m.guestNotesPage.editDialogSubmitLoading,
   },
 };
 ---
@@ -133,15 +139,25 @@ const bootstrap = {
           </p>
 
           <div class="flex justify-end">
-            <button
+            <Button
               type="submit"
-              class="group inline-flex items-center gap-3 font-mono text-xs tracking-[0.24em] uppercase transition-colors hover:text-accent disabled:opacity-50"
+              variant="ghost"
+              class="group gap-3 rounded-none px-0 py-0 font-mono text-xs tracking-[0.24em] text-foreground uppercase hover:bg-transparent hover:text-accent cursor-pointer"
             >
-              {m.guestNotesPage.submit}
-              <span class="transition-transform group-hover:translate-x-1"
-                >→</span
+              <span data-guest-notes-submit-label>
+                {m.guestNotesPage.submit}
+              </span>
+              <span
+                data-guest-notes-submit-idle
+                class="transition-transform group-hover:translate-x-1"
+                aria-hidden="true"
               >
-            </button>
+                →
+              </span>
+              <span data-guest-notes-submit-spinner class="hidden" aria-hidden="true">
+                <Spiner size="sm" label={m.guestNotesPage.submitLoading} />
+              </span>
+            </Button>
           </div>
         </form>
       </div>

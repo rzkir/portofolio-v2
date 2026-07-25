@@ -4,6 +4,8 @@ import AlertDialog from "@/components/ui/alert-dialog.astro";
 import Input from "@/components/ui/input.astro";
 import Select from "@/components/ui/select.astro";
 import Textarea from "@/components/ui/textarea.astro";
+import Button from "@/components/ui/button.astro";
+import Spiner from "@/components/ui/spiner.astro";
 import { GUEST_NOTE_PROVIDERS } from "@/lib/guest-note-providers";
 import { getLocale, getMessages } from "@/lib/i18n";
 
@@ -20,7 +22,9 @@ const deleteDialogId = "guest-note-delete-dialog";
 <UiDialog id={editDialogId} class="max-w-lg overflow-y-auto">
   <article class="px-6 py-8 sm:px-10 sm:py-10">
     <header class="mb-8 border-b border-border pb-6">
-      <p class="mb-2 font-mono text-[10px] tracking-[0.2em] text-accent uppercase">
+      <p
+        class="mb-2 font-mono text-[10px] tracking-[0.2em] text-accent uppercase"
+      >
         {p.editDialogEyebrow}
       </p>
       <h2 class="font-display text-3xl tracking-tight">
@@ -77,21 +81,38 @@ const deleteDialogId = "guest-note-delete-dialog";
       </p>
 
       <div class="flex justify-end gap-6">
-        <button
+        <Button
           type="button"
+          variant="ghost"
           data-dialog-close
-          class="font-mono text-xs tracking-[0.2em] text-muted-foreground uppercase transition-colors hover:text-foreground"
+          class="rounded-none px-0 py-0 font-mono text-xs tracking-[0.2em] text-muted-foreground cursor-pointer uppercase hover:bg-transparent hover:text-foreground"
         >
           {p.editDialogCancel}
-        </button>
-        <button
+        </Button>
+        <Button
           type="submit"
           id="noted-edit-submit"
-          class="group inline-flex items-center gap-3 font-mono text-xs tracking-[0.24em] text-foreground uppercase transition-colors hover:text-accent disabled:opacity-50"
+          variant="ghost"
+          class="group gap-3 rounded-none px-0 py-0 font-mono text-xs tracking-[0.24em] text-foreground cursor-pointer uppercase hover:bg-transparent hover:text-accent"
         >
-          {p.editDialogSubmit}
-          <span class="transition-transform group-hover:translate-x-1">→</span>
-        </button>
+          <span data-noted-edit-submit-label>
+            {p.editDialogSubmit}
+          </span>
+          <span
+            data-noted-edit-submit-idle
+            class="transition-transform group-hover:translate-x-1"
+            aria-hidden="true"
+          >
+            →
+          </span>
+          <span
+            data-noted-edit-submit-spinner
+            class="hidden"
+            aria-hidden="true"
+          >
+            <Spiner size="sm" label={p.editDialogSubmitLoading} />
+          </span>
+        </Button>
       </div>
     </form>
   </article>

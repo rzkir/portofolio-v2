@@ -24,11 +24,12 @@ function isNavActive(href: string) {
 }
 
 const navLinkActive =
-  "text-accent group-[.is-inverse]/site-header:text-background";
+  "text-accent group-[.is-inverse]/site-header:text-background dark:group-[.is-inverse]/site-header:text-foreground";
 
 const desktopNavPillClass = cn(
   "relative m-0 flex list-none items-center gap-0.5 rounded-full border border-border bg-surface/55 p-0.5",
-  "group-[.is-inverse]/site-header:border-background/18 group-[.is-inverse]/site-header:bg-background/8",
+  "group-[.is-inverse]/site-header:border-background/25 group-[.is-inverse]/site-header:bg-background/12",
+  "dark:group-[.is-inverse]/site-header:border-foreground/25 dark:group-[.is-inverse]/site-header:bg-foreground/10",
 );
 
 const shellClass = cn(
@@ -39,14 +40,17 @@ const shellClass = cn(
   "group-[.is-inverse.is-scrolled]/site-header:bg-accent/92 group-[.is-inverse.is-scrolled]/site-header:backdrop-blur-md",
 );
 
-const inverseText = "group-[.is-inverse]/site-header:text-background";
-const inverseMuted = "group-[.is-inverse]/site-header:text-background/58";
+const inverseText =
+  "group-[.is-inverse]/site-header:text-background dark:group-[.is-inverse]/site-header:text-foreground";
+const inverseMuted =
+  "group-[.is-inverse]/site-header:text-background/58 dark:group-[.is-inverse]/site-header:text-foreground/58";
 
 const menuToggleClass = cn(
   "inline-flex items-center gap-2 rounded-full border border-border bg-surface/55 px-2.5 py-1.5 xl:hidden",
   "transition-colors duration-350 ease-cinematic",
   inverseText,
-  "group-[.is-inverse]/site-header:border-background/18 group-[.is-inverse]/site-header:bg-background/8",
+  "group-[.is-inverse]/site-header:border-background/25 group-[.is-inverse]/site-header:bg-background/12",
+  "dark:group-[.is-inverse]/site-header:border-foreground/25 dark:group-[.is-inverse]/site-header:bg-foreground/10",
 );
 ---
 
@@ -72,7 +76,8 @@ const menuToggleClass = cn(
             class={cn(
               "font-display text-[clamp(1.35rem,2vw,1.75rem)] leading-none whitespace-nowrap italic transition-colors duration-350 ease-cinematic",
               "group-hover/brand:text-accent",
-              "group-[.is-inverse]/site-header:group-hover/brand:text-foreground",
+              "group-[.is-inverse]/site-header:group-hover/brand:text-background",
+              "dark:group-[.is-inverse]/site-header:group-hover/brand:text-foreground",
             )}
           >
             R. Ramadhan
@@ -82,7 +87,8 @@ const menuToggleClass = cn(
               "font-mono text-[0.5625rem] tracking-[0.18em] uppercase text-muted-foreground whitespace-nowrap transition-colors duration-350 ease-cinematic sm:tracking-[0.22em]",
               "group-hover/brand:text-accent/70",
               inverseMuted,
-              "group-[.is-inverse]/site-header:group-hover/brand:text-foreground/65",
+              "group-[.is-inverse]/site-header:group-hover/brand:text-background/65",
+              "dark:group-[.is-inverse]/site-header:group-hover/brand:text-foreground/65",
             )}
           >
             {m.brand.tagline}
@@ -99,7 +105,7 @@ const menuToggleClass = cn(
               aria-hidden="true"
               class={cn(
                 "site-header__nav-indicator pointer-events-none absolute top-0 left-0 z-0 h-0 w-0 overflow-hidden rounded-full",
-                "bg-foreground/6 group-[.is-inverse]/site-header:bg-background/12",
+                "bg-foreground/6 group-[.is-inverse]/site-header:bg-background/12 dark:group-[.is-inverse]/site-header:bg-foreground/12",
               )}
             >
             </li>
@@ -119,6 +125,8 @@ const menuToggleClass = cn(
                       inverseText,
                       "group-[.is-inverse]/site-header:hover:text-background",
                       "group-[.is-inverse]/site-header:focus-visible:text-background",
+                      "dark:group-[.is-inverse]/site-header:hover:text-foreground",
+                      "dark:group-[.is-inverse]/site-header:focus-visible:text-foreground",
                       isNavActive(item.href) && navLinkActive,
                     )}
                   >
@@ -126,6 +134,7 @@ const menuToggleClass = cn(
                       class={cn(
                         "font-mono text-[0.5625rem] tracking-[0.14em] text-accent/75",
                         "group-[.is-inverse]/site-header:text-background/72",
+                        "dark:group-[.is-inverse]/site-header:text-foreground/72",
                       )}
                     >
                       {item.index}
@@ -178,6 +187,7 @@ const menuToggleClass = cn(
         "pointer-events-auto overflow-hidden max-h-0 border-b border-transparent transition-[max-height,border-color,background-color,backdrop-filter] duration-500 ease-cinematic xl:hidden",
         "group-[.is-menu-open]/site-header:max-h-[min(32rem,80dvh)] group-[.is-menu-open]/site-header:border-border group-[.is-menu-open]/site-header:bg-background/94 group-[.is-menu-open]/site-header:backdrop-blur-md",
         "group-[.is-inverse.is-menu-open]/site-header:border-background/12 group-[.is-inverse.is-menu-open]/site-header:bg-accent/96",
+        "dark:group-[.is-inverse.is-menu-open]/site-header:border-foreground/12",
       )}
     >
       <div class="mx-auto container px-4 md:px-6">
@@ -194,15 +204,17 @@ const menuToggleClass = cn(
                     inverseText,
                     "hover:text-accent",
                     "group-[.is-inverse]/site-header:hover:text-background",
+                    "dark:group-[.is-inverse]/site-header:hover:text-foreground",
                     isNavActive(item.href) && "text-accent",
                     isNavActive(item.href) &&
-                      "group-[.is-inverse]/site-header:text-background",
+                      "group-[.is-inverse]/site-header:text-background dark:group-[.is-inverse]/site-header:text-foreground",
                   )}
                 >
                   <span
                     class={cn(
                       "font-mono text-[0.625rem] tracking-[0.16em] text-accent",
                       "group-[.is-inverse]/site-header:text-background/72",
+                      "dark:group-[.is-inverse]/site-header:text-foreground/72",
                     )}
                   >
                     {item.index}

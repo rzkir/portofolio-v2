@@ -22,19 +22,21 @@ async function parseNotedError(
   return fallback;
 }
 
-/** Attach browser device_info; BE resolves device_name from UA + platform/screen. */
-function withDeviceInfo<T extends { device_info?: NotedDeviceInfo }>(
+/** Attach browser device_info; BE resolves device_name from UA + model/platform/screen. */
+async function withDeviceInfo<T extends { device_info?: NotedDeviceInfo }>(
   payload: T,
-): T & { device_info: NotedDeviceInfo } {
-  const { device_name: _ignored, ...existing } = payload.device_info ?? {};
-  const { device_name: _clientName, ...collected } = collectClientDeviceInfo();
+): Promise<T & { device_info: NotedDeviceInfo }> {
+  const device_info: NotedDeviceInfo = {
+    ...(await collectClientDeviceInfo()),
+    ...payload.device_info,
+  };
+
+  // Nama perangkat dihitung BE — jangan kirim nilai client.
+  delete device_info.device_name;
 
   return {
     ...payload,
-    device_info: {
-      ...collected,
-      ...existing,
-    },
+    device_info,
   };
 }
 
@@ -56,7 +58,7 @@ export async function createNotedMessageClient(
   const response = await fetch(GUEST_NOTES_PROXY, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(withDeviceInfo(payload)),
+    body: JSON.stringify(await withDeviceInfo(payload)),
   });
 
   if (!response.ok) {
@@ -74,7 +76,7 @@ export async function updateNotedMessageClient(
   const response = await fetch(GUEST_NOTES_PROXY, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(withDeviceInfo(payload)),
+    body: JSON.stringify(await withDeviceInfo(payload)),
   });
 
   if (!response.ok) {

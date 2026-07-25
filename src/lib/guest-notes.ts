@@ -27,6 +27,10 @@ let labels: GuestNotesLabels = {
   archiveNo: "N° {count}",
   edit: "Edit",
   delete: "Hapus",
+  submit: "Kirim catatan",
+  submitLoading: "Mengirim…",
+  editDialogSubmit: "Simpan perubahan",
+  editDialogSubmitLoading: "Menyimpan…",
 };
 
 type GuestNotesLabels = {
@@ -34,6 +38,10 @@ type GuestNotesLabels = {
   archiveNo: string;
   edit: string;
   delete: string;
+  submit: string;
+  submitLoading: string;
+  editDialogSubmit: string;
+  editDialogSubmitLoading: string;
 };
 
 function openDialog(id: string) {
@@ -200,7 +208,7 @@ function readBootstrap(): { notes: GuestNote[]; labels: GuestNotesLabels } {
       };
 
       parsedNotes = Array.isArray(parsed.notes) ? parsed.notes : [];
-      if (parsed.labels) parsedLabels = parsed.labels;
+      if (parsed.labels) parsedLabels = { ...labels, ...parsed.labels };
     } catch {
       parsedNotes = [];
     }
@@ -238,6 +246,26 @@ function bindEditDialog() {
   const countEl = document.getElementById("noted-edit-message-count");
   const errorEl = document.getElementById("noted-edit-error");
   const submitBtn = document.getElementById("noted-edit-submit") as HTMLButtonElement | null;
+  const submitLabel = submitBtn?.querySelector<HTMLElement>(
+    "[data-noted-edit-submit-label]",
+  );
+  const submitIdle = submitBtn?.querySelector<HTMLElement>(
+    "[data-noted-edit-submit-idle]",
+  );
+  const submitSpinner = submitBtn?.querySelector<HTMLElement>(
+    "[data-noted-edit-submit-spinner]",
+  );
+
+  const setSubmitting = (loading: boolean) => {
+    if (submitBtn) submitBtn.disabled = loading;
+    if (submitLabel) {
+      submitLabel.textContent = loading
+        ? labels.editDialogSubmitLoading
+        : labels.editDialogSubmit;
+    }
+    submitIdle?.classList.toggle("hidden", loading);
+    submitSpinner?.classList.toggle("hidden", !loading);
+  };
 
   form.dataset.bound = "true";
 
@@ -280,7 +308,7 @@ function bindEditDialog() {
       return;
     }
 
-    if (submitBtn) submitBtn.disabled = true;
+    setSubmitting(true);
 
     try {
       const updated = await updateNotedMessageClient({
@@ -303,7 +331,7 @@ function bindEditDialog() {
       errorEl.classList.remove("hidden");
       toast.error("Gagal memperbarui", message);
     } finally {
-      if (submitBtn) submitBtn.disabled = false;
+      setSubmitting(false);
     }
   });
 }
@@ -401,6 +429,24 @@ export function initGuestNotes(
   const errorEl = document.getElementById("guest-notes-error");
   const countEl = document.getElementById("guest-message-count");
   const submitBtn = form?.querySelector("button[type='submit']") as HTMLButtonElement | null;
+  const submitLabel = submitBtn?.querySelector<HTMLElement>(
+    "[data-guest-notes-submit-label]",
+  );
+  const submitIdle = submitBtn?.querySelector<HTMLElement>(
+    "[data-guest-notes-submit-idle]",
+  );
+  const submitSpinner = submitBtn?.querySelector<HTMLElement>(
+    "[data-guest-notes-submit-spinner]",
+  );
+
+  const setSubmitting = (loading: boolean) => {
+    if (submitBtn) submitBtn.disabled = loading;
+    if (submitLabel) {
+      submitLabel.textContent = loading ? labels.submitLoading : labels.submit;
+    }
+    submitIdle?.classList.toggle("hidden", loading);
+    submitSpinner?.classList.toggle("hidden", !loading);
+  };
 
   form.dataset.bound = "true";
 
@@ -435,7 +481,7 @@ export function initGuestNotes(
       return;
     }
 
-    if (submitBtn) submitBtn.disabled = true;
+    setSubmitting(true);
 
     try {
       const created = await createNotedMessageClient({
@@ -471,7 +517,7 @@ export function initGuestNotes(
       errorEl.classList.remove("hidden");
       toast.error("Gagal mengirim", message);
     } finally {
-      if (submitBtn) submitBtn.disabled = false;
+      setSubmitting(false);
     }
   });
 

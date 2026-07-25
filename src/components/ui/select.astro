@@ -12,7 +12,7 @@ const {
 } = Astro.props;
 
 const fieldClass =
-  "w-full cursor-pointer border-b border-border bg-transparent py-2 outline-none transition-colors focus:border-accent";
+  "w-full cursor-pointer border-b border-border bg-transparent py-2 text-foreground outline-none transition-colors focus:border-accent";
 ---
 
 <label class={cn("block", className)}>
@@ -25,7 +25,7 @@ const fieldClass =
     id={id}
     name={name}
     required={required}
-    class={cn(fieldClass, selectClass)}
+    class={cn("ui-select", fieldClass, selectClass)}
   >
     {
       options.map((option: SelectOption) => (
@@ -36,3 +36,20 @@ const fieldClass =
     }
   </select>
 </label>
+
+<style is:global>
+  /* Native <option> ignores most Tailwind; opaque theme colors keep dark mode readable. */
+  .ui-select {
+    color-scheme: inherit;
+  }
+
+  .ui-select option {
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+
+  .dark .ui-select option {
+    background-color: var(--surface);
+    color: var(--foreground);
+  }
+</style>

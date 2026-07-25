@@ -11,6 +11,7 @@ const { locale, class: className } = Astro.props;
 
 const flagClass = cn(
   "lang-flag inline-flex size-4 shrink-0 overflow-hidden rounded-full ring-1 ring-border/40",
+  "group-[.is-inverse]/site-header:ring-accent-foreground/45",
   className,
 );
 ---

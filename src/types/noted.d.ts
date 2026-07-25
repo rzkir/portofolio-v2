@@ -16,9 +16,14 @@ interface NotedIpAddress {
   longitude?: number;
 }
 
-/** Client signals for BE device_name resolution (Postman: Create/Update Message). */
+/**
+ * Client signals for BE device_name resolution.
+ * `device_name` is always computed server-side — never trust client value.
+ */
 interface NotedDeviceInfo {
   platform?: string;
+  /** Real device model from Client Hints (e.g. "Infinix GT 10 Pro"). */
+  model?: string;
   language?: string;
   languages?: string[];
   screen_width?: number;
@@ -28,7 +33,7 @@ interface NotedDeviceInfo {
   device_pixel_ratio?: number;
   timezone?: string;
   user_agent?: string;
-  /** Resolved by BE from UA + platform/screen — never send from client. */
+  /** Resolved by BE from UA + model/platform/screen. */
   device_name?: string;
 }
 
