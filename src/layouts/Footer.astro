@@ -100,12 +100,16 @@ const m = getMessages(locale);
       class="mt-32 flex flex-col items-center justify-between gap-4 border-t border-background/10 pt-8 font-mono text-xs tracking-widest text-background/50 uppercase md:flex-row"
     >
       <p>{m.footer.copyright}</p>
-      <p>{m.footer.crafted}</p>
+      <a href="/kebijakan-privasi">{m.footer.crafted}</a>
     </div>
   </div>
 </footer>
 
 <style is:global>
+  html[data-theme-resolved="dark"] .footer-accent {
+    background: var(--accent-panel);
+  }
+
   html[data-theme-resolved="dark"] .footer-accent .text-background\/50 {
     color: color-mix(in oklch, var(--foreground) 72%, transparent);
   }

@@ -41,6 +41,9 @@
   --surface: oklch(0.938 0.008 88);
   --rule: oklch(0.42 0.01 270 / 0.055);
   --accent-warm: oklch(0.52 0.045 48);
+  /* Large inverse surfaces — light accent in both themes, with light ink on top */
+  --accent-panel: oklch(0.52 0.045 48);
+  --accent-panel-foreground: oklch(0.958 0.007 88);
 
   --background: var(--paper);
   --foreground: var(--ink);
@@ -69,6 +72,8 @@
   --surface: oklch(0.28 0.007 270);
   --rule: oklch(0.86 0.006 92 / 0.07);
   --accent-warm: oklch(0.65 0.04 52);
+  --accent-panel: oklch(0.52 0.045 48);
+  --accent-panel-foreground: oklch(0.958 0.007 88);
 
   --background: var(--paper);
   --foreground: var(--ink);

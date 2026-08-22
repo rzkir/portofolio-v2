@@ -172,55 +172,6 @@ const [projectCount, certificationCount] = await Promise.all([
 
     <WorksScroll />
 
-    <section
-      class="relative overflow-hidden border-y border-border bg-surface/40 py-20"
-      aria-label={m.home.testimonialsAria}
-    >
-      <div
-        class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,color-mix(in_oklch,var(--accent)_8%,transparent),transparent)]"
-        aria-hidden="true"
-      >
-      </div>
-
-      <div class="relative mx-auto container px-4 md:px-6">
-        <FocusIn>
-          <p class="mb-4 font-mono text-xs tracking-[0.2em] uppercase">
-            {m.home.testimonialsSection}
-          </p>
-          <h2 class="mb-16 max-w-3xl font-display text-5xl italic">
-            {m.home.testimonialsTitle}
-          </h2>
-        </FocusIn>
-      </div>
-
-      <Marquee duration="52s" fade class="relative mt-2">
-        <div class="flex shrink-0 gap-6">
-          {
-            m.home.testimonials.map((t, i) => (
-              <figure
-                data-cursor="focus"
-                data-cursor-label="Read"
-                class:list={[
-                  "flex w-[min(88vw,22rem)] shrink-0 flex-col justify-between gap-8 border p-8 shadow-[0_1px_0_0_color-mix(in_oklch,var(--foreground)_4%,transparent)] transition-colors md:w-96",
-                  i % 2 === 0
-                    ? "border-border/80 bg-background"
-                    : "border-accent/15 bg-accent/4",
-                ]}
-              >
-                <blockquote class="font-display text-2xl leading-snug italic whitespace-normal">
-                  "{t.quote}"
-                </blockquote>
-                <figcaption class="border-t border-border/60 pt-6">
-                  <p class="text-sm font-medium">{t.author}</p>
-                  <p class="text-xs text-muted-foreground">{t.role}</p>
-                </figcaption>
-              </figure>
-            ))
-          }
-        </div>
-      </Marquee>
-    </section>
-
     <CareerLayout />
     <CodingStats />
     <GuestNotesTeaser />

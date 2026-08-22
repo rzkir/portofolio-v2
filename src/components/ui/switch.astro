@@ -20,9 +20,11 @@ const options = [
 const triggerClass = cn(
   "theme-switch__trigger inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-border bg-surface/55 px-2.5 py-1.5 font-mono text-[0.5625rem] tracking-[0.14em] text-muted-foreground uppercase transition-colors duration-350 ease-[cubic-bezier(0.32,0.72,0,1)]",
   "hover:text-foreground focus-visible:text-foreground",
-  // Inverse sections sit on bg-accent — use accent-foreground for readable contrast in both themes.
-  "group-[.is-inverse]/site-header:border-accent-foreground/35 group-[.is-inverse]/site-header:bg-accent-foreground/15",
-  "group-[.is-inverse]/site-header:text-accent-foreground group-[.is-inverse]/site-header:hover:text-accent-foreground",
+  // Match header nav pill / nav links on inverse sections
+  "group-[.is-inverse]/site-header:border-background/25 group-[.is-inverse]/site-header:bg-background/12",
+  "group-[.is-inverse]/site-header:text-background group-[.is-inverse]/site-header:hover:text-background",
+  "dark:group-[.is-inverse]/site-header:border-foreground/25 dark:group-[.is-inverse]/site-header:bg-foreground/10",
+  "dark:group-[.is-inverse]/site-header:text-foreground dark:group-[.is-inverse]/site-header:hover:text-foreground",
 );
 
 const menuClass = cn(
@@ -169,17 +171,5 @@ const optionClass = cn(
   .theme-switch__option.is-active {
     color: var(--foreground);
     background: color-mix(in oklch, var(--foreground) 8%, transparent);
-  }
-
-  /* Ensure trigger stays crisp on accent (inverse) sections. */
-  :global(#site-header.is-inverse) .theme-switch__trigger {
-    color: var(--accent-foreground);
-    border-color: color-mix(in oklch, var(--accent-foreground) 35%, transparent);
-    background: color-mix(in oklch, var(--accent-foreground) 15%, transparent);
-  }
-
-  :global(#site-header.is-inverse) .theme-switch__trigger:hover,
-  :global(#site-header.is-inverse) .theme-switch__trigger:focus-visible {
-    color: var(--accent-foreground);
   }
 </style>

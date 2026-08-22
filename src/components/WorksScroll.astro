@@ -243,7 +243,11 @@ const inViewMargin = "-12%";
   </div>
 </section>
 
-<style>
+<style is:global>
+  html[data-theme-resolved="dark"] .works-scroll {
+    background-color: var(--accent-panel);
+  }
+
   .works-scroll__grid span {
     background-color: color-mix(in oklch, var(--foreground) 16%, transparent);
   }

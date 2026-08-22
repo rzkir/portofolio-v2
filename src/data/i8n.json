@@ -132,26 +132,6 @@
         "AKSESIBEL",
         "CEPAT",
         "AMAN"
-      ],
-      "testimonialsSection": "Suara Klien / 05",
-      "testimonialsTitle": "Apa kata mereka yang pernah berkolaborasi.",
-      "testimonialsAria": "Testimoni klien",
-      "testimonials": [
-        {
-          "quote": "Hasilnya bukan cuma cepat — terasa dipikirkan. Setiap detail kelihatan sengaja.",
-          "author": "Aulia P.",
-          "role": "Founder, Studio Mahkota"
-        },
-        {
-          "quote": "Komunikasi rapi, deadline jalan, dan kodenya bisa kami lanjutkan tanpa drama.",
-          "author": "M. Rifqi",
-          "role": "CTO, Lumina"
-        },
-        {
-          "quote": "Susah cari developer yang ngerti desain. Rizki salah satunya.",
-          "author": "Tania W.",
-          "role": "Design Lead"
-        }
       ]
     },
     "worksScroll": {
@@ -260,7 +240,7 @@
       "status": "Status",
       "statusValue": "Terbuka untuk proyek",
       "copyright": "© 2026 Rizki Ramadhan — All rights reserved",
-      "crafted": "Set in Cormorant Garamond & Inter · Crafted with intention"
+      "crafted": "Kebijakan Privasi"
     },
     "layanan": {
       "eyebrow": "Layanan / Services",
@@ -1465,26 +1445,6 @@
         "ACCESSIBLE",
         "FAST",
         "SECURE"
-      ],
-      "testimonialsSection": "Client Voices / 05",
-      "testimonialsTitle": "What collaborators say about working together.",
-      "testimonialsAria": "Client testimonials",
-      "testimonials": [
-        {
-          "quote": "The result wasn't just fast — it felt intentional. Every detail looked deliberate.",
-          "author": "Aulia P.",
-          "role": "Founder, Studio Mahkota"
-        },
-        {
-          "quote": "Clear communication, deadlines met, and code our team could continue without drama.",
-          "author": "M. Rifqi",
-          "role": "CTO, Lumina"
-        },
-        {
-          "quote": "Hard to find a developer who understands design. Rizki is one of them.",
-          "author": "Tania W.",
-          "role": "Design Lead"
-        }
       ]
     },
     "worksScroll": {
@@ -1593,7 +1553,7 @@
       "status": "Status",
       "statusValue": "Open for work",
       "copyright": "© 2026 Rizki Ramadhan — All rights reserved",
-      "crafted": "Set in Cormorant Garamond & Inter · Crafted with intention"
+      "crafted": "Privacy Policy"
     },
     "layanan": {
       "eyebrow": "Services",
@@ -2798,26 +2758,6 @@
         "アクセシブル",
         "高速",
         "セキュア"
-      ],
-      "testimonialsSection": "クライアントの声 / 05",
-      "testimonialsTitle": "一緒に仕事をした方々の声。",
-      "testimonialsAria": "クライアントの声",
-      "testimonials": [
-        {
-          "quote": "結果は速いだけでなく、意図が感じられました。細部まで丁寧に仕上げられています。",
-          "author": "Aulia P.",
-          "role": "創業者, Studio Mahkota"
-        },
-        {
-          "quote": "コミュニケーションが明確で、期限も守られ、チームがそのまま引き継げるコードでした。",
-          "author": "M. Rifqi",
-          "role": "最高技術責任者, Lumina"
-        },
-        {
-          "quote": "デザインを理解できる開発者は珍しい。Rizki はその一人です。",
-          "author": "Tania W.",
-          "role": "デザインリード"
-        }
       ]
     },
     "worksScroll": {
@@ -2926,7 +2866,7 @@
       "status": "ステータス",
       "statusValue": "案件受付中",
       "copyright": "© 2026 Rizki Ramadhan — 無断転載を禁じます",
-      "crafted": "Cormorant Garamond & Inter を使用 · 意図を込めて制作"
+      "crafted": "プライバシーポリシー"
     },
     "layanan": {
       "eyebrow": "サービス",

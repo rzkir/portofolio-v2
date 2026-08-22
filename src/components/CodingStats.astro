@@ -43,10 +43,7 @@ const countUpXsClass =
 
     {
       !stats ? (
-        <FocusIn
-          class="border border-background/20 p-8 text-center"
-          delay={40}
-        >
+        <FocusIn class="border border-background/20 p-8 text-center" delay={40}>
           <p class="mx-auto max-w-xl font-mono text-sm leading-relaxed text-background/70">
             {m.codingStats.unavailableBody}
           </p>
@@ -61,455 +58,406 @@ const countUpXsClass =
         </FocusIn>
       ) : (
         <>
-    <FocusIn
-      class="mb-12 flex flex-col gap-6 border border-background/20 p-6 md:flex-row md:items-center md:p-8"
-      delay={40}
-    >
-      <div class="flex items-center gap-4">
-        <img
-          src={stats.profile.avatarUrl}
-          alt={stats.profile.name}
-          width={72}
-          height={72}
-          class="size-18 rounded-full border border-background/25 object-cover"
-          loading="lazy"
-          decoding="async"
-        />
-        <div>
-          <p class="font-display text-2xl italic">{stats.profile.name}</p>
-          <a
-            href={stats.profile.profileUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="font-mono text-xs tracking-widest text-background/70 uppercase transition-colors hover:text-background"
+          <FocusIn
+            class="mb-12 flex flex-col gap-6 border border-background/20 p-6 md:flex-row md:items-center md:p-8"
+            delay={40}
           >
-            @{stats.profile.username} →
-          </a>
-        </div>
-      </div>
-      <div
-        class="grid flex-1 gap-4 border-t border-background/15 pt-6 md:border-t-0 md:border-l md:pt-0 md:pl-8"
-      >
-        <p class="font-mono text-xs leading-relaxed text-background/75">
-          <span class="text-background/50">{m.codingStats.workspace}</span>
-          {stats.profile.lastProject} ({stats.profile.lastBranch}) · {
-            stats.profile.lastLanguage
-          } · {stats.profile.lastEditor} · {stats.profile.timezone}
-        </p>
-        <p class="font-mono text-xs leading-relaxed text-background/60">
-          {stats.commitsMetaMessage}
-          {
-            stats.privateRepoCount > 0 && (
-              <span>
-                {m.codingStats.privateRepos.replace(
-                  "{count}",
-                  String(stats.privateRepoCount),
-                )}
-              </span>
-            )
-          }
-        </p>
-      </div>
-      <a
-        href={stats.profile.wakatimeProfileUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="hidden shrink-0 md:block"
-        aria-label={m.codingStats.wakatimeProfile}
-      >
-        <img
-          src={stats.profile.wakatimePhoto}
-          alt=""
-          width={48}
-          height={48}
-          class="size-12 rounded-full border border-background/25 object-cover opacity-80 transition-opacity hover:opacity-100"
-          loading="lazy"
-          decoding="async"
-        />
-      </a>
-    </FocusIn>
-
-    <div
-      class="mb-6 grid grid-cols-2 gap-px border-y border-background/20 bg-background/20 md:grid-cols-4"
-    >
-      {
-        stats.summaryStats.map((s, i) => (
-          <FocusIn class="bg-accent p-8 md:p-10" delay={i * 90}>
-            <p class="mb-3 font-mono text-xs tracking-widest text-background/50 uppercase">
-              {s.label}
-            </p>
-            <p class={countUpClass}>{s.value}</p>
-            <p class="mt-2 font-mono text-xs tracking-widest text-background/50 uppercase">
-              {s.sub}
-            </p>
-          </FocusIn>
-        ))
-      }
-    </div>
-
-    <div
-      class="mb-20 grid grid-cols-2 gap-px border-b border-background/20 bg-background/20 md:grid-cols-4"
-    >
-      {
-        stats.secondaryStats.map((s, i) => (
-          <FocusIn class="bg-accent p-6 md:p-8" delay={360 + i * 70}>
-            <p class="mb-2 font-mono text-xs tracking-widest text-background/50 uppercase">
-              {s.label}
-            </p>
-            <p class={countUpSmClass}>{s.value}</p>
-            <p class="mt-2 font-mono text-xs tracking-widest text-background/50 uppercase">
-              {s.sub}
-            </p>
-          </FocusIn>
-        ))
-      }
-    </div>
-
-    <div class="grid items-start gap-16 lg:grid-cols-2">
-      <div class="space-y-12">
-        <div>
-          <FocusIn class="mb-6 flex items-center justify-between" delay={40}>
-            <p class="font-mono text-xs tracking-widest uppercase">
-              {
-                m.codingStats.contributionWeeks.replace(
-                  "{count}",
-                  String(stats.heatmapWeekCount),
-                )
-              }
-            </p>
-            <span
-              class="font-mono text-xs tracking-widest text-background/50 uppercase"
-              >GitHub</span
-            >
-          </FocusIn>
-
-          <FocusIn class="rounded border border-background/20 p-5" delay={80}>
-            <div
-              class="coding-stats__heatmap grid gap-[3px]"
-              style={`grid-template-columns: repeat(${stats.heatmapWeekCount}, minmax(0, 1fr))`}
-            >
-              {
-                stats.heatmapCells.map((cell, i) => (
-                  <div
-                    class="coding-stats__heatmap-cell aspect-square w-full rounded-full"
-                    style={`--i: ${i}; background-color: ${cell.color}`}
-                    title={
-                      cell.date
-                        ? m.codingStats.heatmapContribution
-                            .replace("{date}", cell.date)
-                            .replace("{count}", String(cell.count))
-                        : undefined
-                    }
-                  />
-                ))
-              }
-            </div>
-            <div class="mt-4 flex items-center justify-between gap-3">
-              <span class="font-mono text-xs tracking-widest text-background/50"
-                >{stats.heatmapStartLabel}</span
-              >
-              <div class="flex items-center gap-1.5">
-                <span
-                  class="font-mono text-xs tracking-widest text-background/50"
-                  >{m.codingStats.heatmapLess}</span
-                >
-                <div class="size-2 rounded-full bg-[#ebedf0]"></div>
-                {
-                  stats.heatmapColors.map((color) => (
-                    <div
-                      class="size-2 rounded-full"
-                      style={`background-color: ${color}`}
-                    />
-                  ))
-                }
-                <span
-                  class="font-mono text-xs tracking-widest text-background/50"
-                  >{m.codingStats.heatmapMore}</span
-                >
-              </div>
-              <span class="font-mono text-xs tracking-widest text-background/50"
-                >{stats.heatmapEndLabel}</span
-              >
-            </div>
-            {
-              stats.yearContributions.length > 0 && (
-                <div class="mt-5 flex flex-wrap gap-3 border-t border-background/15 pt-5">
-                  {stats.yearContributions.map((year) => (
-                    <span class="inline-flex items-center gap-2 rounded-full border border-background/20 px-3 py-1 font-mono text-[10px] tracking-widest text-background/75 uppercase">
-                      {year.year} · {year.total.toLocaleString("en-US")}
-                    </span>
-                  ))}
-                </div>
-              )
-            }
-            {
-              stats.heatmapNote && (
-                <p class="mt-4 font-mono text-xs leading-relaxed text-background/45">
-                  {stats.heatmapNote}
-                </p>
-              )
-            }
-          </FocusIn>
-
-          <div class="mt-8 grid grid-cols-2 gap-6">
-            {
-              stats.streaks.map((st, i) => (
-                <FocusIn
-                  class="border-t border-background/20 pt-5"
-                  delay={120 + i * 100}
-                >
-                  <p class="mb-2 font-mono text-xs tracking-widest text-background/50 uppercase">
-                    {st.label}
-                  </p>
-                  <p class={countUpSmClass}>{st.value}</p>
-                  <p class="mt-1 font-mono text-xs tracking-widest text-background/60">
-                    {st.desc}
-                  </p>
-                </FocusIn>
-              ))
-            }
-          </div>
-        </div>
-
-        <FocusIn delay={160}>
-          <div class="mb-6 flex items-center justify-between">
-            <p
-              class="font-mono text-xs tracking-widest text-background/50 uppercase"
-            >
-              {m.codingStats.recentRepos}
-            </p>
-            <span
-              class="font-mono text-xs tracking-widest text-background/50 uppercase"
-              >{
-                m.codingStats.repoCount.replace(
-                  "{count}",
-                  String(stats.recentRepos.length),
-                )
-              }</span
-            >
-          </div>
-          <ul
-            class="divide-y divide-background/15 border-y border-background/15"
-          >
-            {
-              stats.recentRepos.map((repo, i) => (
-                <FocusIn as="li" delay={180 + i * 40}>
-                  <a
-                    href={repo.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="flex items-start justify-between gap-4 py-4 transition-colors hover:text-background/80"
-                  >
-                    <div class="min-w-0">
-                      <p class="truncate font-mono text-xs text-background/90">
-                        {repo.name}
-                        {repo.isPrivate && (
-                          <span class="ml-2 text-background/45">
-                            {m.codingStats.private}
-                          </span>
-                        )}
-                      </p>
-                      <p class="mt-1 font-mono text-xs tracking-widest text-background/45 uppercase">
-                        {m.codingStats.repoMeta
-                          .replace("{language}", repo.language ?? "—")
-                          .replace("{commits}", String(repo.totalCommits))
-                          .replace("{date}", repo.pushedLabel)}
-                      </p>
-                    </div>
-                    <span class="shrink-0 font-mono text-xs text-background/50">
-                      ★ {repo.stars}
-                    </span>
-                  </a>
-                </FocusIn>
-              ))
-            }
-          </ul>
-        </FocusIn>
-      </div>
-
-      <div class="space-y-12">
-        <div>
-          <FocusIn class="mb-6 flex items-center justify-between" delay={40}>
-            <p
-              class="font-mono text-xs tracking-widest text-background/50 uppercase"
-            >
-              {m.codingStats.languageDist}
-            </p>
-            <span
-              class="font-mono text-xs tracking-widest text-background/50 uppercase"
-              >{
-                m.codingStats.languageCount.replace(
-                  "{count}",
-                  String(stats.languages.length),
-                )
-              }</span
-            >
-          </FocusIn>
-
-          <div class="max-h-64 space-y-4 overflow-y-auto pr-1">
-            {
-              stats.languages.map((lang, i) => (
-                <FocusIn delay={80 + (i % 8) * 50}>
-                  <div class="mb-2 flex items-center justify-between gap-3">
-                    <span class="font-mono text-xs text-background/90">
-                      {lang.name}
-                    </span>
-                    <span class="font-mono text-xs tracking-widest text-background/50">
-                      {lang.pct}% · {lang.text}
-                    </span>
-                  </div>
-                  <div class="h-1 w-full bg-background/15">
-                    <div
-                      class="coding-stats__bar-fill h-full bg-background"
-                      style={`--pct: ${Math.min(lang.pct, 100)}%`}
-                    />
-                  </div>
-                </FocusIn>
-              ))
-            }
-          </div>
-        </div>
-
-        <FocusIn delay={100}>
-          <div class="mb-6 flex items-center justify-between">
-            <p
-              class="font-mono text-xs tracking-widest text-background/50 uppercase"
-            >
-              {m.codingStats.wakatimeProjects}
-            </p>
-            <span
-              class="font-mono text-xs tracking-widest text-background/50 uppercase"
-              >{
-                m.codingStats.projectCount.replace(
-                  "{count}",
-                  String(stats.projects.length),
-                )
-              }</span
-            >
-          </div>
-          <div class="max-h-56 space-y-4 overflow-y-auto pr-1">
-            {
-              stats.projects.map((project, i) => (
-                <FocusIn delay={120 + (i % 8) * 50}>
-                  <div class="mb-2 flex items-center justify-between gap-3">
-                    <span class="truncate font-mono text-xs text-background/90">
-                      {project.name}
-                    </span>
-                    <span class="shrink-0 font-mono text-xs tracking-widest text-background/50">
-                      {project.pct}% · {project.text}
-                    </span>
-                  </div>
-                  <div class="h-1 w-full bg-background/15">
-                    <div
-                      class="coding-stats__bar-fill h-full bg-background"
-                      style={`--pct: ${Math.min(project.pct, 100)}%`}
-                    />
-                  </div>
-                </FocusIn>
-              ))
-            }
-          </div>
-        </FocusIn>
-
-        <FocusIn delay={140}>
-          <div class="mb-6 flex items-center justify-between">
-            <p
-              class="font-mono text-xs tracking-widest text-background/50 uppercase"
-            >
-              {m.codingStats.codingTime}
-            </p>
-            <span
-              class="font-mono text-xs tracking-widest text-background/50 uppercase"
-              >WakaTime</span
-            >
-          </div>
-          <div class="grid grid-cols-3 gap-px bg-background/20">
-            {
-              stats.activityStats.map((item, i) => (
-                <FocusIn class="bg-accent p-6 text-center" delay={160 + i * 80}>
-                  <p class={countUpXsClass}>{item.value}</p>
-                  <p class="mt-2 font-mono text-xs tracking-widest text-background/50 uppercase">
-                    {item.label}
-                  </p>
-                </FocusIn>
-              ))
-            }
-          </div>
-        </FocusIn>
-
-        <FocusIn
-          class="space-y-8 border-t border-background/20 pt-10"
-          delay={200}
-        >
-          {
-            stats.dailyActivity.length > 0 && (
+            <div class="flex items-center gap-4">
+              <img
+                src={stats.profile.avatarUrl}
+                alt={stats.profile.name}
+                width={72}
+                height={72}
+                class="size-18 rounded-full border border-background/25 object-cover"
+                loading="lazy"
+                decoding="async"
+              />
               <div>
-                <p class="mb-4 font-mono text-xs tracking-widest text-background/50 uppercase">
-                  {m.codingStats.dailyActivity}
-                </p>
-                <div
-                  class="grid gap-px bg-background/20"
-                  style={`grid-template-columns: repeat(${Math.min(stats.dailyActivity.length, 3)}, minmax(0, 1fr))`}
+                <p class="font-display text-2xl italic">{stats.profile.name}</p>
+                <a
+                  href={stats.profile.profileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-mono text-xs tracking-widest text-background/70 uppercase transition-colors hover:text-background"
                 >
-                  {stats.dailyActivity.map((day) => (
-                    <div class="bg-accent px-4 py-5 text-center">
-                      <p class="font-display text-2xl italic text-background md:text-3xl">
-                        {day.text}
-                      </p>
-                      <p class="mt-2 font-mono text-xs tracking-widest text-background/50 uppercase">
-                        {day.label}
-                      </p>
+                  @{stats.profile.username} →
+                </a>
+              </div>
+            </div>
+            <div class="grid flex-1 gap-4 border-t border-background/15 pt-6 md:border-t-0 md:border-l md:pt-0 md:pl-8">
+              <p class="font-mono text-xs leading-relaxed text-background/75">
+                <span class="text-background/50">
+                  {m.codingStats.workspace}
+                </span>
+                {stats.profile.lastProject} ({stats.profile.lastBranch}) ·{" "}
+                {stats.profile.lastLanguage} · {stats.profile.lastEditor} ·{" "}
+                {stats.profile.timezone}
+              </p>
+              <p class="font-mono text-xs leading-relaxed text-background/60">
+                {stats.commitsMetaMessage}
+                {stats.privateRepoCount > 0 && (
+                  <span>
+                    {m.codingStats.privateRepos.replace(
+                      "{count}",
+                      String(stats.privateRepoCount),
+                    )}
+                  </span>
+                )}
+              </p>
+            </div>
+            <a
+              href={stats.profile.wakatimeProfileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hidden shrink-0 md:block"
+              aria-label={m.codingStats.wakatimeProfile}
+            >
+              <img
+                src={stats.profile.wakatimePhoto}
+                alt=""
+                width={48}
+                height={48}
+                class="size-12 rounded-full border border-background/25 object-cover opacity-80 transition-opacity hover:opacity-100"
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
+          </FocusIn>
+
+          <div class="mb-6 grid grid-cols-2 gap-px border-y border-background/20 bg-background/20 md:grid-cols-4">
+            {stats.summaryStats.map((s, i) => (
+              <FocusIn class="bg-accent p-8 md:p-10" delay={i * 90}>
+                <p class="mb-3 font-mono text-xs tracking-widest text-background/50 uppercase">
+                  {s.label}
+                </p>
+                <p class={countUpClass}>{s.value}</p>
+                <p class="mt-2 font-mono text-xs tracking-widest text-background/50 uppercase">
+                  {s.sub}
+                </p>
+              </FocusIn>
+            ))}
+          </div>
+
+          <div class="mb-20 grid grid-cols-2 gap-px border-b border-background/20 bg-background/20 md:grid-cols-4">
+            {stats.secondaryStats.map((s, i) => (
+              <FocusIn class="bg-accent p-6 md:p-8" delay={360 + i * 70}>
+                <p class="mb-2 font-mono text-xs tracking-widest text-background/50 uppercase">
+                  {s.label}
+                </p>
+                <p class={countUpSmClass}>{s.value}</p>
+                <p class="mt-2 font-mono text-xs tracking-widest text-background/50 uppercase">
+                  {s.sub}
+                </p>
+              </FocusIn>
+            ))}
+          </div>
+
+          <div class="grid items-start gap-16 lg:grid-cols-2">
+            <div class="space-y-12">
+              <div>
+                <FocusIn
+                  class="mb-6 flex items-center justify-between"
+                  delay={40}
+                >
+                  <p class="font-mono text-xs tracking-widest uppercase">
+                    {m.codingStats.contributionWeeks.replace(
+                      "{count}",
+                      String(stats.heatmapWeekCount),
+                    )}
+                  </p>
+                  <span class="font-mono text-xs tracking-widest text-background/50 uppercase">
+                    GitHub
+                  </span>
+                </FocusIn>
+
+                <FocusIn
+                  class="rounded border border-background/20 p-5"
+                  delay={80}
+                >
+                  <div
+                    class="coding-stats__heatmap grid gap-0.75"
+                    style={`grid-template-columns: repeat(${stats.heatmapWeekCount}, minmax(0, 1fr))`}
+                  >
+                    {stats.heatmapCells.map((cell, i) => (
+                      <div
+                        class="coding-stats__heatmap-cell aspect-square w-full rounded-full"
+                        style={`--i: ${i}; background-color: ${cell.color}`}
+                        title={
+                          cell.date
+                            ? m.codingStats.heatmapContribution
+                                .replace("{date}", cell.date)
+                                .replace("{count}", String(cell.count))
+                            : undefined
+                        }
+                      />
+                    ))}
+                  </div>
+                  <div class="mt-4 flex items-center justify-between gap-3">
+                    <span class="font-mono text-xs tracking-widest text-background/50">
+                      {stats.heatmapStartLabel}
+                    </span>
+                    <div class="flex items-center gap-1.5">
+                      <span class="font-mono text-xs tracking-widest text-background/50">
+                        {m.codingStats.heatmapLess}
+                      </span>
+                      <div class="size-2 rounded-full bg-[#ebedf0]" />
+                      {stats.heatmapColors.map((color) => (
+                        <div
+                          class="size-2 rounded-full"
+                          style={`background-color: ${color}`}
+                        />
+                      ))}
+                      <span class="font-mono text-xs tracking-widest text-background/50">
+                        {m.codingStats.heatmapMore}
+                      </span>
                     </div>
+                    <span class="font-mono text-xs tracking-widest text-background/50">
+                      {stats.heatmapEndLabel}
+                    </span>
+                  </div>
+                  {stats.yearContributions.length > 0 && (
+                    <div class="mt-5 flex flex-wrap gap-3 border-t border-background/15 pt-5">
+                      {stats.yearContributions.map((year) => (
+                        <span class="inline-flex items-center gap-2 rounded-full border border-background/20 px-3 py-1 font-mono text-[10px] tracking-widest text-background/75 uppercase">
+                          {year.year} · {year.total.toLocaleString("en-US")}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {stats.heatmapNote && (
+                    <p class="mt-4 font-mono text-xs leading-relaxed text-background/45">
+                      {stats.heatmapNote}
+                    </p>
+                  )}
+                </FocusIn>
+
+                <div class="mt-8 grid grid-cols-2 gap-6">
+                  {stats.streaks.map((st, i) => (
+                    <FocusIn
+                      class="border-t border-background/20 pt-5"
+                      delay={120 + i * 100}
+                    >
+                      <p class="mb-2 font-mono text-xs tracking-widest text-background/50 uppercase">
+                        {st.label}
+                      </p>
+                      <p class={countUpSmClass}>{st.value}</p>
+                      <p class="mt-1 font-mono text-xs tracking-widest text-background/60">
+                        {st.desc}
+                      </p>
+                    </FocusIn>
                   ))}
                 </div>
               </div>
-            )
-          }
 
-          <div>
-            <p
-              class="mb-4 font-mono text-xs tracking-widest text-background/50 uppercase"
-            >
-              {m.codingStats.goalsAchievements}
-            </p>
-            <div class="flex flex-wrap gap-2">
-              {
-                stats.goals.map((goal) => (
-                  <span
-                    class:list={[
-                      "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 font-mono text-xs tracking-wider uppercase",
-                      goal.status === "success"
-                        ? "border-background/30 bg-background/15 text-background"
-                        : "border-background/15 text-background/60",
-                    ]}
-                  >
-                    <span
-                      class:list={[
-                        "size-1.5 shrink-0 rounded-full",
-                        goal.status === "success"
-                          ? "bg-background"
-                          : "bg-background/40",
-                      ]}
-                    />
-                    {goal.title}
+              <FocusIn delay={160}>
+                <div class="mb-6 flex items-center justify-between">
+                  <p class="font-mono text-xs tracking-widest text-background/50 uppercase">
+                    {m.codingStats.recentRepos}
+                  </p>
+                  <span class="font-mono text-xs tracking-widest text-background/50 uppercase">
+                    {m.codingStats.repoCount.replace(
+                      "{count}",
+                      String(stats.recentRepos.length),
+                    )}
                   </span>
-                ))
-              }
-              {
-                stats.trophies.map((t) => (
-                  <span class="inline-flex items-center gap-2 rounded-full border border-background/25 bg-background/10 px-3 py-1.5 font-mono text-xs tracking-wider text-background/85 uppercase">
-                    <span class="size-1.5 shrink-0 rounded-full bg-background/70" />
-                    {t}
+                </div>
+                <ul class="divide-y divide-background/15 border-y border-background/15">
+                  {stats.recentRepos.map((repo, i) => (
+                    <FocusIn as="li" delay={180 + i * 40}>
+                      <a
+                        href={repo.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="flex items-start justify-between gap-4 py-4 transition-colors hover:text-background/80"
+                      >
+                        <div class="min-w-0">
+                          <p class="truncate font-mono text-xs text-background/90">
+                            {repo.name}
+                            {repo.isPrivate && (
+                              <span class="ml-2 text-background/45">
+                                {m.codingStats.private}
+                              </span>
+                            )}
+                          </p>
+                          <p class="mt-1 font-mono text-xs tracking-widest text-background/45 uppercase">
+                            {m.codingStats.repoMeta
+                              .replace("{language}", repo.language ?? "—")
+                              .replace("{commits}", String(repo.totalCommits))
+                              .replace("{date}", repo.pushedLabel)}
+                          </p>
+                        </div>
+                        <span class="shrink-0 font-mono text-xs text-background/50">
+                          ★ {repo.stars}
+                        </span>
+                      </a>
+                    </FocusIn>
+                  ))}
+                </ul>
+              </FocusIn>
+            </div>
+
+            <div class="space-y-12">
+              <div>
+                <FocusIn
+                  class="mb-6 flex items-center justify-between"
+                  delay={40}
+                >
+                  <p class="font-mono text-xs tracking-widest text-background/50 uppercase">
+                    {m.codingStats.languageDist}
+                  </p>
+                  <span class="font-mono text-xs tracking-widest text-background/50 uppercase">
+                    {m.codingStats.languageCount.replace(
+                      "{count}",
+                      String(stats.languages.length),
+                    )}
                   </span>
-                ))
-              }
+                </FocusIn>
+
+                <div class="coding-stats__scroll max-h-64 space-y-4 overflow-y-auto pr-1">
+                  {stats.languages.map((lang, i) => (
+                    <FocusIn delay={80 + (i % 8) * 50}>
+                      <div class="mb-2 flex items-center justify-between gap-3">
+                        <span class="font-mono text-xs text-background/90">
+                          {lang.name}
+                        </span>
+                        <span class="font-mono text-xs tracking-widest text-background/50">
+                          {lang.pct}% · {lang.text}
+                        </span>
+                      </div>
+                      <div class="h-1 w-full bg-background/15">
+                        <div
+                          class="coding-stats__bar-fill h-full bg-background"
+                          style={`--pct: ${Math.min(lang.pct, 100)}%`}
+                        />
+                      </div>
+                    </FocusIn>
+                  ))}
+                </div>
+              </div>
+
+              <FocusIn delay={100}>
+                <div class="mb-6 flex items-center justify-between">
+                  <p class="font-mono text-xs tracking-widest text-background/50 uppercase">
+                    {m.codingStats.wakatimeProjects}
+                  </p>
+                  <span class="font-mono text-xs tracking-widest text-background/50 uppercase">
+                    {m.codingStats.projectCount.replace(
+                      "{count}",
+                      String(stats.projects.length),
+                    )}
+                  </span>
+                </div>
+                <div class="coding-stats__scroll max-h-56 space-y-4 overflow-y-auto pr-1">
+                  {stats.projects.map((project, i) => (
+                    <FocusIn delay={120 + (i % 8) * 50}>
+                      <div class="mb-2 flex items-center justify-between gap-3">
+                        <span class="truncate font-mono text-xs text-background/90">
+                          {project.name}
+                        </span>
+                        <span class="shrink-0 font-mono text-xs tracking-widest text-background/50">
+                          {project.pct}% · {project.text}
+                        </span>
+                      </div>
+                      <div class="h-1 w-full bg-background/15">
+                        <div
+                          class="coding-stats__bar-fill h-full bg-background"
+                          style={`--pct: ${Math.min(project.pct, 100)}%`}
+                        />
+                      </div>
+                    </FocusIn>
+                  ))}
+                </div>
+              </FocusIn>
+
+              <FocusIn delay={140}>
+                <div class="mb-6 flex items-center justify-between">
+                  <p class="font-mono text-xs tracking-widest text-background/50 uppercase">
+                    {m.codingStats.codingTime}
+                  </p>
+                  <span class="font-mono text-xs tracking-widest text-background/50 uppercase">
+                    WakaTime
+                  </span>
+                </div>
+                <div class="grid grid-cols-3 gap-px bg-background/20">
+                  {stats.activityStats.map((item, i) => (
+                    <FocusIn
+                      class="bg-accent p-6 text-center"
+                      delay={160 + i * 80}
+                    >
+                      <p class={countUpXsClass}>{item.value}</p>
+                      <p class="mt-2 font-mono text-xs tracking-widest text-background/50 uppercase">
+                        {item.label}
+                      </p>
+                    </FocusIn>
+                  ))}
+                </div>
+              </FocusIn>
+
+              <FocusIn
+                class="space-y-8 border-t border-background/20 pt-10"
+                delay={200}
+              >
+                {stats.dailyActivity.length > 0 && (
+                  <div>
+                    <p class="mb-4 font-mono text-xs tracking-widest text-background/50 uppercase">
+                      {m.codingStats.dailyActivity}
+                    </p>
+                    <div
+                      class="grid gap-px bg-background/20"
+                      style={`grid-template-columns: repeat(${Math.min(stats.dailyActivity.length, 3)}, minmax(0, 1fr))`}
+                    >
+                      {stats.dailyActivity.map((day) => (
+                        <div class="bg-accent px-4 py-5 text-center">
+                          <p class="font-display text-2xl italic text-background md:text-3xl">
+                            {day.text}
+                          </p>
+                          <p class="mt-2 font-mono text-xs tracking-widest text-background/50 uppercase">
+                            {day.label}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <p class="mb-4 font-mono text-xs tracking-widest text-background/50 uppercase">
+                    {m.codingStats.goalsAchievements}
+                  </p>
+                  <div class="flex flex-wrap gap-2">
+                    {stats.goals.map((goal) => (
+                      <span
+                        class:list={[
+                          "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 font-mono text-xs tracking-wider uppercase",
+                          goal.status === "success"
+                            ? "border-background/30 bg-background/15 text-background"
+                            : "border-background/15 text-background/60",
+                        ]}
+                      >
+                        <span
+                          class:list={[
+                            "coding-stats__dot size-1.5 shrink-0 rounded-full",
+                            goal.status === "success"
+                              ? "is-solid"
+                              : "is-soft",
+                          ]}
+                        />
+                        {goal.title}
+                      </span>
+                    ))}
+                    {stats.trophies.map((t) => (
+                      <span class="inline-flex items-center gap-2 rounded-full border border-background/25 bg-background/10 px-3 py-1.5 font-mono text-xs tracking-wider text-background/85 uppercase">
+                        <span class="coding-stats__dot is-mid size-1.5 shrink-0 rounded-full" />
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </FocusIn>
             </div>
           </div>
-        </FocusIn>
-      </div>
-    </div>
 
-    <CommitsRepoDialog repos={stats.commitsByRepo} />
+          <CommitsRepoDialog repos={stats.commitsByRepo} />
         </>
       )
     }
@@ -517,6 +465,76 @@ const countUpXsClass =
 </section>
 
 <style is:global>
+  /* Soft light scrollbar on accent panel — stable across theme resolve */
+  .coding-stats .coding-stats__scroll {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(
+        in oklch,
+        var(--accent-panel-foreground) 42%,
+        transparent
+      )
+      transparent;
+  }
+
+  .coding-stats .coding-stats__scroll::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  .coding-stats .coding-stats__scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .coding-stats .coding-stats__scroll::-webkit-scrollbar-thumb {
+    background-color: color-mix(
+      in oklch,
+      var(--accent-panel-foreground) 42%,
+      transparent
+    );
+    border-radius: 999px;
+  }
+
+  .coding-stats .coding-stats__scroll::-webkit-scrollbar-thumb:hover {
+    background-color: color-mix(
+      in oklch,
+      var(--accent-panel-foreground) 58%,
+      transparent
+    );
+  }
+
+  .coding-stats .coding-stats__scroll::-webkit-scrollbar-button,
+  .coding-stats .coding-stats__scroll::-webkit-scrollbar-corner {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* Goal/trophy dots — always light on accent panel */
+  .coding-stats .coding-stats__dot.is-solid {
+    background-color: var(--accent-panel-foreground);
+  }
+
+  .coding-stats .coding-stats__dot.is-mid {
+    background-color: color-mix(
+      in oklch,
+      var(--accent-panel-foreground) 70%,
+      transparent
+    );
+  }
+
+  .coding-stats .coding-stats__dot.is-soft {
+    background-color: color-mix(
+      in oklch,
+      var(--accent-panel-foreground) 45%,
+      transparent
+    );
+  }
+
+  html[data-theme-resolved="dark"] .coding-stats,
+  html[data-theme-resolved="dark"] .coding-stats .bg-accent {
+    background-color: var(--accent-panel);
+  }
+
   html[data-theme-resolved="dark"] .coding-stats .text-background {
     color: var(--foreground);
   }

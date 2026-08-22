@@ -33,7 +33,7 @@ const desktopNavPillClass = cn(
 );
 
 const shellClass = cn(
-  "pointer-events-auto transition-[background-color,box-shadow,backdrop-filter] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
+  "site-header__shell pointer-events-auto transition-[background-color,box-shadow,backdrop-filter] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
   "group-[.is-scrolled]/site-header:bg-background/88 group-[.is-scrolled]/site-header:backdrop-blur-md",
   "group-[.is-scrolled]/site-header:shadow-[0_1px_0_color-mix(in_oklch,var(--foreground)_4%,transparent)]",
   "group-[.is-inverse]/site-header:bg-transparent group-[.is-inverse]/site-header:shadow-none group-[.is-inverse]/site-header:backdrop-blur-none",
@@ -253,6 +253,18 @@ const menuToggleClass = cn(
 <style is:global>
   #site-header {
     top: 0;
+  }
+
+  html[data-theme-resolved="dark"]
+    #site-header.is-inverse.is-scrolled
+    .site-header__shell {
+    background-color: color-mix(in oklch, var(--accent-panel) 92%, transparent);
+  }
+
+  html[data-theme-resolved="dark"]
+    #site-header.is-inverse.is-menu-open
+    [data-header-menu] {
+    background-color: color-mix(in oklch, var(--accent-panel) 96%, transparent);
   }
 
   @keyframes site-header-indicator-in {
