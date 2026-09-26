@@ -1,7 +1,6 @@
 import type { ImageMetadata } from "astro";
 
 import { project1 } from "@/data/portfolio";
-import type { ProjectsContentProps } from "@/types/projects";
 import {
   fetchProjectBySlug,
   fetchProjectsContents,
@@ -80,7 +79,7 @@ export async function getWorksArchive(): Promise<ArchiveWork[]> {
 }
 
 /** Karya pilihan untuk section scroll — di-fetch saat SSR/build. */
-export async function getFeaturedWorks(limit = 6): Promise<FeaturedWork[]> {
+export async function getFeaturedWorks(limit = 3): Promise<FeaturedWork[]> {
   const { data } = await fetchProjectsPage({ page: 1 });
   const items = data.slice(0, limit);
 

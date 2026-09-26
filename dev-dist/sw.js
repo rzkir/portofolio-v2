@@ -67,34 +67,46 @@ if (!self.define) {
     });
   };
 }
-define(['./workbox-0e94592d'], (function (workbox) { 'use strict';
+define(['./workbox-c722f43a'], (function (workbox) { 'use strict';
 
-	self.skipWaiting();
-	workbox.clientsClaim();
-	workbox.registerRoute(/\.(?:js|css|woff2?)$/i, new workbox.StaleWhileRevalidate({
-	  "cacheName": "static-resources",
-	  plugins: [new workbox.ExpirationPlugin({
-	    maxEntries: 64,
-	    maxAgeSeconds: 604800
-	  })]
-	}), 'GET');
-	workbox.registerRoute(/\.(?:png|jpg|jpeg|svg|webp|ico)$/i, new workbox.CacheFirst({
-	  "cacheName": "images",
-	  plugins: [new workbox.ExpirationPlugin({
-	    maxEntries: 64,
-	    maxAgeSeconds: 2592000
-	  })]
-	}), 'GET');
-	workbox.registerRoute(({
-	  request,
-	  url
-	}) => request.mode === "navigate" && !url.pathname.startsWith("/api/"), new workbox.NetworkFirst({
-	  "cacheName": "pages",
-	  "networkTimeoutSeconds": 3,
-	  plugins: [new workbox.ExpirationPlugin({
-	    maxEntries: 32,
-	    maxAgeSeconds: 86400
-	  })]
-	}), 'GET');
+  self.skipWaiting();
+  workbox.clientsClaim();
+  /**
+   * The precacheAndRoute() method efficiently caches and responds to
+   * requests for URLs in the manifest.
+   * See https://goo.gl/S9QRab
+   */
+  workbox.precacheAndRoute([{
+    "url": "suppress-warnings.js",
+    "revision": "d41d8cd98f00b204e9800998ecf8427e"
+  }], {
+    "directoryIndex": "index.html"
+  });
+  workbox.cleanupOutdatedCaches();
+  workbox.registerRoute(/\.(?:js|css|woff2?)$/i, new workbox.StaleWhileRevalidate({
+    "cacheName": "static-resources",
+    plugins: [new workbox.ExpirationPlugin({
+      maxEntries: 64,
+      maxAgeSeconds: 604800
+    })]
+  }), 'GET');
+  workbox.registerRoute(/\.(?:png|jpg|jpeg|svg|webp|ico)$/i, new workbox.CacheFirst({
+    "cacheName": "images",
+    plugins: [new workbox.ExpirationPlugin({
+      maxEntries: 64,
+      maxAgeSeconds: 2592000
+    })]
+  }), 'GET');
+  workbox.registerRoute(({
+    request,
+    url
+  }) => request.mode === "navigate" && !url.pathname.startsWith("/api/"), new workbox.NetworkFirst({
+    "cacheName": "pages",
+    "networkTimeoutSeconds": 3,
+    plugins: [new workbox.ExpirationPlugin({
+      maxEntries: 32,
+      maxAgeSeconds: 86400
+    })]
+  }), 'GET');
 
 }));

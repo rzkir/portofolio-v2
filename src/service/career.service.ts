@@ -15,15 +15,8 @@ const MONTHS_ID = [
   "Des",
 ] as const;
 
-function parseCareerTimestamp(value: string): number {
-  if (value === "present") return Date.now();
-
-  const [year, month = "01"] = value.split("-");
-  return new Date(Number(year), Number(month) - 1).getTime();
-}
-
 function formatCareerMonth(value: string): string {
-  if (value === "present") return "Sekarang";
+  if (!/^\d{4}(-\d{2})?$/.test(value)) return value;
 
   const [year, month = "01"] = value.split("-");
   const monthIndex = Number(month) - 1;
@@ -41,12 +34,6 @@ function formatCareerRange(date: CareerContentProps["date"]): string {
   return `${start} — ${end}`;
 }
 
-function sortCareers(items: CareerContentProps[]): CareerContentProps[] {
-  return [...items].sort(
-    (a, b) => parseCareerTimestamp(b.date.start) - parseCareerTimestamp(a.date.start),
-  );
-}
-
 function mapCareer(item: CareerContentProps): Career {
   return {
     org: item.company,
@@ -56,8 +43,8 @@ function mapCareer(item: CareerContentProps): Career {
   };
 }
 
-/** Pengalaman karier dari API — di-fetch saat SSR/build. */
+/** Pengalaman karier dari API — di-fetch saat SSR/build. Urutan & "present" di-handle BE. */
 export async function getCareers(): Promise<Career[]> {
   const items = await fetchCareerContents();
-  return sortCareers(items).map(mapCareer);
+  return items.map(mapCareer);
 }
