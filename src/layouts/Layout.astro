@@ -2,7 +2,6 @@
 import ModalPopup from "@/components/ModalPopup.astro";
 import Announcement from "@/layouts/announcement.astro";
 import NotificationContext from "@/layouts/NotificationContext.astro";
-import SettingsContext from "@/layouts/SettingsContext.astro";
 import SplashScreen from "@/components/SplashScreen.astro";
 import { FORCE_MOTION_INLINE_SCRIPT } from "@/lib/force-motion";
 import {
@@ -54,7 +53,6 @@ const meta = resolvePageMetadata({
 });
 
 const verification = getSiteVerification();
-const isAgentRoute = Astro.url.pathname.startsWith("/agent");
 const siteOrigin = Astro.site?.origin ?? "https://rizkiramadhan.biz.id";
 const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
 ---
@@ -62,7 +60,7 @@ const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
 <!doctype html>
 <html
   lang={locale}
-  data-has-announcement={!isAgentRoute ? "" : undefined}
+  data-has-announcement=""
 >
   <head>
     <meta charset="UTF-8" />
@@ -195,18 +193,9 @@ const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
     }
     <SplashScreen />
     <NotificationContext />
-    {isAgentRoute && <SettingsContext />}
-    {!isAgentRoute && <Announcement />}
-    {
-      isAgentRoute ? (
-        <div class="agent-shell flex h-dvh w-full bg-background text-foreground">
-          <slot />
-        </div>
-      ) : (
-        <slot />
-      )
-    }
-    {!isAgentRoute && <ModalPopup />}
+    <Announcement />
+    <slot />
+    <ModalPopup />
     <script>
       import { initLayout } from "@/lib/layout";
 

@@ -1,6 +1,8 @@
 import { fetchSitemap } from "../utils/FetchSitemap";
 
-const LOCAL_STATIC_ROUTES: Array<SitemapRoute & { path: string }> = [
+const LOCAL_STATIC_ROUTES: Array<
+  Pick<SitemapRoute, "changefreq" | "priority"> & { path: string }
+> = [
   { path: "/", changefreq: "daily", priority: 1 },
   { path: "/works", changefreq: "weekly", priority: 0.9 },
   { path: "/blog", changefreq: "weekly", priority: 0.85 },
@@ -20,7 +22,11 @@ function toAbsoluteUrl(siteUrl: string, pathname: string): string {
 }
 
 function shouldExcludePath(pathname: string): boolean {
-  return EXCLUDED_PATHS.has(pathname);
+  return (
+    EXCLUDED_PATHS.has(pathname) ||
+    pathname === "/agent" ||
+    pathname.startsWith("/agent/")
+  );
 }
 
 function mapApiPathname(pathname: string): string | null {

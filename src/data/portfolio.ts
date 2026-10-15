@@ -22,6 +22,8 @@ export type ProfileSocialLink = {
   handle: string;
 };
 
+export const AI_STUDIO_URL = "https://next-ai.rizkiramadhan.biz.id/" as const;
+
 export const contact = {
   email: "hello@rizkiramadhan.biz.id",
   website: "https://www.rizkiramadhan.biz.id",

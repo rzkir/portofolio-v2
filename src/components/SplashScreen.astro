@@ -49,14 +49,8 @@ const cinematic = "cubic-bezier(0.32, 0.72, 0, 1)";
     </FadeInText>
   </div>
 
-  <FadeInText
+  <div
     id="splash-progress-wrap"
-    enhance={false}
-    duration={0.9}
-    delay={0.6}
-    blur="0px"
-    yOffset={8}
-    easing={cinematic}
     class="absolute bottom-10 left-1/2 flex -translate-x-1/2 flex-col items-center gap-3"
   >
     <span
@@ -75,21 +69,106 @@ const cinematic = "cubic-bezier(0.32, 0.72, 0, 1)";
     >
       Preparing content<span class="splash-status__dots" aria-hidden="true"></span>
     </span>
-  </FadeInText>
+  </div>
 </div>
 
-<script>
-  import { bindSplashScreen } from "@/service/spleshscreen.service";
+<script is:inline>
+  (function () {
+    var splash = document.getElementById("splash-screen");
+    if (!splash || splash.getAttribute("data-bound") === "true") return;
 
-  function initSplash() {
-    bindSplashScreen();
-  }
+    var seen = document.documentElement.classList.contains("splash-seen");
+    try {
+      seen = seen || sessionStorage.getItem("splash-seen") === "1";
+    } catch (e) {}
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initSplash, { once: true });
-  } else {
-    initSplash();
-  }
+    if (seen) {
+      splash.remove();
+      document.documentElement.classList.remove("splash-pending");
+      document.documentElement.classList.add("splash-seen");
+      return;
+    }
 
-  document.addEventListener("astro:page-load", initSplash);
+    document.documentElement.classList.add("splash-pending");
+    splash.setAttribute("data-bound", "true");
+
+    var progressEl = document.getElementById("splash-progress");
+    var statusEl = document.getElementById("splash-status");
+    var minMs = 900;
+    var maxMs = 4000;
+    var exitMs = 350;
+    var start = performance.now();
+    var done = false;
+    var raf = 0;
+
+    function pad(value) {
+      return String(value).padStart(3, "0");
+    }
+
+    function setProgress(value) {
+      var n = Math.max(0, Math.min(100, Math.round(value)));
+      if (progressEl) progressEl.textContent = pad(n);
+      if (statusEl) {
+        statusEl.setAttribute("data-state", n < 8 ? "preparing" : "ready");
+      }
+    }
+
+    function unlock() {
+      document.documentElement.classList.remove("splash-pending");
+      try {
+        window.dispatchEvent(new Event("site-header:sync"));
+      } catch (e) {}
+    }
+
+    function finish() {
+      if (done) return;
+      done = true;
+      cancelAnimationFrame(raf);
+      setProgress(100);
+      try {
+        sessionStorage.setItem("splash-seen", "1");
+      } catch (e) {}
+      splash.removeAttribute("data-header-theme");
+      unlock();
+      splash.classList.add("is-exiting");
+      document.documentElement.classList.add("splash-seen");
+      window.setTimeout(function () {
+        splash.remove();
+      }, exitMs);
+    }
+
+    function shouldFinish(elapsed) {
+      var ready =
+        document.readyState === "interactive" ||
+        document.readyState === "complete";
+      return elapsed >= maxMs || (ready && elapsed >= minMs);
+    }
+
+    function tick(now) {
+      if (done) return;
+      var elapsed = now - start;
+      var ready =
+        document.readyState === "interactive" ||
+        document.readyState === "complete";
+      var ratio = Math.min(elapsed / maxMs, ready ? 1 : 0.92);
+      setProgress(ratio * 100);
+      if (shouldFinish(elapsed)) {
+        finish();
+        return;
+      }
+      raf = requestAnimationFrame(tick);
+    }
+
+    setProgress(0);
+    raf = requestAnimationFrame(tick);
+    document.addEventListener("readystatechange", function () {
+      tick(performance.now());
+    });
+    window.addEventListener("load", function () {
+      tick(performance.now());
+    });
+    window.setTimeout(function () {
+      tick(performance.now());
+    }, maxMs);
+  })();
 </script>

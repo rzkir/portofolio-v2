@@ -54,17 +54,6 @@ export function resolveBreadcrumbs(
     return crumbs;
   }
 
-  if (root === "agent") {
-    crumbs.push({ name: nav.agentStudio, path: "/agent" });
-    if (segments[1]) {
-      crumbs.push({
-        name: breadcrumbCurrent ?? segments[1],
-        path,
-      });
-    }
-    return crumbs;
-  }
-
   if (breadcrumbCurrent) {
     crumbs.push({ name: breadcrumbCurrent, path });
   }

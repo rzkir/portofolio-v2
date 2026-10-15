@@ -116,7 +116,12 @@ export function fingerprintData(data: unknown): string {
     }
   }
 
-  return `raw:${Date.now()}`;
+  try {
+    const json = JSON.stringify(data);
+    return `raw:${json.length}:${json.slice(0, 96)}`;
+  } catch {
+    return "raw:unserializable";
+  }
 }
 
 async function networkFetch<T>(url: string): Promise<T> {
@@ -210,7 +215,10 @@ export async function apiFetch<T>(
   }
 
   if (entry && now < entry.staleUntil) {
-    return fetchAndCache<T>(cacheKey, url, revalidate, staleTime, entry);
+    void fetchAndCache<T>(cacheKey, url, revalidate, staleTime, entry).catch(
+      () => {},
+    );
+    return entry.data as T;
   }
 
   return fetchAndCache<T>(cacheKey, url, revalidate, staleTime);

@@ -9,7 +9,7 @@ Personal portfolio of **Rizki Ramadhan**, a fullstack developer based in Bogor, 
 
 ## Overview
 
-This site presents work, career, writing, and an embedded AI Studio. Content is served via SSR on Cloudflare Workers and hydrated where interaction matters (grids, chat, guest notes, settings).
+This site presents work, career, writing, and a link out to AI Studio. Content is served via SSR on Cloudflare Workers and hydrated where interaction matters (grids, chat, guest notes, settings).
 
 Default locale is Indonesian (`id`), with English (`en`) and Japanese (`ja`) supported.
 
@@ -24,7 +24,7 @@ Default locale is Indonesian (`id`), with English (`en`) and Japanese (`ja`) sup
 | **Blog** | Essays & tutorials (`/blog`, `/blog/[slug]`) |
 | **Achievements** | Certifications & milestones (`/achievements`) |
 | **Guest notes** | Public guestbook (`/guest-notes`) |
-| **AI Studio** | Multi-domain agents — programming, SEO, marketing, health, science, finance, legal, trivia, academia, translation, technology (`/agent`) |
+| **AI Studio** | Hosted separately at [next-ai.rizkiramadhan.biz.id](https://next-ai.rizkiramadhan.biz.id/) (`/agent` redirects there) |
 | **Services** | Offerings overview (`/layanan`) |
 | **PWA** | Installable app with Workbox caching |
 | **i18n** | ID / EN / JA via cookie + message catalog |
@@ -53,9 +53,9 @@ Default locale is Indonesian (`id`), with English (`en`) and Japanese (`ja`) sup
 │   ├── assets/          # Images processed by Astro
 │   ├── components/      # UI & page sections
 │   ├── data/            # Portfolio constants & i18n messages
-│   ├── lib/             # Shared helpers (i18n, metadata, PWA, agent UI)
+│   ├── lib/             # Shared helpers (i18n, metadata, PWA) |
 │   ├── pages/           # Routes (Astro + sitemap/robots endpoints)
-│   ├── service/         # Data & domain services (works, blogs, agent, stats)
+│   ├── service/         # Data & domain services (works, blogs, stats) |
 │   ├── styles/          # Global CSS
 │   ├── types/           # TypeScript declarations
 │   └── utils/           # Fetch helpers & shared pagination
@@ -128,8 +128,7 @@ Config lives in `wrangler.jsonc` (`BASE_URL`, verification vars, KV `SESSION` bi
 | `/blog/[slug]` | Blog post |
 | `/achievements` | Achievements |
 | `/guest-notes` | Guestbook |
-| `/agent` | AI Studio hub |
-| `/agent/[domain]` | Domain agents (programming, seo, …) |
+| `/agent` | Redirects to [AI Studio](https://next-ai.rizkiramadhan.biz.id/) |
 | `/layanan` | Services |
 | `/help-center` | Help |
 | `/privacy` · `/terms` | Legal |
