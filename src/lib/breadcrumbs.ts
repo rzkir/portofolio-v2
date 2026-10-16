@@ -39,11 +39,6 @@ export function resolveBreadcrumbs(
     return crumbs;
   }
 
-  if (root === "layanan") {
-    crumbs.push({ name: nav.services, path: "/layanan" });
-    return crumbs;
-  }
-
   if (root === "achievements") {
     crumbs.push({ name: nav.achievements, path: "/achievements" });
     return crumbs;

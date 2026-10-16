@@ -42,15 +42,15 @@ export const socialLinks: SocialLink[] = [
   { label: "GitHub", href: "https://github.com/rzkir" },
   {
     label: "Instagram",
-    href: "https://www.instagram.com/rzkir.20",
+    href: "https://www.instagram.com/rizkir.ts",
   },
   {
     label: "TikTok",
-    href: "https://www.tiktok.com/@rzkir.20",
+    href: "https://www.tiktok.com/@rzkir.ts",
   },
   {
     label: "Facebook",
-    href: "https://www.facebook.com/rzkir.20",
+    href: "https://www.facebook.com/rizki.ramadhan.419859",
   },
   { label: "Read.cv", href: "/cv-rizkiramadhan.pdf" },
 ];
@@ -59,25 +59,25 @@ export const profileSocialLinks: ProfileSocialLink[] = [
   {
     id: "instagram",
     label: "Instagram",
-    href: "https://www.instagram.com/rzkir.20",
-    handle: "@rzkir.20",
+    href: "https://www.instagram.com/rizkir.ts",
+    handle: "@rizkir.ts",
   },
   {
     id: "tiktok",
     label: "TikTok",
-    href: "https://www.tiktok.com/@rzkir.20",
-    handle: "@rzkir.20",
+    href: "https://www.tiktok.com/@rzkir.ts",
+    handle: "@rzkir.ts",
   },
   {
     id: "linkedin",
     label: "LinkedIn",
     href: "https://www.linkedin.com/in/rizki-ramadhan-83a17027b",
-    handle: "rizki-ramadhan",
+    handle: "Rizki Ramadhan",
   },
   {
     id: "facebook",
     label: "Facebook",
-    href: "https://www.facebook.com/rzkir.20",
-    handle: "rzkir.20",
+    href: "https://www.facebook.com/rizki.ramadhan.419859",
+    handle: "Rizki Ramadhan",
   },
 ];

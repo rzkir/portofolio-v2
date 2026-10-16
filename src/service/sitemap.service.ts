@@ -7,11 +7,10 @@ const LOCAL_STATIC_ROUTES: Array<
   { path: "/works", changefreq: "weekly", priority: 0.9 },
   { path: "/blog", changefreq: "weekly", priority: 0.85 },
   { path: "/achievements", changefreq: "monthly", priority: 0.8 },
-  { path: "/layanan", changefreq: "monthly", priority: 0.8 },
   { path: "/guest-notes", changefreq: "weekly", priority: 0.6 },
 ];
 
-const EXCLUDED_PATHS = new Set(["/about", "/accounts", "/projects"]);
+const EXCLUDED_PATHS = new Set(["/projects"]);
 
 function normalizeSiteUrl(siteUrl: string): string {
   return siteUrl.replace(/\/$/, "");
@@ -21,16 +20,8 @@ function toAbsoluteUrl(siteUrl: string, pathname: string): string {
   return new URL(pathname, `${normalizeSiteUrl(siteUrl)}/`).href;
 }
 
-function shouldExcludePath(pathname: string): boolean {
-  return (
-    EXCLUDED_PATHS.has(pathname) ||
-    pathname === "/agent" ||
-    pathname.startsWith("/agent/")
-  );
-}
-
 function mapApiPathname(pathname: string): string | null {
-  if (shouldExcludePath(pathname)) return null;
+  if (EXCLUDED_PATHS.has(pathname)) return null;
 
   if (pathname.startsWith("/projects/")) {
     return pathname.replace(/^\/projects\//, "/works/");

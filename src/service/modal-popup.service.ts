@@ -254,7 +254,7 @@ function bindChatModal(root: ParentNode = document) {
   quickReplies.forEach((button) => {
     button.addEventListener("click", () => {
       if (button.dataset.chatQuick === "pricing") {
-        window.location.href = "/layanan";
+        window.location.href = "/#kontak";
         return;
       }
       void handleSend(button.textContent?.trim() ?? "");

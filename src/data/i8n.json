@@ -7,8 +7,6 @@
       "homeDescription": "Crafting human-centric code in a machine world. Portfolio Rizki Ramadhan, fullstack developer dari Bogor, Indonesia.",
       "worksTitle": "Karya — Rizki Ramadhan",
       "worksDescription": "Arsip proyek pilihan Rizki Ramadhan: web app, dashboard, e-commerce, dan PWA — dari konsep hingga production.",
-      "layananTitle": "Layanan — Rizki Ramadhan",
-      "layananDescription": "Layanan fullstack: product engineering, web design, performance audit, headless CMS — plus proses kerja dan FAQ.",
       "achievementsTitle": "Kredensial — Rizki Ramadhan",
       "achievementsDescription": "Arsip sertifikasi dan kredensial Rizki Ramadhan: Dicoding, Dibimbing, MySkills, JavaArch, dan lainnya.",
       "guestNotesTitle": "Buku Tamu — Tinggalkan catatan",
@@ -45,14 +43,12 @@
       "home": "Beranda",
       "works": "Karya",
       "blog": "Blog",
-      "services": "Layanan",
       "achievements": "Kredensial",
       "guestNotes": "Buku Tamu",
       "agentStudio": "AI Studio",
       "shortHome": "Home",
       "shortWorks": "Karya",
       "shortBlog": "Blog",
-      "shortServices": "Jasa",
       "shortAchievements": "Sertif",
       "shortGuestNotes": "Notes"
     },
@@ -99,7 +95,8 @@
       "yearsShort": "3+ thn",
       "entries": "{count} entri",
       "positions": "{count} Posisi",
-      "portraitAlt": "R. Ramadhan — Studio, 2026"
+      "portraitAlt": "R. Ramadhan — Studio, 2026",
+      "ctaAria": "Ajakan kolaborasi"
     },
     "notFound": {
       "badge": "Error 404",
@@ -241,81 +238,6 @@
       "statusValue": "Terbuka untuk proyek",
       "copyright": "© 2026 Rizki Ramadhan — All rights reserved",
       "crafted": "Kebijakan Privasi"
-    },
-    "layanan": {
-      "eyebrow": "Layanan / Services",
-      "title": "Apa yang bisa saya kerjakan.",
-      "subtitle": "Scope, proses, dan jawaban atas pertanyaan yang sering muncul — sebelum kita mulai berkolaborasi.",
-      "servicesEyebrow": "Layanan / 01",
-      "servicesTitle": "Apa yang bisa saya kerjakan",
-      "processEyebrow": "Proses / 02",
-      "processTitle": "Empat langkah, tanpa drama.",
-      "faqEyebrow": "FAQ / 03",
-      "faqTitle": "Pertanyaan umum.",
-      "ctaTitle": "Siap mulai? Ceritakan scope proyekmu — saya balas dalam 24 jam.",
-      "ctaAria": "Ajakan kolaborasi",
-      "services": [
-        {
-          "n": "S/01",
-          "t": "Product Engineering",
-          "d": "Dari ide ke production: arsitektur, build, deploy, monitor."
-        },
-        {
-          "n": "S/02",
-          "t": "Web Design & UI",
-          "d": "Antarmuka editorial yang terasa hidup, bukan template generik."
-        },
-        {
-          "n": "S/03",
-          "t": "Performance Audit",
-          "d": "Lighthouse 90+, Core Web Vitals, real-user metrics."
-        },
-        {
-          "n": "S/04",
-          "t": "Headless CMS",
-          "d": "Sanity, Strapi, Payload — workflow konten yang nyaman."
-        }
-      ],
-      "process": [
-        {
-          "n": "01",
-          "t": "Discovery",
-          "d": "Sesi singkat 45 menit, peta masalah dan ekspektasi."
-        },
-        {
-          "n": "02",
-          "t": "Sketch & Spec",
-          "d": "Wireframe, moodboard, dan technical spec yang jelas."
-        },
-        {
-          "n": "03",
-          "t": "Build",
-          "d": "Sprint 1-3 minggu dengan preview link harian."
-        },
-        {
-          "n": "04",
-          "t": "Ship & Handover",
-          "d": "Deploy production, dokumentasi, sesi training."
-        }
-      ],
-      "faq": [
-        {
-          "q": "Berapa lama satu proyek?",
-          "a": "Landing page 1-2 minggu, web app 3-8 minggu. Dipecah ke sprint kecil dengan deliverable yang bisa kamu lihat."
-        },
-        {
-          "q": "Apakah saya dapat source code?",
-          "a": "Selalu. Repo lengkap dengan dokumentasi handover dan sesi training singkat."
-        },
-        {
-          "q": "Stack apa yang biasa dipakai?",
-          "a": "React/Next.js/Astro/TanStack, Tailwind, TypeScript, Postgres/Supabase. Saya juga ikut stack tim kalau diperlukan."
-        },
-        {
-          "q": "Tersedia untuk kontrak jangka panjang?",
-          "a": "Ya — slot terbatas untuk retainer bulanan. Hubungi via email untuk detail."
-        }
-      ]
     },
     "worksPage": {
       "eyebrow": "Arsip Karya / Works",
@@ -1320,8 +1242,6 @@
       "homeDescription": "Crafting human-centric code in a machine world. Portfolio of Rizki Ramadhan, fullstack developer based in Bogor, Indonesia.",
       "worksTitle": "Works — Rizki Ramadhan",
       "worksDescription": "Selected project archive by Rizki Ramadhan: web apps, dashboards, e-commerce, and PWAs — from concept to production.",
-      "layananTitle": "Services — Rizki Ramadhan",
-      "layananDescription": "Fullstack services: product engineering, web design, performance audit, headless CMS — plus process and FAQ.",
       "achievementsTitle": "Credentials — Rizki Ramadhan",
       "achievementsDescription": "Certification and credential archive: Dicoding, Dibimbing, MySkills, JavaArch, and more.",
       "guestNotesTitle": "Guest Book — Leave a note",
@@ -1358,14 +1278,12 @@
       "home": "Home",
       "works": "Works",
       "blog": "Blog",
-      "services": "Services",
       "achievements": "Credentials",
       "guestNotes": "Guest Notes",
       "agentStudio": "AI Studio",
       "shortHome": "Home",
       "shortWorks": "Works",
       "shortBlog": "Blog",
-      "shortServices": "Services",
       "shortAchievements": "Certs",
       "shortGuestNotes": "Notes"
     },
@@ -1412,7 +1330,8 @@
       "yearsShort": "3+ yrs",
       "entries": "{count} entries",
       "positions": "{count} Roles",
-      "portraitAlt": "R. Ramadhan — Studio, 2026"
+      "portraitAlt": "R. Ramadhan — Studio, 2026",
+      "ctaAria": "Collaboration call to action"
     },
     "notFound": {
       "badge": "Error 404",
@@ -1554,81 +1473,6 @@
       "statusValue": "Open for work",
       "copyright": "© 2026 Rizki Ramadhan — All rights reserved",
       "crafted": "Privacy Policy"
-    },
-    "layanan": {
-      "eyebrow": "Services",
-      "title": "What I can build for you.",
-      "subtitle": "Scope, process, and answers to common questions — before we start collaborating.",
-      "servicesEyebrow": "Services / 01",
-      "servicesTitle": "What I can build for you",
-      "processEyebrow": "Process / 02",
-      "processTitle": "Four steps, no drama.",
-      "faqEyebrow": "FAQ / 03",
-      "faqTitle": "Common questions.",
-      "ctaTitle": "Ready to start? Tell me about your project scope — I'll reply within 24 hours.",
-      "ctaAria": "Collaboration call to action",
-      "services": [
-        {
-          "n": "S/01",
-          "t": "Product Engineering",
-          "d": "From idea to production: architecture, build, deploy, monitor."
-        },
-        {
-          "n": "S/02",
-          "t": "Web Design & UI",
-          "d": "Editorial interfaces that feel alive — not generic templates."
-        },
-        {
-          "n": "S/03",
-          "t": "Performance Audit",
-          "d": "Lighthouse 90+, Core Web Vitals, real-user metrics."
-        },
-        {
-          "n": "S/04",
-          "t": "Headless CMS",
-          "d": "Sanity, Strapi, Payload — comfortable content workflows."
-        }
-      ],
-      "process": [
-        {
-          "n": "01",
-          "t": "Discovery",
-          "d": "A focused 45-minute session to map problems and expectations."
-        },
-        {
-          "n": "02",
-          "t": "Sketch & Spec",
-          "d": "Wireframes, moodboards, and a clear technical spec."
-        },
-        {
-          "n": "03",
-          "t": "Build",
-          "d": "1–3 week sprints with daily preview links."
-        },
-        {
-          "n": "04",
-          "t": "Ship & Handover",
-          "d": "Production deploy, documentation, and a training session."
-        }
-      ],
-      "faq": [
-        {
-          "q": "How long does a project take?",
-          "a": "Landing pages take 1–2 weeks, web apps 3–8 weeks. Broken into small sprints with visible deliverables."
-        },
-        {
-          "q": "Do I get the source code?",
-          "a": "Always. Full repo with handover documentation and a short training session."
-        },
-        {
-          "q": "What stack do you usually use?",
-          "a": "React/Next.js/Astro/TanStack, Tailwind, TypeScript, Postgres/Supabase. I can also align with your team's stack."
-        },
-        {
-          "q": "Available for long-term contracts?",
-          "a": "Yes — limited slots for monthly retainers. Email me for details."
-        }
-      ]
     },
     "worksPage": {
       "eyebrow": "Works Archive",
@@ -2633,8 +2477,6 @@
       "homeDescription": "機械の世界で、人間中心のコードを紡ぐ。インドネシア・ボゴール在住のフルスタック開発者 Rizki Ramadhan のポートフォリオ。",
       "worksTitle": "作品 — Rizki Ramadhan",
       "worksDescription": "Rizki Ramadhan の厳選プロジェクトアーカイブ：Webアプリ、ダッシュボード、eコマース、PWA — コンセプトから本番まで。",
-      "layananTitle": "サービス — Rizki Ramadhan",
-      "layananDescription": "フルスタックサービス：プロダクトエンジニアリング、Webデザイン、パフォーマンス監査、ヘッドレスCMS — プロセスとよくある質問付き。",
       "achievementsTitle": "資格 — Rizki Ramadhan",
       "achievementsDescription": "認定・資格アーカイブ：Dicoding、Dibimbing、MySkills、JavaArch など。",
       "guestNotesTitle": "ゲストブック — メッセージを残す",
@@ -2671,14 +2513,12 @@
       "home": "ホーム",
       "works": "作品",
       "blog": "ブログ",
-      "services": "サービス",
       "achievements": "資格",
       "guestNotes": "ゲストブック",
       "agentStudio": "AI Studio",
       "shortHome": "ホーム",
       "shortWorks": "作品",
       "shortBlog": "ブログ",
-      "shortServices": "サービス",
       "shortAchievements": "資格",
       "shortGuestNotes": "メモ"
     },
@@ -2725,7 +2565,8 @@
       "yearsShort": "3年以上",
       "entries": "{count} 件",
       "positions": "{count} 件のポジション",
-      "portraitAlt": "R. Ramadhan — スタジオ, 2026"
+      "portraitAlt": "R. Ramadhan — スタジオ, 2026",
+      "ctaAria": "コラボレーションへの呼びかけ"
     },
     "notFound": {
       "badge": "Error 404",
@@ -2867,81 +2708,6 @@
       "statusValue": "案件受付中",
       "copyright": "© 2026 Rizki Ramadhan — 無断転載を禁じます",
       "crafted": "プライバシーポリシー"
-    },
-    "layanan": {
-      "eyebrow": "サービス",
-      "title": "お手伝いできること。",
-      "subtitle": "コラボレーションを始める前に — スコープ、プロセス、よくある質問への回答。",
-      "servicesEyebrow": "サービス / 01",
-      "servicesTitle": "お手伝いできること",
-      "processEyebrow": "プロセス / 02",
-      "processTitle": "4つのステップ、スムーズに。",
-      "faqEyebrow": "よくある質問 / 03",
-      "faqTitle": "よくある質問。",
-      "ctaTitle": "始める準備はできましたか？プロジェクトのスコープをお聞かせください — 24時間以内に返信します。",
-      "ctaAria": "コラボレーションへの呼びかけ",
-      "services": [
-        {
-          "n": "S/01",
-          "t": "プロダクトエンジニアリング",
-          "d": "アイデアから本番まで：アーキテクチャ、構築、デプロイ、監視。"
-        },
-        {
-          "n": "S/02",
-          "t": "Webデザイン & UI",
-          "d": "生き生きとしたエディトリアルなインターフェース — 汎用テンプレートではありません。"
-        },
-        {
-          "n": "S/03",
-          "t": "パフォーマンス監査",
-          "d": "Lighthouse 90+、Core Web Vitals、実ユーザー指標。"
-        },
-        {
-          "n": "S/04",
-          "t": "ヘッドレスCMS",
-          "d": "Sanity、Strapi、Payload — 快適なコンテンツワークフロー。"
-        }
-      ],
-      "process": [
-        {
-          "n": "01",
-          "t": "ディスカバリー",
-          "d": "45分の集中セッションで、課題と期待を整理します。"
-        },
-        {
-          "n": "02",
-          "t": "スケッチ & 仕様",
-          "d": "ワイヤーフレーム、ムードボード、明確な技術仕様。"
-        },
-        {
-          "n": "03",
-          "t": "構築",
-          "d": "1〜3週間のスプリントで、毎日プレビューリンクを共有。"
-        },
-        {
-          "n": "04",
-          "t": "納品 & 引き継ぎ",
-          "d": "本番デプロイ、ドキュメント、トレーニングセッション。"
-        }
-      ],
-      "faq": [
-        {
-          "q": "プロジェクトにはどのくらい時間がかかりますか？",
-          "a": "ランディングページは1〜2週間、Webアプリは3〜8週間です。小さなスプリントに分け、成果物を随時確認できます。"
-        },
-        {
-          "q": "ソースコードは受け取れますか？",
-          "a": "はい、常に提供します。引き継ぎドキュメントと短いトレーニングセッション付きの完全なリポジトリです。"
-        },
-        {
-          "q": "通常どのスタックを使いますか？",
-          "a": "React/Next.js/Astro/TanStack、Tailwind、TypeScript、Postgres/Supabase です。チームのスタックに合わせることも可能です。"
-        },
-        {
-          "q": "長期契約は可能ですか？",
-          "a": "はい — 月額リテイナー枠は限定です。詳細はメールでお問い合わせください。"
-        }
-      ]
     },
     "worksPage": {
       "eyebrow": "作品アーカイブ",
