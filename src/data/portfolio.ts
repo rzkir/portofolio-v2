@@ -4,24 +4,6 @@ import portrait from "@/assets/rizki-ramadhan.webp";
 
 export { project1, portrait };
 
-export type SocialLink = {
-  label: string;
-  href: string;
-};
-
-export type ProfileSocialPlatform =
-  | "instagram"
-  | "tiktok"
-  | "linkedin"
-  | "facebook";
-
-export type ProfileSocialLink = {
-  id: ProfileSocialPlatform;
-  label: string;
-  href: string;
-  handle: string;
-};
-
 export const AI_STUDIO_URL = "https://next-ai.rizkiramadhan.biz.id/" as const;
 
 export const contact = {

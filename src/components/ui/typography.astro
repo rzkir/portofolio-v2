@@ -11,4 +11,8 @@ const { content, class: className } = Astro.props;
 const html = prepareContentHtml(content);
 ---
 
-<article class={cn("prose-editorial", className)} set:html={html} />
+<article
+  class={cn("prose-editorial", className)}
+  data-image-fallback-root
+  set:html={html}
+/>

@@ -1,8 +1,13 @@
+import { bindImageCorruptFallback } from "@/lib/image-corrupt";
+
 import { bindLang } from "@/lib/lang";
 
 import { registerPwa } from "@/lib/pwa";
 
+import { bindScrollTop } from "@/lib/scroll-top";
+
 import { bindTheme } from "@/lib/theme";
+
 import { initChatModal } from "@/service/modal-popup.service";
 
 export const SPLASH_INLINE_SCRIPT = `try {
@@ -33,9 +38,9 @@ export const THEME_INLINE_SCRIPT = `(function () {
 })();`;
 
 export function createGtmInlineScript(gtmId: string): string {
-    const id = JSON.stringify(gtmId);
+  const id = JSON.stringify(gtmId);
 
-    return `(function (w, d) {
+  return `(function (w, d) {
   function loadGtm() {
     w.dataLayer = w.dataLayer || [];
     w.dataLayer.push({
@@ -57,20 +62,22 @@ export function createGtmInlineScript(gtmId: string): string {
 }
 
 function initThemeAndLang(): void {
-    bindTheme();
-    bindLang();
-    initChatModal();
+  bindTheme();
+  bindLang();
+  initChatModal();
+  bindScrollTop();
+  bindImageCorruptFallback();
 }
 
 export function initLayout(): void {
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", initThemeAndLang, {
-            once: true,
-        });
-    } else {
-        initThemeAndLang();
-    }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initThemeAndLang, {
+      once: true,
+    });
+  } else {
+    initThemeAndLang();
+  }
 
-    document.addEventListener("astro:page-load", initThemeAndLang);
-    registerPwa();
+  document.addEventListener("astro:page-load", initThemeAndLang);
+  registerPwa();
 }

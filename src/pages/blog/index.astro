@@ -1,4 +1,5 @@
 ---
+import SafeImage from "@/components/SafeImage.astro";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/layouts/Header.astro";
 import Footer from "@/layouts/Footer.astro";
@@ -110,12 +111,11 @@ const ogImage = lead?.thumbnail;
                   data-cursor-label="Read"
                   class="group block overflow-hidden"
                 >
-                  <img
+                  <SafeImage
                     src={lead.thumbnail}
                     alt={lead.title}
                     loading="eager"
-                    decoding="async"
-                    class="aspect-4/3 w-full object-cover grayscale-[0.15] transition-all duration-700 ease-cinematic group-hover:scale-[1.02] group-hover:grayscale-0"
+                    imgClass="aspect-4/3 w-full object-cover grayscale-[0.15] transition-all duration-700 ease-cinematic group-hover:scale-[1.02] group-hover:grayscale-0"
                   />
                 </a>
               </div>

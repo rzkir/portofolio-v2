@@ -82,6 +82,38 @@ const isExternal = href.startsWith("http://") || href.startsWith("https://");
     --announcement-banner-height: 3.125rem;
     --site-mobile-dock-offset: 1rem;
     --chat-layer: 70;
+    --site-fab-size: 4rem;
+    --site-fab-gap: 1.25rem;
+    --site-fab-inset-x: 1rem;
+    --site-fab-inset-y: calc(
+      var(--site-mobile-dock-offset, 1rem) + env(safe-area-inset-bottom, 0px)
+    );
+  }
+
+  @media (min-width: 640px) {
+    :root {
+      --site-fab-inset-x: 2.5rem;
+    }
+  }
+
+  .site-fab {
+    position: fixed;
+    right: var(--site-fab-inset-x);
+    box-sizing: border-box;
+    width: var(--site-fab-size);
+    height: var(--site-fab-size);
+    padding: 0;
+    z-index: calc(var(--chat-layer, 70) + 2);
+  }
+
+  .chat-modal__fab {
+    bottom: var(--site-fab-inset-y);
+  }
+
+  .scroll-top-fab {
+    bottom: calc(
+      var(--site-fab-inset-y) + var(--site-fab-size) + var(--site-fab-gap)
+    );
   }
 
   html.is-announcement-hidden #announcement-banner {

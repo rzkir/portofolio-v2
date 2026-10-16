@@ -50,6 +50,23 @@ interface Props extends CardProps {
     class?: string;
 }
 
+interface ImageCorruptProps {
+    class?: string;
+    label?: string;
+}
+
+interface SafeImageProps {
+    src?: ImageMetadata | string;
+    alt?: string;
+    class?: string;
+    imgClass?: string;
+    loading?: "eager" | "lazy";
+    decoding?: "async" | "auto" | "sync";
+    width?: number;
+    height?: number;
+    dataSrc?: string;
+}
+
 //============================ Input ============================//
 interface InputProps {
     label: string;

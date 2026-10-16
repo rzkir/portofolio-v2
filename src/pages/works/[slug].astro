@@ -2,6 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/layouts/Header.astro";
 import Footer from "@/layouts/Footer.astro";
+import SafeImage from "@/components/SafeImage.astro";
 import ArrowLeft from "@/components/svg/arrow-left.astro";
 import ArrowUpRight from "@/components/svg/arrow-up-right.astro";
 import Typography from "@/components/ui/typography.astro";
@@ -121,12 +122,11 @@ const category = work.categoryDetail?.name ?? work.category;
       <figure
         class="overflow-hidden rounded-md border border-border bg-surface"
       >
-        <img
+        <SafeImage
           src={work.thumbnail}
           alt={work.title}
           loading="eager"
-          decoding="async"
-          class="aspect-video w-full object-cover"
+          imgClass="aspect-video w-full object-cover"
         />
       </figure>
     </section>
@@ -146,14 +146,13 @@ const category = work.categoryDetail?.name ?? work.category;
                   work.frameworks.map((framework: any) => (
                     <li class="flex items-center gap-3 border-b border-border pb-3 last:border-b-0">
                       <span class="flex size-7 items-center justify-center overflow-hidden rounded-sm border border-border bg-surface">
-                        <img
+                        <SafeImage
                           src={framework.imageUrl}
                           alt={framework.title}
                           width={28}
                           height={28}
-                          loading="lazy"
-                          decoding="async"
-                          class="size-full object-cover"
+                          class="size-full"
+                          imgClass="size-full object-cover"
                         />
                       </span>
                       <span class="text-sm">{framework.title}</span>
@@ -237,12 +236,10 @@ const category = work.categoryDetail?.name ?? work.category;
               {work.imageUrl.map((src: any, i: number) => (
                 <figure class="group mb-6 break-inside-avoid overflow-hidden rounded-md border border-border bg-surface">
                   <div class="overflow-hidden">
-                    <img
+                    <SafeImage
                       src={src}
                       alt={`${work.title} — frame ${i + 1}`}
-                      loading="lazy"
-                      decoding="async"
-                      class={cn(
+                      imgClass={cn(
                         "w-full object-cover transition-transform duration-700 ease-cinematic group-hover:scale-[1.03]",
                         i % 2 === 0 ? "aspect-4/3" : "aspect-video",
                       )}

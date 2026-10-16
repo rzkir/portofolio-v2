@@ -96,7 +96,9 @@
       "entries": "{count} entri",
       "positions": "{count} Posisi",
       "portraitAlt": "R. Ramadhan — Studio, 2026",
-      "ctaAria": "Ajakan kolaborasi"
+      "ctaAria": "Ajakan kolaborasi",
+      "scrollToTop": "Kembali ke atas",
+      "imageCorrupt": "Gambar tidak tersedia"
     },
     "notFound": {
       "badge": "Error 404",
@@ -1331,7 +1333,9 @@
       "entries": "{count} entries",
       "positions": "{count} Roles",
       "portraitAlt": "R. Ramadhan — Studio, 2026",
-      "ctaAria": "Collaboration call to action"
+      "ctaAria": "Collaboration call to action",
+      "scrollToTop": "Back to top",
+      "imageCorrupt": "Image unavailable"
     },
     "notFound": {
       "badge": "Error 404",
@@ -2566,7 +2570,9 @@
       "entries": "{count} 件",
       "positions": "{count} 件のポジション",
       "portraitAlt": "R. Ramadhan — スタジオ, 2026",
-      "ctaAria": "コラボレーションへの呼びかけ"
+      "ctaAria": "コラボレーションへの呼びかけ",
+      "scrollToTop": "先頭へ戻る",
+      "imageCorrupt": "画像を表示できません"
     },
     "notFound": {
       "badge": "Error 404",

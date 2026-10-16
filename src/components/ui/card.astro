@@ -1,9 +1,6 @@
 ---
-import { Image } from "astro:assets";
-
-import type { ImageMetadata } from "astro";
-
 import PreviewIcon from "@/components/svg/priview.astro";
+import SafeImage from "@/components/SafeImage.astro";
 
 import { cn } from "@/lib/utiles";
 
@@ -24,7 +21,6 @@ const {
   prompt,
   class: className,
 } = Astro.props;
-const isRemoteImage = typeof image === "string";
 const isSelect = variant === "select";
 const isSurface = variant === "surface";
 const viewsText =
@@ -84,21 +80,12 @@ const sharedLabel = isSelect
       class={sharedClass}
     >
       <figure class="ui-card__thumb">
-        {isRemoteImage ? (
-          <img
-            src={image}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            class="size-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <Image
-            src={image as ImageMetadata}
-            alt=""
-            class="size-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        )}
+        <SafeImage
+          src={image}
+          alt=""
+          class="size-full"
+          imgClass="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
       </figure>
 
       <div class="ui-card__body">

@@ -1,5 +1,7 @@
 ---
+import ImageCorrupt from "@/components/ImageCorrupt.astro";
 import ModalPopup from "@/components/ModalPopup.astro";
+import ScrollToTop from "@/components/ScrollToTop.astro";
 import Announcement from "@/layouts/announcement.astro";
 import NotificationContext from "@/layouts/NotificationContext.astro";
 import SplashScreen from "@/components/SplashScreen.astro";
@@ -196,6 +198,10 @@ const sitemapUrl = new URL("/sitemap.xml", siteOrigin).href;
     <Announcement />
     <slot />
     <ModalPopup />
+    <ScrollToTop />
+    <template id="image-corrupt-template">
+      <ImageCorrupt />
+    </template>
     <script>
       import { initLayout } from "@/lib/layout";
 

@@ -1,0 +1,36 @@
+---
+import Button from "@/components/ui/button.astro";
+import ArrowUp from "@/components/svg/arrow-up.astro";
+import { cn } from "@/lib/utiles";
+import { getLocale, getMessages } from "@/lib/i18n";
+
+const locale = getLocale(Astro);
+const m = getMessages(locale);
+---
+
+<Button
+  id="scroll-top-fab"
+  variant="icon"
+  size="icon"
+  data-visible="false"
+  data-cursor="focus"
+  data-cursor-label={m.common.scrollToTop}
+  aria-label={m.common.scrollToTop}
+  aria-hidden="true"
+  tabindex="-1"
+  class={cn(
+    "site-fab scroll-top-fab size-16 rounded-full bg-background text-foreground shadow-2xl ring-4 ring-background",
+    "scale-90 opacity-0 pointer-events-none transition-[transform,opacity] duration-300 ease-cinematic",
+    "hover:scale-105 hover:bg-background hover:text-accent",
+    "data-[visible=true]:scale-100 data-[visible=true]:opacity-100 data-[visible=true]:pointer-events-auto",
+  )}
+>
+  <ArrowUp size={24} class="size-6" />
+</Button>
+
+<style is:global>
+  body.overflow-hidden .scroll-top-fab {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+</style>

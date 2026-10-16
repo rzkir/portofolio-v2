@@ -203,7 +203,7 @@ const chatStrings = JSON.stringify({
   <Button
     variant="icon"
     size="icon"
-    class="chat-modal__fab size-16 rounded-full bg-foreground text-background shadow-2xl ring-4 ring-background hover:scale-105 hover:bg-foreground hover:text-background active:scale-95"
+    class="site-fab chat-modal__fab size-16 rounded-full bg-foreground text-background shadow-2xl ring-4 ring-background hover:scale-105 hover:bg-foreground hover:text-background active:scale-95"
     aria-label={t.openChat}
     aria-expanded="false"
     data-chat-fab
@@ -254,12 +254,6 @@ const chatStrings = JSON.stringify({
   }
 
   .chat-modal__fab {
-    position: fixed;
-    right: 1rem;
-    bottom: calc(
-      var(--site-mobile-dock-offset, 1rem) + env(safe-area-inset-bottom, 0px)
-    );
-    z-index: calc(var(--chat-layer, 70) + 2);
     pointer-events: auto;
   }
 
@@ -348,7 +342,6 @@ const chatStrings = JSON.stringify({
   }
 
   @media (min-width: 640px) {
-    .chat-modal__fab,
     .chat-modal__panel {
       right: 2.5rem;
     }
